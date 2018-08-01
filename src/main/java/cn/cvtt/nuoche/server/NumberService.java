@@ -1,0 +1,29 @@
+package cn.cvtt.nuoche.server;
+
+import cn.cvtt.nuoche.common.result.Result;
+import cn.cvtt.nuoche.entity.business.BindVo;
+
+import java.io.IOException;
+
+/**
+ * @decription NumberService
+ * <p>号码相关服务</p>
+ * @author Yampery
+ * @date 2018/3/12 9:13
+ */
+public interface NumberService {
+
+    /**
+     * 单独一个对象绑定
+     * @param param
+     * @return
+     * @throws IOException
+     */
+     Result bind(BindVo param) throws  IOException;
+
+    Result unbind(String uidnumber) throws IOException;
+
+    Result extend(BindVo param) throws IOException;
+
+    Result changeBind(BindVo bindVo) throws IOException;
+}

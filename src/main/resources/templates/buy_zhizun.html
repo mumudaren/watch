@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="Description" content="购买至尊安全号" />
+    <title>购买智能靓号</title>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="yes" name="apple-touch-fullscreen"/>
+    <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <link rel="stylesheet" type="text/css" href="../css/safenumber.css" />
+    <script type="text/javascript" src="../js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <script type="text/javascript" src="../js/safenumber.js"></script>
+    <script type="text/javascript" src="../js/wexinPay.js"></script>
+    <script type="text/javascript" src="../js/util.js"></script>
+
+   <!-- <script type="text/javascript" src="../js/app.js"></script>-->
+</head>
+<body>
+<div class="wrap f_404wrap">
+    <p class="f_zhizuninput">
+        <input type="tel" placeholder="请输入需要安全号的手机号码"   name="myNumber"/><br/>
+        安全号将与输入的手机号进行绑定，呼叫安全号手机号将接听来电
+    </p>
+    <div class="f_tabwrap">
+        <div class="f_zhizuntab">
+            <ul>
+                <li th:each="reg:${regexs}" th:text="${reg.value}" th:value="${reg.key}">AABB</li>
+            </ul>
+        </div>
+        <div class="f_zhizuntabcon">
+            <ul>
+                <li>
+                    <div class="f_zhizuntablist">
+                        <p class="f_zhizuninput">
+                            <input type="tel" placeholder="请输入需要查找的安全号" class="searchNumber" name=""/>
+                        </p>
+                        <dl class="f_95013listnum">
+                            <dd th:each="n:${numbers}" th:text="${n.number}">9501378110</dd>
+                        </dl>
+                    </div>
+                    <div class="f_dayscontent f_buysafenumber_content" style="margin-left: 0;padding: 0 .4rem;">
+                        <dl id="tab1">
+                            <dd th:class="${p.getProductType()=='1'?'f_tiyan':p.productType =='2'?'f_discount':p.productType =='3'?'f_sales':''}" th:each="p:${products}" style="margin-right: .23rem;">
+                                <p class="z_requiredays" th:text="${'有效期'+p.validDay+'天'}"></p>
+                                <p th:text="${'￥'+p.productPrice/(100*1.0)}"></p>
+                                <p style="display: none;" th:text="${p.validDay}"></p>
+                                <p class="z_limits3"><del th:text="${'￥'+p.initPrice/(100*1.0)}"></del><span th:text="${p.productLimit==0?'不限次数':'限购'+p.productLimit+'次'}">限购3次</span></p>
+                                <p style="display:none"  th:text="${p.leaveMessage}" th:title="${p.message}" ></p>
+                                <p class="productId" th:text="${p.id}" style="display: none"></p>
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div class="clearFix"></div>
+                    <div class="f_messagewrap" style="display: inline-block;width: 92%">
+                        <div class="z_messagenum">
+                            <span class="z_messagemoney">￥1</span>
+                            <span class="z_messagebox">留言箱</span>
+                            <span class="z_messagebox">短信</span><br/>
+                            <span class="z_messagenumbers">可接受<b class="leaveMessage">5</b>条留言和<b class="message">5</b>条短信</span>
+                        </div>
+                        <div class="z_messageimg">
+                            <img th:src="@{/images/right_03.png}"/>
+                        </div>
+                    </div>
+                    <!-- <div class="f_addtelphone" style="padding-top: 0;">
+                         <p class="f_weixin">
+                           <img src="images/weixin_03.png"/>微信支付
+                             <span class="f_arrowleft">></span>
+                         </p>
+                     </div>-->
+                    <p class="f_bindsuc_share f_fastpay" style="margin-left: .22rem;margin-top: 1rem;">
+                        <a href="javascript:justPay()">立即支付（<em>¥1</em>）</a>
+                    </p>
+                    <p class="f_bindsuc_sharebj f_fastpay" style="margin-left: .22rem;display: none" >填充背景色</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        var openid=[[${user.openid}]];
+        $(function() {
+            $(".f_zhizuntab ul li:eq(0)").addClass("z_actived");
+            initClick();
+            $(".f_zhizuntab ul").find("li").click(function () {
+                $(".f_zhizuntab ul").find("li").removeClass("z_actived");
+                $(this).addClass("z_actived");
+                /** 加载 该套餐号码**/
+                var regexId = $(this).attr("value");
+                console.log(regexId);
+                var data = {};
+                data.regexId = regexId;
+                data.number = '';
+                $.ajax({
+                    url: "/changeModule",
+                    type: "POST",
+                    data: data,
+                    dataType: "JSON"
+                }).done(function (response) {
+                    if (response.code == 200) {
+                        var arr = response.data;
+                        var numberModule = arr[0];
+                        var productModule = arr[1];
+                        $(".f_95013listnum").text("");
+                        $("#tab1").text("");
+                        $.each(numberModule, function (index, item) {
+                            $(".f_95013listnum").append($("<dd></dd>").text(item.number));
+                        });
+                        $.each(productModule, function (index, item) {
+                            var dd = $("<dd></dd>").addClass(item.productType == 1 ? "f_tiyan" : item.productType == 2 ? "f_discount" : "f_sales").css("margin-right", ".23rem");
+                            $(dd).append($("<p></p>").addClass("z_requiredays").text("有效期" + item.validDay + "天"));
+                            $(dd).append($("<p></p>").text('￥' + item.productPrice / (100 * 1.0)));
+                            $(dd).append($("<p></p>").text(item.validDay).hide());
+                            $(dd).append($("<p></p>").addClass("z_limits3").append($("<del></del>").text('￥' + item.initPrice / (100 * 1.0)), $("<span></span>").text(item.productLimit==0?'不限次数':'限购'+item.productLimit+'次')));
+                            $(dd).append($("<p></p>").css("display","none").attr("title",item.message).text(item.leaveMessage));
+                            $(dd).append($("<p></p>").css("display","none").addClass("productId").text(item.id));
+                            $("#tab1").append(dd);
+                        });
+                        initClick();
+                    }
+                })
+            });
+
+            $(".searchNumber").bind("input propertychange", function () {
+                var data = {};
+                var regexId = $(".f_zhizuntab ul").find(".z_actived").attr("value");
+                data.regexId = regexId;
+                data.number = $(this).val();
+                $.ajax({
+                    url: "/changeModule",
+                    type: "POST",
+                    data: data,
+                    dataType: "JSON"
+                }).done(function (response) {
+                    if (response.code == 200) {
+                        var arr = response.data;
+                        var numberModule = arr[0];
+                        $(".f_95013listnum").text("");
+                        $.each(numberModule, function (index, item) {
+                            $(".f_95013listnum").append($("<dd></dd>").text(item.number));
+                        });
+                        initClick();
+                    }
+                });
+            });
+        });
+        function justPay(){
+            var  phone=$("input[name='myNumber']").val();
+            var  uidNumber=$(".f_95013listnum").find(".z_current").text();
+            if(!util.validPhone(phone)){
+                //util.showText("不是有效的手机号码!",$(".z_successtext"));
+                alert("不是有效的手机号码!");
+                return ;
+            }
+            if(uidNumber==""||uidNumber==null){
+               alert("当前套餐中没有可以绑定的号码!");return;
+            }
+            var  val=$("#tab1 dd p:eq(1)").text();;
+            var  days=$("#tab1 dd p:eq(2)").text();
+            var  productId=$("#tab1 dd p:eq(5)").text();
+            var pay={};
+            pay.openid=openid;
+            pay.totalFee=val;
+            pay.phone=phone;
+            pay.extend=0;
+            pay.days=days;
+            pay.uidNumber=uidNumber;
+            pay.productId=productId;
+            var  json=payUtil.payOrder(pay);
+            if(json.code!=200){
+                alert(json.msg);
+                return;
+            }else {
+                json=json.data;
+            }
+            if (typeof WeixinJSBridge == "undefined"){
+                if(document.addEventListener ){
+                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
+                }else if (document.attachEvent){
+                    document.attachEvent('WeixinJSBridgeReady',   onBridgeReady(json));
+                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
+                }
+            }else{
+                onBridgeReady(json)
+            }
+        }
+        /** 微信支付  start **/
+        function onBridgeReady(json){
+            WeixinJSBridge.invoke(
+                'getBrandWCPayRequest',json,
+                function(res){
+                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                        window.location.href="/oauth/admin/OwnerSafeNumber.html";
+                    }else {
+                        // window.location.href="/oauth/admin/OwnerSafeNumber.html";
+                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                }
+            );
+        }
+
+        function initClick(){
+            $(".f_95013listnum dd:eq(0)").addClass("z_current");
+            $("#tab1 dd:eq(0)").addClass('f_tiyan f_tiyan_active ');
+            $("#tab1 dd:eq(0)").find("p:eq(0)").addClass("z_requiredays_active");
+            $("#tab1 dd:eq(0)").find("p:eq(1)").addClass("z_requiredays_active");
+            $("#tab1 dd:eq(0)").find("p:eq(3)").addClass("z_limits3_active");
+            var  price=$("#tab1 dd:eq(0)").find("p:eq(1)").text();
+            var  message=$("#tab1 dd:eq(0)").find("p:eq(4)").attr("title");
+            var  leaveMessage=$("#tab1 dd:eq(0)").find("p:eq(4)").text();
+            $(".leaveMessage").text(leaveMessage);
+            $(".message").text(message);
+            $(".f_fastpay em").text(price);
+            $(".z_messagemoney").text(price);
+            $("#tab1 dd:last").removeAttr("style");
+            $("#tab1 dd").click(function(){
+                console.log("init....");
+                var  price=$(this).find("p:eq(1)").text();
+                $(".f_fastpay em").text(price);
+                $(".z_messagemoney").text(price);
+                var  message=$(this).find("p:eq(4)").attr("title");
+                var  leaveMessage=$(this).find("p:eq(4)").text();
+                $(".leaveMessage").text(leaveMessage);
+                $(".message").text(message);
+                $(".productId").text($(this).find("p:eq(5)").text());
+                var  obj=$("#tab1 dd");
+                if($(this).is(obj.get(2))){
+                    $(this).addClass('f_sales_active');
+                    $(this).find("p:eq(0)").addClass("z_requiredays_active");
+                    $(this).find("p:eq(1)").addClass("z_requiredays_active");
+                    $(this).find("p:eq(3)").addClass("z_limits3_active");
+                    $("#tab1 dd").removeClass("f_tiyan_active").removeClass("f_discount_active");
+                }else if($(this).is(obj.get(1))){
+                    $(this).addClass('f_discount_active');
+                    $(this).find("p:eq(0)").addClass("z_requiredays_active");
+                    $(this).find("p:eq(1)").addClass("z_requiredays_active");
+                    $(this).find("p:eq(3)").addClass("z_limits3_active");
+                    $("#tab1 dd").removeClass("f_sales_active").removeClass("f_tiyan_active");
+                }else {
+                    $(this).addClass('f_tiyan_active');
+                    $(this).find("p:eq(0)").addClass("z_requiredays_active");
+                    $(this).find("p:eq(1)").addClass("z_requiredays_active");
+                    $(this).find("p:eq(3)").addClass("z_limits3_active");
+                    $("#tab1 dd").removeClass("f_discount_active").removeClass("f_sales_active");
+                }
+            });
+            $(".f_95013listnum dd").click(function(){
+                $(".f_95013listnum dd").removeClass("z_current");
+                $(this).addClass("z_current");
+            });
+        }
+
+    </script>
+
+
+</div>
+</body>
+</html>

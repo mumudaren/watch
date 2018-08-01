@@ -1,0 +1,151 @@
+package cn.cvtt.nuoche.web;
+
+import cn.cvtt.nuoche.entity.business.BusinessCustomer;
+import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
+import cn.cvtt.nuoche.entity.business.wx_product;
+import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
+import cn.cvtt.nuoche.facade.IProductInterface;
+import cn.cvtt.nuoche.facade.IRegexInterface;
+import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
+import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.util.ConfigUtil;
+import cn.cvtt.nuoche.util.DateUtils;
+import cn.cvtt.nuoche.util.JsonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+public class TestController {
+    @Autowired
+    ConfigUtil   util;
+    @Autowired
+    IBusinessNumberRecordRepository  recordRepository;
+    @Autowired
+    IRegexInterface  regexInterface;
+    @Autowired
+    IBusinessCallRecordInterface callRecordInterface;
+    @Autowired
+    IBusinessCusRepository   businessCusRepository;
+
+    @RequestMapping("/getAll")
+    @ResponseBody
+    public  String   getRegex(String  business){
+      return   regexInterface.findRegexByBusiness(business);
+    }
+
+
+    @RequestMapping("/getHeard")
+    @ResponseBody
+    public  String    getHeard(){
+        String  string=callRecordInterface.findHeard("nuoche","95013340000297");
+        return string;
+    }
+
+
+   /* @Autowired
+    IProductRespository productRespository;*/
+
+    @Autowired
+    IProductInterface  productInterface;
+
+    @RequestMapping("/testInterface")
+    @ResponseBody
+    public  String  testInterface(){
+        //String str= productInterface.findProduct("nuoche");
+        String str=callRecordInterface.findHeard("nuoche","95013340000297");
+        return  str;
+    }
+
+    @RequestMapping("/testRegex")
+    public  ModelAndView  testRegex(){
+        ModelAndView  modelAndView=new ModelAndView();
+        modelAndView.setViewName("buy_zhizun");
+        String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
+        //  String json= productInterface.findProduct(util.getBusinessKey());
+        List<Map<String,String>> map=JsonUtils.handlerNormalJson(json,"id","regexName");
+        modelAndView.addObject("regexs",map);
+        String productJson= productInterface.findRegexProduct(util.getBusinessKey(),map.get(0).get("key"));
+        List<wx_product>  ls=JsonUtils.handlerRegexJson(productJson);
+        modelAndView.addObject("products",ls);
+        String numberJson=productInterface.findSpeNumber(util.getBusinessKey(),map.get(0).get("key"),"");
+        List<Map<String,String>>  numbers=JsonUtils.handlerNumberJson(numberJson);
+        modelAndView.addObject("numbers",numbers);
+        Map<String,String> user=new HashMap<>();
+        user.put("openid","oIFn90xXM4M-zUayrLI4hxLGZNKA");
+        modelAndView.addObject("user",user);
+        return  modelAndView;
+    }
+
+
+    @RequestMapping("/validate_tel")
+    public  String  goValidate(){
+
+        return  "validate_tel";
+    }
+
+
+    @RequestMapping("/OwnerSafeNumber.html")
+    public ModelAndView  OwnerSafeNumber( ){
+        ModelAndView  model=new ModelAndView();
+        String openid="oIFn90xXM4M-zUayrLI4hxLGZNKA";
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
+        String  url= userInfo.getHeadimgurl();
+        model.addObject("url",url);
+        model.addObject("phone",userInfo.getPhone());
+        List<BusinessNumberRecord>  ls=recordRepository.findAllByPrtmsEqualsAndBusinessIdEqualsOrderBySubtsDesc(userInfo.getPhone(),util.getBusinessKey());
+        handlerList(model,ls);
+        model.addObject("ls",ls);
+        List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsOrderBySubtsDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey());
+
+        model.addObject("other",other);
+        handlerOther(other);
+       /* List<wx_product> products= productRespository.findAll();
+        model.addObject("products",products);
+*/
+        String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+        List<wx_product> products=JsonUtils.handlerRegexJson(json);
+        model.addObject("products",products);
+        Map<String,String> map=new HashMap<>();
+        map.put("openid",openid);
+        model.addObject("user",map);
+        model.setViewName("my_safenumber");
+        return model;
+    }
+       public  void  handlerOther(List<BusinessNumberRecord > records){
+           for(BusinessNumberRecord  record:records){
+               record.setTime(DateUtils.format(record.getValidTime(),"yyyy-MM-dd"));
+           }
+       }
+
+        @SuppressWarnings("all")
+       public  void  handlerList(ModelAndView  model,List<BusinessNumberRecord > records){
+            model.addObject("sum",records.size());
+            int  will=0;
+            int  expired=0;
+            for(BusinessNumberRecord  record:records){
+                record.setIsValid(0);
+                Long   time=record.getValidTime().getTime()/1000;
+                Long   currentTime=System.currentTimeMillis()/1000;
+                Long  result=time-currentTime;
+                if((result)<3*24*60*60&&result>0){
+                    will++;
+                }
+                if(record.getValidTime().getTime()<System.currentTimeMillis()){
+                    expired++;
+                    record.setIsValid(1);
+                }
+                record.setTime(DateUtils.format(record.getValidTime(),"yyyy-MM-dd"));
+
+            }
+            model.addObject("will",will);
+            model.addObject("expired",expired);
+       }
+
+
+}

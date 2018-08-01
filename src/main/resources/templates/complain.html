@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>        
+        <meta charset="utf-8"/>
+        <meta name="Description" content="投诉" />
+        <title>投诉</title>       
+        <meta content="yes" name="apple-mobile-web-app-capable"/>
+        <meta content="yes" name="apple-touch-fullscreen"/>
+        <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"/>
+        <meta content="telephone=no" name="format-detection"/>
+        <link rel="stylesheet" type="text/css" href="../css/safenumber.css" />
+        <script type="text/javascript" src="../js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="../js/flexible.js"></script>
+        <script type="text/javascript" src="../js/flexible_css.js"></script>
+       
+    </head>
+    <body>
+      <div class="wrap">         
+          <div class="f_complain">
+            <img src="images/bindsuccess_03.png"/>
+          </div>
+          <p class="f_complain_submit">投诉已提交</p>
+          <p class="f_complain_receive">我们已收到你的投诉，会尽快处理！</p>
+          <p class="f_bindsuc_share f_notallow_validate">
+            <a href="javascript:forward();">我的安全号</a>
+          </p>
+          <p class="f_bindsuc_sharebj" style="display: none;">填充背景色</p>
+      </div>
+    </body>
+    <script th:inline="javascript">
+         function  forward(){
+             window.location.href="/oauth/admin/OwnerSafeNumber.html";
+         }
+
+    </script>
+</html>

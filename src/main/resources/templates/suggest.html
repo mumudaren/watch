@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>        
+        <meta charset="utf-8"/>
+        <meta name="Description" content="意见反馈" />
+        <title>意见反馈</title>       
+        <meta content="yes" name="apple-mobile-web-app-capable"/>
+        <meta content="yes" name="apple-touch-fullscreen"/>
+        <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"/>
+        <meta content="telephone=no" name="format-detection"/>
+        <link rel="stylesheet" type="text/css" href="../css/safenumber.css" />
+        <script type="text/javascript" src="../js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="../js/safenumber.js"></script>
+        <script type="text/javascript" src="../js/flexible.js"></script>
+        <script type="text/javascript" src="../js/flexible_css.js"></script>
+       
+    </head>
+    <body>
+      <div class="wrap f_404wrap">         
+          <div class="f_suggest_taocan">
+            <span>问题类型</span>
+            <ul>
+              <li class="f_suggest_active" value="1">收到验证码</li>
+              <li value="2">呼叫问题</li>
+              <li value="3">支付／资费</li>
+              <li value="4">号码问题</li>
+            </ul>
+          </div> 
+
+          <div class="f_suggest_content">
+            <ul>
+              <li>
+                <span>意见反馈：</span>
+                <textarea id="textArea" placeholder="我们将为您不断改进！" rows="10"></textarea>
+              </li>
+            </ul>
+          </div>
+
+          <p class="f_bindsuc_share">
+            <a href="javascript:commitMessage();">确认</a>
+          </p>
+          <p class="f_bindsuc_sharebj" style="display: none">填充背景色</p>
+      </div>
+        <script th:inline="javascript" >
+            openid=[[${user.openid}]];
+            function commitMessage(){
+                 var  type=$(".f_suggest_taocan ul").children(".f_suggest_active").val();
+                 var  textArea=$("#textArea").val();
+                $.ajax({
+                    url:'/commitMessage',
+                    contentType:'application/json',
+                    data:{type:type,textArea:textArea,openidKey:openid},
+                    dataType:'JSON'
+                }).done(function(result){
+                    if(result.code==200){
+                         window.location.href="/complain.html";
+                    }
+                })
+            }
+        </script>
+
+
+    </body>     
+</html>

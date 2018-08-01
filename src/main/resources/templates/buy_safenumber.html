@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>        
+        <meta charset="utf-8"/>
+        <meta name="Description" content="购买安全号" />
+        <title>购买安全号</title>
+        <meta content="yes" name="apple-mobile-web-app-capable"/>
+        <meta content="yes" name="apple-touch-fullscreen"/>
+        <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"/>
+        <meta content="telephone=no" name="format-detection"/>
+        <link rel="stylesheet" type="text/css" href="../css/safenumber.css" />
+        <script type="text/javascript" src="../js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="../js/flexible.js"></script>
+        <script type="text/javascript" src="../js/flexible_css.js"></script>
+        <script type="text/javascript" src="../js/safenumber.js"></script>
+        <script type="text/javascript" src="../js/wexinPay.js"></script>
+        <script type="text/javascript" src="../js/util.js"></script>
+    </head>
+    <body>
+      <div class="wrap f_404wrap">         
+          <div class="f_addtelphone">
+            <p>
+              手机号码
+                <input type="tel" id="phone" name=""   />
+                <img src="../images/buynumber_03.png" class="f_addnumber_img"/>
+            </p>
+          </div>
+          <p class="z_safenumberbind">安全号将与输入的号码进行绑定，呼叫安全号手机号将接听来电！</p>
+          <p class="z_buysafenum_seltaocan">选择套餐</p>
+          <div class="f_dayscontent f_buysafenumber_content">
+                  <ul>
+                        <li th:class="${p.productType =='1'?'f_tiyan':p.productType =='2'?'f_discount':p.productType =='3'?'f_sales':''}" class="" th:each="p:${ls}" >
+                            <p class="z_requiredays" th:text="${'有效期'+p.validDay+'天'}"></p>
+                            <p th:text="${'￥'+p.productPrice/(100*1.0)}"></p>
+                            <p style="display: none;" th:text="${p.validDay}"></p>
+                            <p class="z_limits3 z_limits3_active"><del th:text="${'￥'+p.initPrice/(100*1.0)}"></del><span th:text="${p.productLimit==0?'不限次数':'限购'+p.productLimit+'次'}">限购3次</span></p>
+                            <p class="productId" th:text="${p.id}" style="display: none"></p>
+                        </li>
+                  </ul>
+          </div>
+
+          <div class="clearFix"></div>
+
+          <div class="f_addtelphone t_padding_top">
+            <p class="f_weixin t_margin_top">
+              <img src="../images/weixin.png"/>微信支付
+             <!-- <span class="f_arrowleft">></span>-->
+            </p>            
+          </div>
+
+          <p class="f_bindsuc_share f_fastpay t_pay">
+            <a class="fastPay" href="#">立即支付（<em>¥1</em>）</a>
+              <span id="Area" style="display: none;"></span>
+              <span id="validDays" style="display: none;"></span>
+              <span id="productId" style="display: none"></span>
+          </p>
+          <p class="f_bindsuc_sharebj f_fastpay" style="display: none">填充背景色</p>
+          <p class="f_callpay">
+            <img src="../images/question.png" />通话资费
+          </p>
+
+          <div class="f_successwrap" style="display:none;">
+              <div class="f_successlightbox"></div>
+              <span class="z_successtext"></span>
+          </div>
+      </div>
+        <script th:inline="javascript">
+             var openid=[[${user.openid}]];
+            $(function(){
+                 $(".f_dayscontent ul li:eq(0)").trigger('click');
+                 $(".fastPay").click(function(){
+                     var phone=$("#phone").val();
+                     if(!util.validPhone(phone)){
+                         util.showText("不是有效的手机号码!",$(".z_successtext"));
+                         return ;
+                     }
+                     var  val=$("#Area").text();
+                     var  days=$("#validDays").text();
+                     var  productId=$("#productId").text();
+                     var pay={};
+                     pay.openid=openid;
+                     pay.totalFee=val;
+                     pay.phone=phone;
+                     pay.extend=0;
+                     pay.days=days;
+                     pay.uidNumber="";
+                     pay.productId=productId;
+                     var  json=payUtil.payOrder(pay);
+                         if(json.code!=200){
+                            alert(json.msg);
+                            return ;
+                         }else {
+                             json=json.data;
+                         }
+                     if (typeof WeixinJSBridge == "undefined"){
+                         if(document.addEventListener ){
+                             document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
+                         }else if (document.attachEvent){
+                             document.attachEvent('WeixinJSBridgeReady',   onBridgeReady(json));
+                             document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
+                         }
+                     }else{
+                         onBridgeReady(json)
+                     }
+                 });
+            });
+            /** 微信支付  start **/
+            function onBridgeReady(json){
+                WeixinJSBridge.invoke(
+                    'getBrandWCPayRequest',json,
+                    function(res){
+                        if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                            window.location.href="/oauth/admin/OwnerSafeNumber.html";
+                        }else {
+                             // window.location.href="/oauth/admin/OwnerSafeNumber.html";
+                        }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                    }
+                );
+            }
+
+        </script>
+    </body>     
+</html>
