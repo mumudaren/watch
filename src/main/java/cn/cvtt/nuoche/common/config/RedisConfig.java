@@ -15,7 +15,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @date 2018/2/6 11:02
  */
 @Configuration
-@PropertySource("classpath:redis.properties")
+@PropertySource("file:config/redis.properties")
 public class RedisConfig {
 
     @Bean(name = "jedisPool")
