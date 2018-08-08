@@ -114,8 +114,11 @@ public class WxServer {
                     textMessage.setMsgType(MessageUtils.RESP_MESSAGE_TYPE_TEXT);
                     // 将文本消息对象转换成xml
                     /**  先删除 已经存在的用户 再保存**/
-                    BusinessCustomer businessCustomer= cusRespository.findByOpenidEquals(fromUserName);
-                    cusRespository.delete(businessCustomer);
+                    if(cusRespository.findByOpenidEquals(fromUserName)!=null) {
+                        logger.info("user is exits,{}",cusRespository.findByOpenidEquals(fromUserName));
+                        BusinessCustomer businessCustomer = cusRespository.findByOpenidEquals(fromUserName);
+                        cusRespository.delete(businessCustomer);
+                    }
                     BusinessCustomer  cus=new BusinessCustomer();
                     cus.setOpenid(fromUserName);
                     cus.setCreateTime(new Date());

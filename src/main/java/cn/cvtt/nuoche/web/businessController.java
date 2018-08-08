@@ -89,11 +89,13 @@ public class businessController extends  BaseController{
     public  Result   validPhone(String openid,String  code,String phone){
         logger.info("openid"+openid);
         if(StringUtils.isEmpty(code)||StringUtils.isEmpty(phone)){
+            logger.info("ResultMsg:"+ResultMsg.REQUESTPARAMEXCEPTION);
             return  new Result(ResultMsg.REQUESTPARAMEXCEPTION);
         }
         String  key="NUOCHE:"+phone;
         String  redisCode=jedisUtils.get(key,"");
         if(!StringUtils.equals(redisCode,code)){
+            logger.info("ResultMsg:"+ResultMsg.CODENOTMATCH);
             return  new Result(ResultMsg.CODENOTMATCH);
         }
         try {
@@ -102,6 +104,7 @@ public class businessController extends  BaseController{
             businessCusRepository.saveAndFlush(customer);
         }catch (Exception  e){
             e.printStackTrace();
+            logger.info("ResultMsg:"+ResultMsg.WXUSERNOTFOUND);
             return new Result(ResultMsg.WXUSERNOTFOUND);
         }
         return  Result.ok();
