@@ -79,6 +79,7 @@ public class PageController extends  BaseController{
         map.put("numberSub", DateUtils.formatString(record.getSubts(), Constant.DATETEMPLATE));
         map.put("validDate",DateUtils.formatString(record.getValidTime(),Constant.DATETEMPLATE));
         map.put("callRestict",record.getCallrestrict());
+        System.out.println("参数为："+map);
        /* map.put("voiceRecord",callRecordInterface.findVoiceRecordLately(util.getBusinessKey(),smbms,false));
         map.put("callRecord",callRecordInterface.findCallRecordLately(util.getBusinessKey(),smbms,false));*/
         String json=callRecordInterface.findHeard(util.getBusinessKey(),smbms);
@@ -104,6 +105,7 @@ public class PageController extends  BaseController{
             re.put("recordTime",DateUtils.format(child.getDate("ringTime")));
             re.put("recordDuration",DateUtils.formatDuration(child.getIntValue("duration")));
         }
+        System.out.println("号码详情中值为："+re);
         model.addObject("record",re);
         String voiceBusiness=callRecordInterface.findVoiceRecordLately(util.getBusinessKey(),smbms,false);
         obCall= JSONObject.parseObject(voiceBusiness);
