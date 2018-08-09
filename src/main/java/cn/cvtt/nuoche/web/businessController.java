@@ -240,6 +240,7 @@ public class businessController extends  BaseController{
         JSONObject  innerObj=new JSONObject();
         try {
              String json=JSONObject.toJSON(vo).toString();
+            logger.info("callRecordService json is{}:"+json+"business is:{}"+util.getBusinessKey());
              String result=callRecordInterface.saveCallRecord(json,util.getBusinessKey());
              logger.info("resultObj{}:"+result);
             logger.info("arc_95013"+vo.getCall_id());
