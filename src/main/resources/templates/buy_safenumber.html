@@ -55,9 +55,10 @@
               <span id="productId" style="display: none"></span>
           </p>
           <p class="f_bindsuc_sharebj f_fastpay" style="display: none">填充背景色</p>
-          <p class="f_callpay">
-            <img src="../images/question.png" />通话资费
-          </p>
+          <!--通话资费暂时屏蔽-->
+          <!--<p class="f_callpay">-->
+            <!--<img src="../images/question.png" />通话资费-->
+          <!--</p>-->
 
           <div class="f_successwrap" style="display:none;">
               <div class="f_successlightbox"></div>
@@ -71,7 +72,8 @@
                  $(".fastPay").click(function(){
                      var phone=$("#phone").val();
                      if(!util.validPhone(phone)){
-                         util.showText("不是有效的手机号码!",$(".z_successtext"));
+                         //util.showText("不是有效的手机号码!",$(".z_successtext"));
+                         alert("不是有效的手机号码!");
                          return ;
                      }
                      var  val=$("#Area").text();

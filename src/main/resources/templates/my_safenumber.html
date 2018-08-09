@@ -15,8 +15,6 @@
         <script type="text/javascript" th:src="@{/js/safenumber.js}" th:async="yes"></script>
         <script type="text/javascript" th:src="@{/js/util.js}"></script>
         <script type="text/javascript" th:src="@{/js/wexinPay.js}"></script>
-
-       
     </head>
     <body>
       <div class="wrap f_404wrap">
@@ -47,8 +45,7 @@
                   </ul>
                 </div>
             </div>
-        </div>  
-
+        </div>
         <!--选项卡效果-->
          <div class="f_mynumber_tab">
             <ul class="f_mynumber_nav">
@@ -56,8 +53,10 @@
               <li>为ta人购买的</li>
             </ul>
             <ul class="f_mynumber_content">
+                <!--我的-->
               <li>
-                <div>
+                  <!--我的有安全号-->
+                  <div>
                       <div class="f_mynumber_list" th:each="record:${ls}">
                           <div class="z_mynumber_list">
                                 <p>
@@ -74,7 +73,6 @@
                                   <span  th:class="${record.isValid == 1?'z_todatetime z_todatetime_gray':'z_todatetime'}"  class="" th:text="'有效期至:'+${record.time}">有效期至：今天</span>
                                 </p>
                           </div>
-
                           <div class="f_delay_detail">
                                   <span class="z_number_dalay">
                                       <a href="javascript:void(0);" class="number_delay">号码延期</a>
@@ -84,17 +82,17 @@
                                       <span style="display: none;" th:text="${record.smbms}"></span>
                                       <a href="#" class="number_detail">号码详情</a>
                                   </span>
+                                  <span class="numType" style="visibility: hidden" th:text="${record.regexId}">123</span>
                           </div>
                       </div>
-
                   <p class="f_mynumber_time">显示在有效期内及已过期&nbsp;<span>60</span>&nbsp;天内的记录</p>
                   <p class="f_bindsuc_share f_mynumberbtn">
                     <a href="/oauth/base/getNumber.html">购买安全号</a>
                   </p>
                   <p class="f_bindsuc_sharebj" style="display: none">填充背景色</p>
                 </div>
-                <!--暂无安全号-->
-                <div class="f_notnumber" style="display: none;">
+                  <!--我的暂无安全号-->
+                  <div class="f_notnumber" style="display: none;">
                     <p class="z_notnumimg">
                       <img src="images/notnumber_03.png"/>
                     </p>
@@ -104,9 +102,8 @@
                     </p>
                     <p class="f_bindsuc_sharebj">填充背景色</p>
                 </div>
-
               </li>
-
+                <!--他人-->
               <li style="display: none">
                   <div class="f_notnumber" th:style="${other.size() == 0?'':'display:none'}">
                         <p class="z_notnumimg">
@@ -217,9 +214,9 @@
                       <img src="../images/tel.png" />
                   </span>
                   <span class="z_mynumber_telphone" id="phone">13466787750</span>
-                </p>  
+                </p>
                 <p class="z_numdetail_tip">该安全号由<span id="textPhone">134****7750</span>为您提供！</p>
-            </div>            
+            </div>
 
             <p class="z_numdetail_line"></p>
             <div class="z_numdetail_require" >
@@ -365,6 +362,5 @@
             }
 
         </script>
-
     </body>     
 </html>

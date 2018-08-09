@@ -64,7 +64,8 @@ $(function(){
 
 	//点击号码延期选择天数
 	$(".number_delay").click(function(){
-		$(".f_dayscontent ul li:eq(0)").trigger('click');			
+		$(".f_dayscontent ul li:eq(0)").trigger('click');
+        //alert($(".numType").text());
 		$(".f_selectdays").show();
 		var resourceObj=$(this).parent().parent().prev();
         var phone=$(resourceObj).find(".z_mynumber95013").text();
