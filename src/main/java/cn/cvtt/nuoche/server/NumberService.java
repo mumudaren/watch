@@ -21,9 +21,11 @@ public interface NumberService {
      */
      Result bind(BindVo param) throws  IOException;
 
+    Result bindZhiZun(BindVo param)  throws IOException;
+
     Result unbind(String uidnumber) throws IOException;
 
     Result extend(BindVo param) throws IOException;
 
-    Result changeBind(BindVo bindVo) throws IOException;
+//    Result changeBind(BindVo bindVo) throws IOException;
 }

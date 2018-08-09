@@ -69,9 +69,50 @@ public class NumberServiceImpl implements NumberService {
         if (result.contains("error")) {
             return Result.error("绑定失败");
         }
+        logger.info("binding_response:Result.ok");
         return Result.ok(result);
     }
 
+    @Override
+    public Result bindZhiZun(BindVo param) throws IOException {
+        args=JsonUtils.handlerJson(systemParamInterface.getSystemConfigByArgs(1,util.getBusinessKey()));
+        // 请求服务接口
+        String url = args.get("SAFENUMBER_APP_DOMAIN") + "/safenumberservicessm/api/manage/dataManage";
+
+        // 服务接口请求参数
+        Map<String, String> map = new HashMap<>();
+        map.put("msgtype", "binding_Relation");
+        map.put("unitID", args.get("SAFENUMBER_APP_UNITID_ZZ") );
+        map.put("prtms", param.getRegphone());
+        map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
+        map.put("uuidinpartner", "");
+        map.put("validitytime", param.getExpiretime() == null ? "" : param.getExpiretime());
+        map.put("uidType", "0");
+        map.put("callrestrict", param.getCallrestrict() == null ? "" : param.getCallrestrict());
+        map.put("appkey", args.get("SAFENUMBER_APP_KEY_ZZ"));
+        map.put("msgid", "1");
+        map.put("service", "SafeNumber");
+        map.put("ver", "2.0");
+        map.put("ts", DateUtils.format(new Date()));
+        map.put("opuser", args.get("SAFENUMBER_APP_OPUSER"));
+        map.put("opmodule", args.get("SAFENUMBER_APP_OPMODULER"));
+        map.put("sid", ApiSignUtils.signTopRequest(map, args.get("SAFENUMBER_APP_SECRET_ZZ"), "MD5"));
+        StringBuilder sb = new StringBuilder(url + "?");
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            sb.append(e.getKey() + "=" + e.getValue()).append("&");
+        }
+        logger.info("请求绑定接口:{}", sb);
+        String result = HttpClientUtil.doGet(url, map);
+        logger.info("binding_response:{}", result);
+        if(result.equals("504")) {
+            return Result.error("http服务连接失败");
+        }
+        if (result.contains("error")) {
+            return Result.error("绑定失败");
+        }
+        logger.info("binding_response:bindZhiZun.ok");
+        return Result.ok(result);
+    }
     @Override
     public Result unbind(String uidnumber) throws IOException {
         args=JsonUtils.handlerJson(systemParamInterface.getSystemConfigByArgs(1,util.getBusinessKey()));
@@ -145,15 +186,15 @@ public class NumberServiceImpl implements NumberService {
     }
 
 
-    @Override
-    public Result changeBind(BindVo bindVo) throws IOException {
-        // 1. 调用解绑
-        if (unbind(bindVo.getUidnumber()).getCode() != 200) {
-            return Result.error("原绑定关系解绑失败");
-        }
-        // 2. 调用绑定接口
-        logger.info(" calltype>>>>>>>>>>>>>>>>>>>>>>>>:"+bindVo.getCallrestrict());
-        return bind(bindVo);
-    }
+//    @Override
+//    public Result changeBind(BindVo bindVo) throws IOException {
+//        // 1. 调用解绑
+//        if (unbind(bindVo.getUidnumber()).getCode() != 200) {
+//            return Result.error("原绑定关系解绑失败");
+//        }
+//        // 2. 调用绑定接口
+//        logger.info(" calltype>>>>>>>>>>>>>>>>>>>>>>>>:"+bindVo.getCallrestrict());
+//        return bind(bindVo);
+//    }
 
 }

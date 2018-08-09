@@ -143,7 +143,7 @@ public class WxConnect {
                 /** 此处使用锁 保证删除至尊靓号之前同时不能被别的再次绑定*/
                     if(StringUtils.isNotEmpty(flag.get("phone"))&&StringUtils.isNotEmpty(flag.get("uidnumber"))){
                         synchronized (obj){
-                            result=numberService.bind(bind);
+                            result=numberService.bindZhiZun(bind);
                             if(result.getCode()==200){
                                String  json=productInterface.deleteSpeNumber(util.getBusinessKey(),flag.get("uidnumber"));
                                LOGGER.info("绑定靓号result:"+json);
