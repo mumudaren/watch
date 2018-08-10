@@ -147,7 +147,7 @@ public class NumberServiceImpl implements NumberService {
             return Result.error("解绑失败");
         return Result.ok();
     }
-
+    //延期接口
     @Override
     public Result extend(BindVo param) throws IOException {
         args=JsonUtils.handlerJson(systemParamInterface.getSystemConfigByArgs(1,util.getBusinessKey()));
@@ -184,7 +184,43 @@ public class NumberServiceImpl implements NumberService {
         }
         return Result.ok(param.getExpiretime(),result);
     }
-
+    //靓号延期接口
+    @Override
+    public Result extendZhiZun(BindVo param) throws IOException {
+        args=JsonUtils.handlerJson(systemParamInterface.getSystemConfigByArgs(1,util.getBusinessKey()));
+        // 请求服务接口
+        String url = args.get("SAFENUMBER_APP_DOMAIN") + "/safenumberservicessm/api/manage/extendRelation";
+        // 服务接口请求参数
+        Map<String, String> map = new HashMap<>();
+        map.put("msgtype", "extend_Relation");
+        map.put("unitID",args.get("SAFENUMBER_APP_UNITID_ZZ"));
+        map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
+        map.put("uuidinpartner", "");
+        map.put("validitytime", param.getExpiretime());
+        map.put("uidType", "0");
+        map.put("appkey", args.get("SAFENUMBER_APP_KEY_ZZ"));
+        map.put("msgid", "1");
+        map.put("service", "SafeNumber");
+        map.put("ver", "2.0");
+        map.put("ts", DateUtils.format(new Date()));
+        map.put("opuser",  args.get("SAFENUMBER_APP_OPUSER"));
+        map.put("opmodule", args.get("SAFENUMBER_APP_OPMODULER"));
+        map.put("sid", ApiSignUtils.signTopRequest(map, args.get("SAFENUMBER_APP_SECRET_ZZ"), "MD5"));
+        StringBuilder sb = new StringBuilder(url + "?");
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            sb.append(e.getKey() + "=" + e.getValue()).append("&");
+        }
+        logger.info("ZhiZun extend_request:{}", sb);
+        String result = HttpClientUtil.doGet(url, map);
+        logger.info("ZhiZun  extend_response:{}", result);
+        if(result.equals("504")) {
+            return Result.error("ZhiZun  http服务连接失败");
+        }
+        if (result.contains("error")) {
+            return Result.error("靓号延期失败");
+        }
+        return Result.ok(param.getExpiretime(),result);
+    }
 
 //    @Override
 //    public Result changeBind(BindVo bindVo) throws IOException {

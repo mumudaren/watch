@@ -173,22 +173,48 @@ public class WxConnect {
                     businessNumberRecordRepository.save(record);
                 }
             }else if(StringUtils.equals(operateType,"1")){
-                bind.setUidnumber(flag.get("uidnumber"));
-                result=numberService.extend(bind);
-                if(result.getCode()==200){
-                    JSONObject jobj = JSONObject.parseObject(result.getData().toString());
-                    JSONObject res = jobj.getJSONObject("extend_Relation_response");
-                    if (null == res) {
-                        LOGGER.warn(phone+">>>>绑定失败");
+                LOGGER.info("unusual method......");
+                BusinessNumberRecord recordSearch = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                int  sumbms=recordSearch.getRegexId();
+                if(sumbms>0){
+                    LOGGER.info("unusual continue>>>>>>>unusual");
+                    bind.setUidnumber(flag.get("uidnumber"));
+                    result = numberService.extendZhiZun(bind);
+                    if (result.getCode() == 200) {
+                        JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                        JSONObject res = jobj.getJSONObject("extend_Relation_response");
+                        if (null == res) {
+                            LOGGER.warn(phone + ">>>>unusual");
+                        }
+                        BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                        String days = result.getMsg().toString();
+                        Date date = record.getValidTime();
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
+                        calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
+                        record.setValidTime(calendar.getTime());
+                        businessNumberRecordRepository.saveAndFlush(record);
                     }
-                    BusinessNumberRecord  record =businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"),util.getBusinessKey());
-                    String days=result.getMsg().toString();
-                    Date date= record.getValidTime();
-                    Calendar  calendar=Calendar.getInstance();
-                    calendar.setTime(date);
-                    calendar.add(Calendar.DAY_OF_YEAR,Integer.parseInt(days));
-                    record.setValidTime(calendar.getTime());
-                    businessNumberRecordRepository.saveAndFlush(record);
+                }
+                if(sumbms==0){
+                        LOGGER.info("normal continue>>>>>>>usual");
+                        bind.setUidnumber(flag.get("uidnumber"));
+                        result = numberService.extend(bind);
+                        if (result.getCode() == 200) {
+                            JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                            JSONObject res = jobj.getJSONObject("extend_Relation_response");
+                            if (null == res) {
+                                LOGGER.warn(phone + ">>>>普通号续费绑定失败usual");
+                            }
+                            BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                            String days = result.getMsg().toString();
+                            Date date = record.getValidTime();
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
+                            record.setValidTime(calendar.getTime());
+                            businessNumberRecordRepository.saveAndFlush(record);
+                        }
                 }
             }
         }

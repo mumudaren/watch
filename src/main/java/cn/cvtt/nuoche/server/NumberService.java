@@ -27,5 +27,7 @@ public interface NumberService {
 
     Result extend(BindVo param) throws IOException;
 
+    Result extendZhiZun(BindVo param)  throws IOException;
+
 //    Result changeBind(BindVo bindVo) throws IOException;
 }
