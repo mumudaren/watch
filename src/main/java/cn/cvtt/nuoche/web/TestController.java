@@ -95,7 +95,7 @@ public class TestController extends  BaseController {
     @RequestMapping("/OwnerSafeNumber.html")
     public ModelAndView  OwnerSafeNumber( ){
         ModelAndView  model=new ModelAndView();
-        String openid="oIFn90xXM4M-zUayrLI4hxLGZNKA";
+        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
         BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
         String  url= userInfo.getHeadimgurl();
         model.addObject("url",url);
