@@ -5,7 +5,10 @@
 var util={  }
 
 util.validPhone=function (sPhone) {
-    if(/^1[3|4|5|8]\d{9}$/.test(sPhone)){
+    if(/^0\d{2,3}\d{7,8}$/.test(sPhone)){
+        return true;
+    }
+    if(/^1[345789]\d{9}$/.test(sPhone)){
         return true;
     }
     return false;
