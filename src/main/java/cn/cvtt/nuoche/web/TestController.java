@@ -11,9 +11,11 @@ import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
 import cn.cvtt.nuoche.util.JsonUtils;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class TestController {
+public class TestController extends  BaseController {
     @Autowired
     ConfigUtil   util;
     @Autowired
@@ -117,6 +119,7 @@ public class TestController {
         model.setViewName("my_safenumber");
         return model;
     }
+
        public  void  handlerOther(List<BusinessNumberRecord > records){
            for(BusinessNumberRecord  record:records){
                record.setTime(DateUtils.format(record.getValidTime(),"yyyy-MM-dd"));

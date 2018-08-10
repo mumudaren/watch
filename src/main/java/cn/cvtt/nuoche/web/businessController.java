@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -274,6 +275,33 @@ public class businessController extends  BaseController{
         }else {
             return  new Result(ResultMsg.OPERATEXCEPTIN);
         }
+    }
+
+    @RequestMapping("/findOrder")
+    @ResponseBody
+    public JSONObject findOrder(@RequestParam("orderIndex") String orderIndex){
+        JSONObject  obj=new JSONObject();
+        logger.info("receive orderIndex>>>>>>>>>>>>> "+orderIndex);
+        String json= productInterface.findRegexProduct(util.getBusinessKey(),orderIndex);
+        List<wx_product> products=JsonUtils.handlerRegexJson(json);
+        products.forEach((wx_product item) -> {
+            switch (item.getProductType()) {
+                case "1":
+                    item.setProductType("f_tiyan");
+                    break;
+                case "2":
+                    item.setProductType("f_discount");
+                    break;
+                case "3":
+                    item.setProductType("f_sales");
+                    break;
+            }
+        });
+        obj.put("products",products);
+        Map<String,String> map=new HashMap<>();
+        obj.put("user",map);
+        logger.info("return json>>>>>>>>>>>>> "+obj);
+        return obj;
     }
 
 

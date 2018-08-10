@@ -64,12 +64,67 @@ $(function(){
 
 	//点击号码延期选择天数
 	$(".number_delay").click(function(){
-		$(".f_dayscontent ul li:eq(0)").trigger('click');
-        //alert($(".numType").text());
-		$(".f_selectdays").show();
-		var resourceObj=$(this).parent().parent().prev();
+		//触发套餐的点击事件。
+        //alert($(this).parent(".z_number_dalay").parent(".f_delay_detail").text());
+        //alert($(this).parent(".z_number_dalay").parent(".f_delay_detail").children(".numIndex").text());
+		var orderIndex=$(this).parent(".z_number_dalay").parent(".f_delay_detail").children(".numIndex").text();
+		//获取套餐的电话号码等。
+        var resourceObj=$(this).parent().parent().prev();
+        console.log("resourceObj   is:"+resourceObj.attr("class"));
         var phone=$(resourceObj).find(".z_mynumber95013").text();
-		$(".sessionPhone").text(phone);
+        console.log("phone   is:"+phone);
+        $(".sessionPhone").text(phone);
+		//获取套餐
+        $.ajax({
+			url:"/findOrder"
+            ,data:{
+                orderIndex: orderIndex
+            }
+            ,async:false
+            , dataType: 'json'
+            , success: function (data) {
+                var htmlStr = "";
+                var  htmlStrStrart='<ul>';
+                var  htmlStrEnd='</ul>';
+                console.log("ajax success and return data is:"+JSON.stringify(data.products));
+                console.log("data length is:"+JSON.stringify(data.products.length));
+                console.log("data.products.productName is:"+JSON.stringify(data.products[0].productName));
+                $.each(data.products, function (i, value) {
+                    if(value.productLimit="0") {
+                        htmlStr +=
+                            '<li  class="' + value.productType + '">' +
+                            '<p  class="z_requiredays">' + "有效期" + value.validDay + "天" + '</p>' +
+                            '<p >' + "￥" + value.productPrice / (100 * 1.0) + '</p>' +
+                            '<p style="display: none;">' + value.validDay + '</p>' +
+                            '<p class="z_limits3 z_limits3_active">' +
+                            '<del >' + "￥" + value.initPrice / (100 * 1.0) + '</del>' +
+                            '<span>' + "不限次数" + '</span>' +
+                            '</p>' +
+                            '<p class="productId"  style="display: none">' + value.id + '</p>' +
+                            '</li>';
+                    }else{
+                        htmlStr +=
+                            '<li  class="' + value.productType + '">' +
+                            '<p  class="z_requiredays">' + "有效期" + value.validDay + "天" + '</p>' +
+                            '<p >' + "￥" + value.productPrice / (100 * 1.0) + '</p>' +
+                            '<p style="display: none;">' + value.validDay + '</p>' +
+                            '<p class="z_limits3 z_limits3_active">' +
+                            '<del >' + "￥" + value.initPrice / (100 * 1.0) + '</del>' +
+                            '<span>' + "限购" +value.productLimit+"次"+ '</span>' +
+                            '</p>' +
+                            '<p class="productId"  style="display: none">' + value.id + '</p>' +
+                            '</li>';
+                    }
+                });
+                $(".f_selectdays").children(".f_select_content").children(".f_dayscontent").html(htmlStrStrart+htmlStr+htmlStrEnd);
+                //默认选择第一个套餐
+                $(".f_selectdays").show();
+                initialPay();
+                changePay();
+                $(".f_dayscontent ul li:eq(0)").trigger('click');
+            }
+        });
+		//获取套餐结束
 	});
 
 	$(".z_closeimg").click(function(){
