@@ -99,22 +99,22 @@
                                 <ul>
                                     <li>
                                         <label for="allday">
-                                            <input type="radio" id="allday" name="disturb" checked="checked"/>全天免打扰
+                                            <input type="radio" id="allday" name="disturb" checked="checked" value="1"/>全天免打扰
                                         </label>
                                     </li>
                                     <li>
                                         <label for="disturbtime">
-                                            <input type="radio" id="disturbtime" name="disturb"/>免打扰时间为：22:00  —  次日07:00
+                                            <input type="radio" id="disturbtime" name="disturb" value="6"/>免打扰时间为：22:00  —  次日07:00
                                         </label>
                                     </li>
                                     <li>
                                         <label for="allcall">
-                                            <input type="radio" id="allcall" name="disturb"/>全部来电转留言
+                                            <input type="radio" id="allcall" name="disturb" value="6"/>全部来电转留言
                                         </label>
                                     </li>
                                     <li>
                                         <label for="notcall">
-                                            <input type="radio" id="notcall" name="disturb"/>未接来电转留言
+                                            <input type="radio" id="notcall" name="disturb" value="5"/>未接来电转留言
                                         </label>
                                     </li>
                                 </ul>                    
@@ -228,10 +228,12 @@
 
 
         function changeRelation(){
+            var a = $("input[name='disturb']:checked").val();
             var  data={
                 uidNumber:$(".uidNumber").text(),
-                restrict:"6"
+                restrict:a
             };
+            console.log("data restrict is :"+a);
             changeAjax(data);
             $(".z_disturboff").hide();
             $(".z_disturbon").show();
