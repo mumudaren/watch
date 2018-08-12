@@ -9,6 +9,7 @@ import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.ISystemParamInterface;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
+import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessPayRepository;
 import cn.cvtt.nuoche.reponsitory.ISystemFeedBack;
 import cn.cvtt.nuoche.util.*;
@@ -51,6 +52,8 @@ public class businessController extends  BaseController{
     IBusinessCallRecordInterface  callRecordInterface;
     @Autowired
     INumberInterface   numberInterface;
+    @Autowired
+    IBusinessNumberRecordRepository recordRepository;
 
 
 
@@ -260,19 +263,42 @@ public class businessController extends  BaseController{
     }
 
 
-    @RequestMapping("/changeRelation")
+    @RequestMapping("/changeRelationMethod")
     public  Result   changeRelation(String uidNumber ,String restrict){
+        logger.info("changeRelation's method restrict is:");
         if(StringUtils.isEmpty(uidNumber)&&StringUtils.isEmpty(restrict)){
             return   new  Result(ResultMsg.REQUESTPARAMEXCEPTION);
         }
-        String  rest=numberInterface.changeRelation(util.getBusinessKey(),uidNumber,restrict);
+        BusinessNumberRecord  record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(uidNumber,util.getBusinessKey());
+        int  sumbms=record.getRegexId();
+        String  rest="";
+        if(sumbms==0){
+            try {
+                rest = numberInterface.changeRelation(util.getBusinessKey(), uidNumber, restrict);
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.info("changeRelation exception is:"+e.toString());
+                rest = numberInterface.changeRelation(util.getBusinessKey(), uidNumber, restrict);
+            }
+        }
+        if(sumbms>0){
+            try {
+            rest=numberInterface.changeRelationZZ(util.getBusinessKey(),uidNumber,restrict);
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.info("changeRelationZZ exception is:"+e.toString());
+                rest=numberInterface.changeRelationZZ(util.getBusinessKey(),uidNumber,restrict);
+            }
+        }
         String result="";
         JSONObject obj=JSONObject.parseObject(rest);
         if(obj.getIntValue("code")==200){
             JSONObject  childObj=JSONObject.parseObject(obj.getString("msg"));
             result=childObj.getString("change_Relation_response");
+            logger.info("change_Relation_response:"+ResultMsg.OPERATESUCEESS+"\n");
             return  new Result(ResultMsg.OPERATESUCEESS,result);
         }else {
+            logger.info("change_Relation_response:"+ResultMsg.OPERATEXCEPTIN+"\n");
             return  new Result(ResultMsg.OPERATEXCEPTIN);
         }
     }

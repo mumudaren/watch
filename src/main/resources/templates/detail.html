@@ -172,6 +172,7 @@
       <script th:inline="javascript">
           var record=[[${user.recordUnheard}]];
           var voice=[[${user.voiceUnheard}]];
+          var resultChange="changeSuccess";
           var openid=[[${openid}]];
           user =[[${user}]];
         $(function(){
@@ -246,7 +247,6 @@
             };
             console.log("data restrict is :"+a);
             changeAjax(data);
-            var resultChange=changeAjax(data);
             $(".f_opendisturb").hide();
             if(resultChange=="changeSuccess"){
                 $(".z_disturboff").hide();
@@ -268,17 +268,19 @@
         // }
           function  changeAjax(obj){
               $.ajax({
-                  url:"/changeRelation",
+                  url:"/changeRelationMethod",
                   type:"POST",
                   data:obj,
                   dataType:"JSON",
                   success:function (result){
                    if(result.code==200){
                        console.log("change success");
-                       return "changeSuccess";
+                       resultChange="changeSuccess";
+                       console.log("ajax result:"+resultChange);
                    }else{
                        console.log("change fail");
-                       return "changeFail";
+                       resultChange="changeFail";
+                       console.log("ajax result:"+resultChange);
                    }
                   }
               })
@@ -288,11 +290,13 @@
                 uidNumber:$(".uidNumber").text(),
                 restrict:"0"
             };
-            var resultChange=changeAjax(data);
+            changeAjax(data);
             if(resultChange=="changeSuccess"){
+                console.log("resultChange result is"+resultChange);
                 $(".z_disturboff").show();
                 $(".z_disturbon").hide();
             }else{
+                console.log("resultChange result is"+resultChange);
                 $(".z_disturboff").hide();
                 $(".z_disturbon").show();
             }

@@ -20,4 +20,6 @@ public interface INumberInterface {
     @RequestMapping("/safe/changeRelation")
     public  String  changeRelation(@RequestParam("business") String  business,@RequestParam("uidNumber")String  uidNumber,@RequestParam("restrict") String  restrict);
 
+    @RequestMapping("/safe/changeRelationZZ")
+    public  String  changeRelationZZ(@RequestParam("business") String  business,@RequestParam("uidNumber")String  uidNumber,@RequestParam("restrict") String  restrict);
 }
