@@ -35,7 +35,7 @@
                   <li>
                         <p class="z_numberrequire z_disturb">
                             免打扰
-                            <span class="z_disturboff" th:style="${user.callRestict=='6'?'display: none':''}"></span>
+                            <span class="z_disturboff" th:style="${user.callRestict!='0'?'display: none':''}"></span>
                             <span class="z_disturbon" th:style="${user.callRestict=='0'?'display: none':''}"></span>
                         </p>
                   </li>
@@ -45,45 +45,52 @@
           <div class="f_detailcall">
               <p class="z_calltitle">
                   通话记录
-                  <span style="display: none" th:text="${isEmpty==1?0:record.nox}"></span>
+                  <span class="isEmpty" style="display: none" th:text="${isEmpty=='1'?'0':record.nox}"></span>
+                  <!--<span class="isEmpty" style="display: none" th:text="${isEmpty=='1'?'0':'95013'+record.recordNumberNotHide}"></span>-->
                   <a href="#" class="record">更多</a>
-              </p>             
+              </p>
           </div>
           <div class="f_detailcalllist">
                 <ul th:style="${isEmpty==1?'display:none':''}">
                         <li>
                               <div class="f_callleft">
-                                  <span th:text="${isEmpty==1?0:record.recordNumber}"></span><br/>呼入&nbsp;通话时长：<span th:text="${isEmpty==1?0:record.recordDuration}"></span>
+                                  <!--<span th:text="${isEmpty==1?0:record.recordNumber}"></span><br/>呼入&nbsp;通话时长：<span th:text="${isEmpty==1?0:record.recordDuration}"></span>-->
+                                  <span th:text="${isEmpty==1?0:'95013'+record.recordNumberNotHide}"></span><br/>呼入&nbsp;通话时长：<span th:text="${isEmpty==1?0:record.recordDuration}"></span>
                               </div>
                               <div class="f_callright t_topRight">
                                   <span th:text="${isEmpty==1?0:record.recordTime}"></span>
                               </div>
+                            <div class="z_telmessageright f_callimg">
+                                <span>
+                                    <a   th:href="'tel:'+${isEmpty==1?0:'95013'+record.recordNumberNotHide}"><img src="images/message_09.png" /><br />拨打</a>
+                                </span>
+                            </div>
                         </li>
                 </ul>
           </div>
           <div class="f_detailcall">
               <p class="z_calltitle">
                   电话留言
-                  <span style="display: none" th:text="${isEmpty==1?0:voice.voiceNumber}"></span>
+                  <span style="display: none" th:text="${isEmptyVoice==1?0:voice.voiceNumber}"></span>
                   <a href="#" class="voice">更多</a>
               </p>             
           </div>
           <div class="f_detailcalllist">
-                <ul th:style="${isEmpty==1?'display:none':''}" >
+                <ul th:style="${isEmptyVoice==1?'display:none':''}" >
                         <li>
                               <div class="f_callleft">
-                                  来自：<span th:text="${isEmpty==1?0:voice.voiceNumber}"></span>&nbsp;&nbsp; <span th:text="${isEmpty==1?0:voice.recordDuration}"></span>”<br/>
-                                  <span th:text="${isEmpty==1?0:voice.recordTime}"></span>
+                                  来自：<span th:text="${isEmptyVoice==1?0:'95013'+voice.voiceNox}"></span>&nbsp;&nbsp; <span th:text="${isEmpty==1?0:voice.recordDuration}"></span>”<br/>
+                                  <span th:text="${isEmptyVoice==1?0:voice.recordTime}"></span>
                               </div>
                               <div class="z_telmessageright f_callimg">
                                     <span>
                                         <img class="mes" src="images/message_07.png" />
                                         <audio>
-                                            <source th:src="${isEmpty==1?0:voice.voicePath}"/>
+                                            <source th:src="${isEmptyVoice==1?0:voice.voicePath}"/>
                                         </audio>
                                         <br />收听</span>
                                     <span>
-                                        <a   th:href="'tel:'+${isEmpty==1?0:voice.voiceNumber}"><img src="images/message_09.png" /><br />拨打</a>
+                                        <a   th:href="'tel:'+${isEmptyVoice==1?0:'95013'+voice.voiceNox}"><img src="images/message_09.png" /><br />拨打</a>
                                     </span>
                               </div>
                         </li>
@@ -168,6 +175,7 @@
           var openid=[[${openid}]];
           user =[[${user}]];
         $(function(){
+            console.log("isEmpty is"+$(".isEmpty").text());
              $(".record").click(function(){
                  toCallList($(this));
              });
@@ -176,38 +184,41 @@
              });
             initialPay();
             initAudio();
-            $('<style>.recordOther:after{content:"'+record+'";display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>').appendTo('head');
-            $('<style>.voiceOther:after{content:"'+voice+'";display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>').appendTo('head');
+            // $('<style>.recordMore:after{content:'';display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>').appendTo('head');
+            $("<style>.recordOther:after{content:[[${record.size()}]];display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>").appendTo('head');
+            $('<style>.voiceOther:after{content:[[${voice.size()}]];display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>').appendTo('head');
+            console.log('access successful record and message');
             $(".record").removeClass("record").addClass("recordOther");
             $(".voice").removeClass("record").addClass("recordOther");
 
+        });
           $(".z_disturboff").click(function(){
-              $(this).hide();              
+              $(this).hide();
               $(".f_numberdetail").show();
               $(".f_opendisturb").show();
-          })
+          });
           $(".f_detailcofirm a:eq(0)").click(function(){
-                $(".f_opendisturb").hide();
-                $(".z_disturboff").show();
-                $(".z_disturbon").hide();
-          })  
+              $(".f_opendisturb").hide();
+              $(".z_disturboff").show();
+              $(".z_disturbon").hide();
+          });
           $(".z_disturbon").click(function(){
               $(this).hide();
               $(".z_disturboff").show();
               changeRelationOff();
 
-          }) 
+          });
           $(".tb_overflay").click(function(){
-            $(".f_opendisturb").hide();
-            $(".z_disturboff").show();
-            $(".z_disturbon").hide();
-          })
+              $(".f_opendisturb").hide();
+              $(".z_disturboff").show();
+              $(".z_disturbon").hide();
+          });
           $(".z_numberrequire a").click(function(){
-             $(".f_dayscontent ul li:eq(0)").trigger('click');
+              console.log('number delay is click!');
+              $(".f_dayscontent ul li:eq(0)").trigger('click');
+              console.log('f_dayscontent is click!');
               $(".f_selectdays").show();
-          })
-        });
-
+          });
         function  initAudio(){
             $(".mes").click(function(){
                 var player = $(this).next()[0]; /*jquery对象转换成js对象*/
@@ -235,31 +246,60 @@
             };
             console.log("data restrict is :"+a);
             changeAjax(data);
-            $(".z_disturboff").hide();
-            $(".z_disturbon").show();
+            var resultChange=changeAjax(data);
             $(".f_opendisturb").hide();
+            if(resultChange=="changeSuccess"){
+                $(".z_disturboff").hide();
+                $(".z_disturbon").show();
+            }else{
+                $(".z_disturboff").show();
+                $(".z_disturbon").hide();
+            }
         }
-        function  changeAjax(obj){
-            $.ajax({
-                url:"/changeRelation",
-                type:"POST",
-                data:obj,
-                dataType:"JSON"
-            }).done(function(result){
-                console.log(JSON.stringify(result));
-            });
-        }
+        // function  changeAjax(obj){
+        //     $.ajax({
+        //         url:"/changeRelation",
+        //         type:"POST",
+        //         data:obj,
+        //         dataType:"JSON"
+        //     }).done(function(result){
+        //         console.log(JSON.stringify(result));
+        //     });
+        // }
+          function  changeAjax(obj){
+              $.ajax({
+                  url:"/changeRelation",
+                  type:"POST",
+                  data:obj,
+                  dataType:"JSON",
+                  success:function (result){
+                   if(result.code==200){
+                       console.log("change success");
+                       return "changeSuccess";
+                   }else{
+                       console.log("change fail");
+                       return "changeFail";
+                   }
+                  }
+              })
+          }
         function  changeRelationOff(){
             var  data={
                 uidNumber:$(".uidNumber").text(),
                 restrict:"0"
             };
-            changeAjax(data);
-            $(".z_disturboff").show();
-            $(".z_disturbon").hide();
+            var resultChange=changeAjax(data);
+            if(resultChange=="changeSuccess"){
+                $(".z_disturboff").show();
+                $(".z_disturbon").hide();
+            }else{
+                $(".z_disturboff").hide();
+                $(".z_disturbon").show();
+            }
         }
          function  toCallList(obj){
             var number=obj.prev().text();
+            console.log("number is"+number);
             if(number==0){
                 alert("没有通话记录!");
                 return ;

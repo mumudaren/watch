@@ -26,7 +26,9 @@
 
               <li th:each="voice:${voices}">
                   <div class="z_telmessageleft">
-                      <span>来自：<span th:text="${voice.childNumber}"></span></span>&nbsp;&nbsp;<span th:text="${voice.duration}"></span>”<br />
+                      <!--隐藏4位的手机号-->
+                      <!--<span>来自：<span th:text="${voice.childNumber}"></span></span>&nbsp;&nbsp;<span th:text="${voice.duration}"></span>”<br />-->
+                      <span>来自：<span th:text="'95013'+${voice.childA}"></span></span>&nbsp;&nbsp;<span th:text="${voice.duration}"></span>”<br />
                       <span th:text="${voice.recordDate}"></span>
                   </div>
                   <div class="z_telmessageright">
@@ -37,7 +39,7 @@
                             </audio>
                           <br />收听</span>
                       <span>
-                          <a th:href="'tel:'+${voice.childA}"><img src="images/message_09.png" /><br />拨打</a>
+                          <a th:href="'tel:'+'95013'+${voice.childA}"><img src="images/message_09.png" /><br />拨打</a>
                       </span>
                   </div>
               </li>

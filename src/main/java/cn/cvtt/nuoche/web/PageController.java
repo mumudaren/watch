@@ -93,13 +93,15 @@ public class PageController extends  BaseController{
         Map<String,Object>  re=new HashMap<>();
         String callBusiness=callRecordInterface.findCallRecordLately(util.getBusinessKey(),smbms,false);
         JSONObject obCall=JSONObject.parseObject(callBusiness);
-        logger.info("呼叫记录加载:info:"+obCall.get("code"));
+        logger.info("recordLoading:info:"+obCall.get("code"));
         String tt=obCall.getString("data");
         if(StringUtils.isEmpty(tt.replace("[","").replace("]",""))){
             model.addObject("isEmpty",1);
         }else {
             JSONObject child= JSONObject.parseObject(tt.replace("[","").replace("]",""));
+            logger.info("record child is:"+child);
             String  temp=child.getString("a");
+            re.put("recordNumberNotHide",temp);
             re.put("recordNumber",temp.substring(0,3)+"****"+temp.substring(7));
             re.put("nox",child.getString("x"));
             re.put("recordTime",DateUtils.format(child.getDate("ringTime")));
@@ -109,13 +111,20 @@ public class PageController extends  BaseController{
         model.addObject("record",re);
         String voiceBusiness=callRecordInterface.findVoiceRecordLately(util.getBusinessKey(),smbms,false);
         obCall= JSONObject.parseObject(voiceBusiness);
-        logger.info("录音记录加载:info:"+obCall.get("code"));
+        logger.info("voiceLoading:info:"+obCall.get("code"));
         String vv=obCall.getString("data");
+        logger.info("vv is:"+vv);
         re=new HashMap<>();
         if(StringUtils.isEmpty(vv.replace("[","").replace("]",""))){
             model.addObject("isEmpty",1);
         }else {
             JSONObject child= JSONObject.parseObject(vv.replace("[","").replace("]",""));
+            //录音文件路径为空
+            if(StringUtils.isEmpty(child.getString("voicemailFile"))){
+                model.addObject("isEmptyVoice",1);
+                logger.info("voicePath is empty:");
+            }
+            re.put("voiceNox",child.getString("a"));
             re.put("voiceNumber",child.getString("x"));
             re.put("recordTime",DateUtils.format(child.getDate("ringTime")));
             re.put("recordDuration",child.getString("duration"));
@@ -124,6 +133,7 @@ public class PageController extends  BaseController{
             String param=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
             Map<String,String>  maps= JsonUtils.handlerJson(param);
             re.put("voicePath",maps.get("APPLICATION_VOICE_PATH")+dbVoicePath);
+            logger.info("voicePath is:"+re.get("voicePath"));
             /**end*/
         }
         model.addObject("voice",re);
@@ -138,6 +148,7 @@ public class PageController extends  BaseController{
     @RequestMapping("/CallRecord.html")
     public  ModelAndView   toCallList(@RequestParam("number") String smbms){
         ModelAndView modelAndView=new ModelAndView();
+        logger.info("smbms is:"+smbms);
         modelAndView.setViewName("message_call");
         //Map<String,Object>  map=new HashMap<>();
         JSONArray  arrList=new JSONArray();
@@ -145,15 +156,18 @@ public class PageController extends  BaseController{
         JSONObject object=JSONObject.parseObject(json);
         if(StringUtils.isEmpty(object.getString("data"))){
             modelAndView.addObject("isEmpty",1);
+            logger.info("isEmpty"+modelAndView.getModel().get("isEmpty"));
             //map.put("isEmpty",1);
         }else {
             modelAndView.addObject("isEmpty",0);
+            logger.info("isEmpty"+modelAndView.getModel().get("isEmpty"));
             String data=object.getString("data");
             JSONArray arr=JSONArray.parseArray(data);
             for(Object  obj:arr){
                JSONObject o=JSONObject.parseObject(obj.toString());
                Map<String,Object> children=new HashMap<>();
                String temp=o.getString("a");
+                children.put("childNumberRecordNotHide",temp);
                children.put("childNumber",temp.substring(0,3)+"****"+temp.substring(7));
                children.put("recordDate",DateUtils.formatString(o.getDate("ringTime"),Constant.DATETEMPLATE));
                children.put("recordTime",DateUtils.formatTime(o.getDate("ringTime")));
@@ -176,15 +190,19 @@ public class PageController extends  BaseController{
         JSONObject object=JSONObject.parseObject(json);
         if(StringUtils.isEmpty(object.getString("data"))){
             modelAndView.addObject("isEmpty",1);
+            logger.info("isEmpty"+modelAndView.getModel().get("isEmpty"));
            // map.put("isEmpty",1);
         }else {
             modelAndView.addObject("isEmpty",0);
+            logger.info("isEmpty"+modelAndView.getModel().get("isEmpty"));
             String data=object.getString("data");
             JSONArray arr=JSONArray.parseArray(data);
             for(Object  obj:arr){
                 JSONObject o=JSONObject.parseObject(obj.toString());
                 Map<String,Object> children=new HashMap<>();
-                children.put("childNumber", o.getString("x"));
+//                children.put("childNumber", o.getString("x"));
+                String tempVoice=o.getString("a");
+                children.put("childNumber",tempVoice.substring(0,3)+"****"+tempVoice.substring(7));
                 children.put("childA",o.getString("a"));
                 children.put("recordDate",DateUtils.formatString(o.getDate("ringTime"),Constant.DATETEMPLATE)+" "+DateUtils.formatTime(o.getDate("ringTime")));
                 /**  放入留言  start */
