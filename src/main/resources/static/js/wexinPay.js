@@ -5,6 +5,7 @@
  * */
 var  payUtil={
      payOrder:function(pay){
+         console.log("payUtil");
         var  result={};
         $.ajax({
             url:"/createOrder",
