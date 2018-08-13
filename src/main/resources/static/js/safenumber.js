@@ -67,12 +67,18 @@ $(function(){
 		//触发套餐的点击事件。
         //alert($(this).parent(".z_number_dalay").parent(".f_delay_detail").text());
         //alert($(this).parent(".z_number_dalay").parent(".f_delay_detail").children(".numIndex").text());
-		var orderIndex=$(this).parent(".z_number_dalay").parent(".f_delay_detail").children(".numIndex").text();
+        //通过颜色判断是否失效
+        //console.log("isValid:"+$(this).parent(".z_number_dalay").parent(".f_delay_detail").parent(".f_mynumber_list").find(".z_imgkey").hasClass("z_imgkey_gray"));
+		isValidValue=$(this).parent(".z_number_dalay").parent(".f_delay_detail").parent(".f_mynumber_list").find(".z_imgkey").hasClass("z_imgkey_gray");
+		console.log("isValid:"+isValidValue);
+        var orderIndex=$(this).parent(".z_number_dalay").parent(".f_delay_detail").children(".numIndex").text();
+        console.log("orderIndex:"+orderIndex);
 		//获取套餐的电话号码等。
         var resourceObj=$(this).parent().parent().prev();
         console.log("resourceObj   is:"+resourceObj.attr("class"));
         var phone=$(resourceObj).find(".z_mynumber95013").text();
-        console.log("phone   is:"+phone);
+        sendPhone=$(resourceObj).find(".z_mynumber_telphone").text();
+        console.log("95phone   is:"+phone+"send phone is :"+sendPhone);
         $(".sessionPhone").text(phone);
 		//获取套餐
         $.ajax({

@@ -222,6 +222,84 @@ public class NumberServiceImpl implements NumberService {
         return Result.ok(param.getExpiretime(),result);
     }
 
+
+    //普通号解冻接口
+    @Override
+    public Result recoverRelation(BindVo param) throws IOException {
+        args=JsonUtils.handlerJson(systemParamInterface.getSystemConfigByArgs(1,util.getBusinessKey()));
+        // 请求服务接口
+        String url = args.get("SAFENUMBER_APP_DOMAIN") + "/safenumberservicessm/api/manage/recoverRelation";
+        // 服务接口请求参数
+        Map<String, String> map = new HashMap<>();
+        map.put("msgtype", "recover_Relation");
+        map.put("unitID",args.get("SAFENUMBER_APP_UNITID"));
+        //map.put("uuidinpartner", "");
+        map.put("validitytime", param.getExpiretime());
+        //map.put("uidType", "0");
+        map.put("appkey", args.get("SAFENUMBER_APP_KEY"));
+        map.put("msgid", "1");
+        map.put("service", "SafeNumber");
+        map.put("ver", "2.0");
+        map.put("ts", DateUtils.format(new Date()));
+        //map.put("opuser",  args.get("SAFENUMBER_APP_OPUSER"));
+        // map.put("opmodule", args.get("SAFENUMBER_APP_OPMODULER"));
+        map.put("prtms", param.getRegphone());
+        map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
+        map.put("sid", ApiSignUtils.signTopRequest(map, args.get("SAFENUMBER_APP_SECRET"), "MD5"));
+        StringBuilder sb = new StringBuilder(url + "?");
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            sb.append(e.getKey() + "=" + e.getValue()).append("&");
+        }
+        logger.info(" recoverRelation will send:{}", sb);
+        String result = HttpClientUtil.doGet(url, map);
+        logger.info("  recoverRelationZZ result:{}", result);
+        if(result.equals("504")) {
+            return Result.error(" ice_out  http  fail:504");
+        }
+        if (result.contains("error")) {
+            return Result.error(" ice_out fail");
+        }
+        return Result.ok(param.getExpiretime(),result);
+    }
+    //靓号解冻接口
+    @Override
+    public Result recoverRelationZZ(BindVo param) throws IOException {
+        args=JsonUtils.handlerJson(systemParamInterface.getSystemConfigByArgs(1,util.getBusinessKey()));
+        // 请求服务接口
+        String url = args.get("SAFENUMBER_APP_DOMAIN") + "/safenumberservicessm/api/manage/recoverRelation";
+        // 服务接口请求参数
+        Map<String, String> map = new HashMap<>();
+        map.put("msgtype", "recover_Relation");
+        map.put("unitID",args.get("SAFENUMBER_APP_UNITID_ZZ"));
+        //map.put("uuidinpartner", "");
+        map.put("validitytime", param.getExpiretime());
+        //map.put("uidType", "0");
+        map.put("appkey", args.get("SAFENUMBER_APP_KEY_ZZ"));
+        map.put("msgid", "1");
+        map.put("service", "SafeNumber");
+        map.put("ver", "2.0");
+        map.put("ts", DateUtils.format(new Date()));
+        //map.put("opuser",  args.get("SAFENUMBER_APP_OPUSER"));
+       // map.put("opmodule", args.get("SAFENUMBER_APP_OPMODULER"));
+        map.put("prtms", param.getRegphone());
+        map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
+        map.put("sid", ApiSignUtils.signTopRequest(map, args.get("SAFENUMBER_APP_SECRET_ZZ"), "MD5"));
+        StringBuilder sb = new StringBuilder(url + "?");
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            sb.append(e.getKey() + "=" + e.getValue()).append("&");
+        }
+        logger.info("ZhiZun recoverRelationZZ  will send:{}", sb);
+        String result = HttpClientUtil.doGet(url, map);
+        logger.info("ZhiZun  recoverRelationZZ result:{}", result);
+        if(result.equals("504")) {
+            return Result.error("ZhiZun ice_out  http fail:504");
+        }
+        if (result.contains("error")) {
+            return Result.error("ZhiZun ice_out fail");
+        }
+        return Result.ok(param.getExpiretime(),result);
+    }
+
 //    @Override
 //    public Result changeBind(BindVo bindVo) throws IOException {
 //        // 1. 调用解绑

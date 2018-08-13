@@ -119,7 +119,7 @@ public class businessController extends  BaseController{
      * @param   openid  微信支付ID
      * @param    totalFee  金额  分单位
      * @param    phone   绑定的手机号码
-     * @param    extend  1 延期  0 表示新购买
+     * @param    extend  1 延期  0 表示新购买 2 解冻
      *
      *
      * **/
@@ -131,6 +131,7 @@ public class businessController extends  BaseController{
         logger.info("createOrder>>>>>>>>>>>>>>>>>>>>>> start ");
         /** 查看该用户绑定是否超过后台配置的最大绑定次数,超过则不让绑定*/
         String  json=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
+        logger.info("createOrder extend:"+extend);
         Map<String,String>  map=JsonUtils.handlerJson(json);
         String  str=map.get("NUMBER_BIND_LIMIT");
         if(StringUtils.isNotEmpty(str)){

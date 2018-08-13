@@ -103,6 +103,7 @@ public class TestController extends  BaseController {
         List<BusinessNumberRecord>  ls=recordRepository.findAllByPrtmsEqualsAndBusinessIdEqualsOrderBySubtsDesc(userInfo.getPhone(),util.getBusinessKey());
         handlerList(model,ls);
         model.addObject("ls",ls);
+        logger.info("record is:"+ls.get(0).getIsValid().toString());
         List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsOrderBySubtsDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey());
 
         model.addObject("other",other);

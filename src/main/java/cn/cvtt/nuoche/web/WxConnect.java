@@ -134,7 +134,7 @@ public class WxConnect {
             String phone=flag.get("phone");
             String operateType=flag.get("operateType");
             bind.setExpiretime(flag.get("days"));
-            /** 区分绑定还时延期**/
+            /** 区分绑定、延期、解冻operateType,0,1,2**/
             Result  result=null;
             if(StringUtils.equals(operateType,"0")){
                 bind.setRegphone(phone);
@@ -172,7 +172,7 @@ public class WxConnect {
                     record.setRegexId(Integer.parseInt(StringUtils.equals(regexId,"")?"0":regexId));
                     businessNumberRecordRepository.save(record);
                 }
-            }else if(StringUtils.equals(operateType,"1")){
+            } else if(StringUtils.equals(operateType,"1")){
                 LOGGER.info("unusual method......");
                 BusinessNumberRecord recordSearch = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                 int  sumbms=recordSearch.getRegexId();
@@ -215,6 +215,55 @@ public class WxConnect {
                             record.setValidTime(calendar.getTime());
                             businessNumberRecordRepository.saveAndFlush(record);
                         }
+                }
+            }
+            //解冻
+            else if(StringUtils.equals(operateType,"2")){
+                LOGGER.info(" operateType is ice-out. .....");
+                BusinessNumberRecord recordSearch = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                int  sumbms=recordSearch.getRegexId();
+                bind.setRegphone(phone);
+                //靓号
+                if(sumbms>0){
+                    LOGGER.info("unusual number continue>>>>>>>unusual");
+                    bind.setUidnumber(flag.get("uidnumber"));
+                    result = numberService.recoverRelationZZ(bind);
+                    if (result.getCode() == 200) {
+                        JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                        JSONObject res = jobj.getJSONObject("extend_Relation_response");
+                        if (null == res) {
+                            LOGGER.warn(phone + ">>>>unusual number");
+                        }
+                        BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                        String days = result.getMsg().toString();
+                        Date date = record.getValidTime();
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
+                        calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
+                        record.setValidTime(calendar.getTime());
+                        businessNumberRecordRepository.saveAndFlush(record);
+                    }
+                }
+                //普通号
+                if(sumbms==0){
+                    LOGGER.info("ice-out normal method......");
+                    bind.setUidnumber(flag.get("uidnumber"));
+                    result = numberService.recoverRelation(bind);
+                    if (result.getCode() == 200) {
+                        JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                        JSONObject res = jobj.getJSONObject("extend_Relation_response");
+                        if (null == res) {
+                            LOGGER.warn(phone + ">>>>normal number ice-out  fail");
+                        }
+                        BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                        String days = result.getMsg().toString();
+                        Date date = record.getValidTime();
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
+                        calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
+                        record.setValidTime(calendar.getTime());
+                        businessNumberRecordRepository.saveAndFlush(record);
+                    }
                 }
             }
         }

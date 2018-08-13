@@ -120,7 +120,7 @@
                   <div th:style="${other.size() gt 0?'':'display:none'}" class="f_mynumber_list" th:each="record:${other}">
                           <div class="z_mynumber_list">
                               <p>
-                                  <span th:class="${record.isValid == 1?'z_imgkey z_imgkey_gray':'z_imgkey'}">
+                                  <span th:class="${record.isValid == 1?'z_imgkey  z_imgkey_gray':' z_imgkey'}">
                                     <img src="images/key.png" />
                                   </span>
                                   <span th:class="${record.isValid == 1?'z_mynumber95013 z_mynumber95013_gray':'z_mynumber95013'}" th:text="${record.smbms}">950135901234785</span>
@@ -233,6 +233,8 @@
       </div>
         <script th:inline="javascript">
             openid=[[${user.openid}]];
+            var isValidValue;
+            var sendPhone;
             $(function(){
                 $(".number_detail").click(function(){
                     showDetail($(this));
@@ -265,8 +267,15 @@
                     var pay={};
                     pay.openid=openid;
                     pay.totalFee=val;
-                    pay.phone="";
-                    pay.extend=1;
+                    console.log("send phone is："+phone);
+                    pay.phone=sendPhone;
+                    if(isValidValue){
+                        console.log("should ice_out");
+                        pay.extend=2;
+                    }else{
+                        console.log("should extend");
+                        pay.extend=1;
+                    }
                     pay.days=days;
                     pay.uidNumber=phone;
                     pay.productId=productId;
