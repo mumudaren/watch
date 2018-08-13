@@ -11,8 +11,8 @@ public interface IBusinessNumberRecordRepository extends JpaRepository<BusinessN
     List<BusinessNumberRecord>  findAllByUserPhoneEqualsAndBusinessIdEquals(String phone, String business);
     List<BusinessNumberRecord>  findAllByPrtmsEqualsAndBusinessIdEqualsOrderBySubtsDesc(String phone, String business);
     List<BusinessNumberRecord>  findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsOrderBySubtsDesc(String prtms,String UserPhone, String business);
-    BusinessNumberRecord  findBusinessNumberRecordByPrtmsEqualsAndSmbms(String phone, String smbms);
-
+    //BusinessNumberRecord  findBusinessNumberRecordByPrtmsEqualsAndSmbms(String phone, String smbms);
+    //List<BusinessNumberRecord>  findBusinessNumberRecordByPrtmsEqualsAndSmbms(String smbms);
     BusinessNumberRecord  findBySmbmsEqualsAndBusinessIdEquals(String smbms,String business);
 
 

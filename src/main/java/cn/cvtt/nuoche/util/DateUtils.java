@@ -22,6 +22,21 @@ public class DateUtils {
         int second=duration%60;
         return  minute>9?minute+"":"0"+minute+":"+(second>9?second+"":"0"+second);
     }
+    public static String formatDurationNew(int time){
+        String formatTime = null;
+        int sec = time / 1000;
+        int min = sec % 3600 / 60;
+        int hour = sec / 3600;
+        int seconds =  sec % 3600 % 60;
+        if (hour > 0) {
+            formatTime = String.format("%02d:%02d:%02d", hour, min, sec);
+        } else {
+            formatTime = String.format("%02d:%02d", min, seconds);
+        }
+        //Log.i(TAG, "formatTime = " + formatTime);
+
+        return formatTime;
+    }
     public  static  String formatTime(Date date){
         local.set(new SimpleDateFormat("HH:mm:ss"));
         return local.get().format(date);

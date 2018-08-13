@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,10 +106,24 @@ public class PageController extends  BaseController{
             re.put("recordNumber",temp.substring(0,3)+"****"+temp.substring(7));
             re.put("nox",child.getString("x"));
             re.put("recordTime",DateUtils.format(child.getDate("ringTime")));
-            re.put("recordDuration",DateUtils.formatDuration(child.getIntValue("duration")));
+            SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String durationRecord="0";
+            try {
+                String releaseTime=simpleFormat.format(child.getDate("releaseTime"));
+                String answerTime=simpleFormat.format(child.getDate("answerTime"));
+                long from = simpleFormat.parse(releaseTime).getTime();
+                long to = simpleFormat.parse(answerTime).getTime();
+                int duration=(int)(from - to);
+                durationRecord= DateUtils.formatDurationNew(duration);
+                logger.info("durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            re.put("recordDuration",durationRecord);
         }
         System.out.println("号码详情中值为："+re);
         model.addObject("record",re);
+        System.out.println("record is："+model.getModel().get("record"));
         String voiceBusiness=callRecordInterface.findVoiceRecordLately(util.getBusinessKey(),smbms,false);
         obCall= JSONObject.parseObject(voiceBusiness);
         logger.info("voiceLoading:info:"+obCall.get("code"));
@@ -127,7 +142,20 @@ public class PageController extends  BaseController{
             re.put("voiceNox",child.getString("a"));
             re.put("voiceNumber",child.getString("x"));
             re.put("recordTime",DateUtils.format(child.getDate("ringTime")));
-            re.put("recordDuration",child.getString("duration"));
+            SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String durationRecord="0";
+            try {
+                String releaseTime=simpleFormat.format(child.getDate("releaseTime"));
+                String answerTime=simpleFormat.format(child.getDate("answerTime"));
+                long from = simpleFormat.parse(releaseTime).getTime();
+                long to = simpleFormat.parse(answerTime).getTime();
+                int duration=(int)(from - to);
+                durationRecord= DateUtils.formatDurationNew(duration);
+                logger.info("durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            re.put("recordDuration",durationRecord);
             /**  放入留言  start */
             String  dbVoicePath=child.getString("voicemailFile");
             String param=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
@@ -139,6 +167,9 @@ public class PageController extends  BaseController{
         model.addObject("voice",re);
         String productJson= productInterface.findRegexProduct(util.getBusinessKey(),"0");
         List<wx_product> products=JsonUtils.handlerRegexJson(productJson);
+//        //通话记录size
+//        String recordSize=callRecordInterface.findCallRecordCount(util.getBusinessKey(),smbms);
+//        model.addObject("recordSize",recordSize);
         model.addObject("products",products);
         model.addObject("openid",openid);
         return  model;
@@ -171,7 +202,20 @@ public class PageController extends  BaseController{
                children.put("childNumber",temp.substring(0,3)+"****"+temp.substring(7));
                children.put("recordDate",DateUtils.formatString(o.getDate("ringTime"),Constant.DATETEMPLATE));
                children.put("recordTime",DateUtils.formatTime(o.getDate("ringTime")));
-               children.put("duration",DateUtils.formatDuration(o.getIntValue("duration")));
+                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                String durationRecord="0";
+                try {
+                    String releaseTime=simpleFormat.format(o.getDate("releaseTime"));
+                    String answerTime=simpleFormat.format(o.getDate("answerTime"));
+                    long from = simpleFormat.parse(releaseTime).getTime();
+                    long to = simpleFormat.parse(answerTime).getTime();
+                    int duration=(int)(from - to);
+                    durationRecord= DateUtils.formatDurationNew(duration);
+                    logger.info("durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                children.put("duration",durationRecord);
                arrList.add(children);
             }
         }
@@ -211,7 +255,20 @@ public class PageController extends  BaseController{
                 Map<String,String>  maps= JsonUtils.handlerJson(param);
                 children.put("voicePath",maps.get("APPLICATION_VOICE_PATH")+dbVoicePath);
                 /**end*/
-                children.put("duration",o.getIntValue("duration"));
+                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                String durationRecord="0";
+                try {
+                    String releaseTime=simpleFormat.format(o.getDate("releaseTime"));
+                    String answerTime=simpleFormat.format(o.getDate("answerTime"));
+                    long from = simpleFormat.parse(releaseTime).getTime();
+                    long to = simpleFormat.parse(answerTime).getTime();
+                    int duration=(int)(from - to);
+                    durationRecord= DateUtils.formatDurationNew(duration);
+                    logger.info("durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                children.put("duration",durationRecord);
                 arrList.add(children);
             }
         }

@@ -22,4 +22,8 @@ public interface IBusinessCallRecordInterface {
     @RequestMapping("/business/CountBindNumber")
     public  String   CountBindNumber(@RequestParam("business") String business,@RequestParam("phone") String phone);
 
+//    record size
+//@RequestMapping("/business/findCallRecordCount")
+//public  String   findCallRecordCount(@RequestParam("business") String business,@RequestParam("nox")String x);
+
 }

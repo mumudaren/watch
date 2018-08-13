@@ -29,7 +29,7 @@
                   <li>
                         <p class="z_numberrequire">
                             有效期：<span th:text="${user.validDate}"></span>
-                            <a href="javascript:void(0);">号码延期</a>
+                            <!--<a href="javascript:void(0);">号码延期</a>-->
                         </p>
                   </li>
                   <li>
@@ -47,7 +47,7 @@
                   通话记录
                   <span class="isEmpty" style="display: none" th:text="${isEmpty=='1'?'0':record.nox}"></span>
                   <!--<span class="isEmpty" style="display: none" th:text="${isEmpty=='1'?'0':'95013'+record.recordNumberNotHide}"></span>-->
-                  <a href="#" class="record">更多</a>
+                  <a href="#" class="record recordmore">更多</a>
               </p>
           </div>
           <div class="f_detailcalllist">
@@ -72,7 +72,7 @@
               <p class="z_calltitle">
                   电话留言
                   <span style="display: none" th:text="${isEmptyVoice==1?0:voice.voiceNumber}"></span>
-                  <a href="#" class="voice">更多</a>
+                  <a href="#" class="voice voiceMore">更多</a>
               </p>             
           </div>
           <div class="f_detailcalllist">
@@ -177,6 +177,9 @@
           user =[[${user}]];
         $(function(){
             console.log("isEmpty is"+$(".isEmpty").text());
+            console.log("record is:"+[[${record}]]);
+            console.log("recordSize is:"+[[${recordSize}]]);
+            console.log("voiceSize is:"+[[${voice}]]);
              $(".record").click(function(){
                  toCallList($(this));
              });
@@ -186,8 +189,8 @@
             initialPay();
             initAudio();
             // $('<style>.recordMore:after{content:'';display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>').appendTo('head');
-            $("<style>.recordOther:after{content:[[${record.size()}]];display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>").appendTo('head');
-            $('<style>.voiceOther:after{content:[[${voice.size()}]];display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>').appendTo('head');
+            $("<style>.recordMore:after{content:[[${record.size()}]];display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>").appendTo('head');
+            $('<style>.voiceMore:after{content:[[${voice.size()}]];display: inline-block;width: .6rem;height: .6rem;line-height: .6rem;background-color: #f31e66;color: #fff;border-radius: 50%;text-align: center;margin-left: .1rem;}</style>').appendTo('head');
             console.log('access successful record and message');
             $(".record").removeClass("record").addClass("recordOther");
             $(".voice").removeClass("record").addClass("recordOther");
@@ -256,16 +259,7 @@
                 $(".z_disturbon").hide();
             }
         }
-        // function  changeAjax(obj){
-        //     $.ajax({
-        //         url:"/changeRelation",
-        //         type:"POST",
-        //         data:obj,
-        //         dataType:"JSON"
-        //     }).done(function(result){
-        //         console.log(JSON.stringify(result));
-        //     });
-        // }
+
           function  changeAjax(obj){
               $.ajax({
                   url:"/changeRelationMethod",
