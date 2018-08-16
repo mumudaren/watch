@@ -160,7 +160,7 @@ public class NumberServiceImpl implements NumberService {
         map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
         map.put("uuidinpartner", "");
         map.put("validitytime", param.getExpiretime());
-        map.put("uidType", "0");
+
         map.put("appkey", args.get("SAFENUMBER_APP_KEY"));
         map.put("msgid", "1");
         map.put("service", "SafeNumber");
@@ -197,7 +197,7 @@ public class NumberServiceImpl implements NumberService {
         map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
         map.put("uuidinpartner", "");
         map.put("validitytime", param.getExpiretime());
-        map.put("uidType", "0");
+
         map.put("appkey", args.get("SAFENUMBER_APP_KEY_ZZ"));
         map.put("msgid", "1");
         map.put("service", "SafeNumber");
@@ -241,8 +241,8 @@ public class NumberServiceImpl implements NumberService {
         map.put("service", "SafeNumber");
         map.put("ver", "2.0");
         map.put("ts", DateUtils.format(new Date()));
-        //map.put("opuser",  args.get("SAFENUMBER_APP_OPUSER"));
-        // map.put("opmodule", args.get("SAFENUMBER_APP_OPMODULER"));
+        map.put("opuser",  args.get("SAFENUMBER_APP_OPUSER"));
+         map.put("opmodule", args.get("SAFENUMBER_APP_OPMODULER"));
         map.put("prtms", param.getRegphone());
         map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
         map.put("sid", ApiSignUtils.signTopRequest(map, args.get("SAFENUMBER_APP_SECRET"), "MD5"));
@@ -279,8 +279,8 @@ public class NumberServiceImpl implements NumberService {
         map.put("service", "SafeNumber");
         map.put("ver", "2.0");
         map.put("ts", DateUtils.format(new Date()));
-        //map.put("opuser",  args.get("SAFENUMBER_APP_OPUSER"));
-       // map.put("opmodule", args.get("SAFENUMBER_APP_OPMODULER"));
+        map.put("opuser",  args.get("SAFENUMBER_APP_OPUSER"));
+        map.put("opmodule", args.get("SAFENUMBER_APP_OPMODULER"));
         map.put("prtms", param.getRegphone());
         map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
         map.put("sid", ApiSignUtils.signTopRequest(map, args.get("SAFENUMBER_APP_SECRET_ZZ"), "MD5"));

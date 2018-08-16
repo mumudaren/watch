@@ -236,7 +236,7 @@ public class WxConnect {
                         }
                         BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                         String days = result.getMsg().toString();
-                        Date date = record.getValidTime();
+                        Date date = new Date();
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(date);
                         calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
@@ -257,7 +257,7 @@ public class WxConnect {
                         }
                         BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                         String days = result.getMsg().toString();
-                        Date date = record.getValidTime();
+                        Date date = new Date();
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(date);
                         calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
