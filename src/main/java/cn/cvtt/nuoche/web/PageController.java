@@ -98,6 +98,11 @@ public class PageController extends  BaseController{
         String tt=obCall.getString("data");
         if(StringUtils.isEmpty(tt.replace("[","").replace("]",""))){
             model.addObject("isEmpty",1);
+            re.put("recordNumberNotHide","无");
+            re.put("recordNumber","无");
+            re.put("nox","无");
+            re.put("recordTime","无");
+            re.put("recordDuration","无");
         }else {
             JSONObject child= JSONObject.parseObject(tt.replace("[","").replace("]",""));
             logger.info("record child is:"+child);
@@ -132,6 +137,16 @@ public class PageController extends  BaseController{
         re=new HashMap<>();
         if(StringUtils.isEmpty(vv.replace("[","").replace("]",""))){
             model.addObject("isEmpty",1);
+            re.put("recordNumberNotHide","无");
+            re.put("recordNumber","无");
+            re.put("nox","无");
+            re.put("voiceNox","无");
+            re.put("voiceNumber","无");
+            model.addObject("isEmptyVoice",1);
+            re.put("recordTime","无");
+            re.put("recordDuration","无");
+            re.put("voicePath","1");
+
         }else {
             JSONObject child= JSONObject.parseObject(vv.replace("[","").replace("]",""));
             //录音文件路径为空

@@ -298,7 +298,7 @@
          function  toCallList(obj){
             var number=obj.prev().text();
             console.log("number is"+number);
-            if(number==0){
+            if(number==0||number=="无"){
                 alert("没有通话记录!");
                 return ;
             }
@@ -306,7 +306,7 @@
          }
          function  toMessageList(obj){
              var number=obj.prev().text();
-             if(number==0){
+             if(number==0||number=="无"){
                  alert("没有留言记录!");
                  return ;
              }
