@@ -21,13 +21,13 @@
 <body>
 <div class="wrap f_404wrap">
     <p class="f_zhizuninput">
-        <input type="tel" placeholder="请输入需要安全号的手机号码"   name="myNumber"/><br/>
+        <input type="tel" placeholder="请输入需要安全号的手机号码"   name="myNumber" style="width:92%"/><br/>
         安全号将与输入的手机号进行绑定，呼叫安全号手机号将接听来电
     </p>
     <div class="f_tabwrap">
         <div class="f_zhizuntab">
-            <ul>
-                <li th:each="reg:${regexs}" th:text="${reg.value}" th:value="${reg.key}">AABB</li>
+            <ul >
+                <li  th:each="reg:${regexs}" th:text="${reg.value}" th:value="${reg.key}"> AABB</li>
             </ul>
         </div>
         <div class="f_zhizuntabcon">
@@ -35,7 +35,7 @@
                 <li>
                     <div class="f_zhizuntablist">
                         <p class="f_zhizuninput">
-                            <input type="tel" placeholder="请输入需要查找的安全号" class="searchNumber" name=""/>
+                            <input type="tel" placeholder="请输入需要查找的安全号" style="width:97%"  class="searchNumber" name=""/>
                         </p>
                         <dl class="f_95013listnum">
                             <dd th:each="n:${numbers}" th:text="${n.number}">9501378110</dd>

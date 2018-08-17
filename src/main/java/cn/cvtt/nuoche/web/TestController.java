@@ -111,7 +111,9 @@ public class TestController extends  BaseController {
        /* List<wx_product> products= productRespository.findAll();
         model.addObject("products",products);
 */
-        String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+       String businessId=util.getBusinessKey();
+       logger.info("bussinessId is:"+businessId);
+        String json= productInterface.findRegexProduct(businessId,"0");
         List<wx_product> products=JsonUtils.handlerRegexJson(json);
         model.addObject("products",products);
         Map<String,String> map=new HashMap<>();

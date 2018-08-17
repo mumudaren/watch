@@ -55,7 +55,7 @@
                         <li>
                               <div class="f_callleft">
                                   <!--<span th:text="${isEmpty==1?0:record.recordNumber}"></span><br/>呼入&nbsp;通话时长：<span th:text="${isEmpty==1?0:record.recordDuration}"></span>-->
-                                  <span th:text="${isEmpty==1?0:'95013'+record.recordNumberNotHide}"></span><br/>呼入&nbsp;通话时长：<span th:text="${isEmpty==1?0:record.recordDuration}"></span>
+                                  <span th:text="${isEmpty==1?0:record.recordNumberNotHide}"></span><br/>呼入&nbsp;通话时长：<span th:text="${isEmpty==1?0:record.recordDuration}"></span>
                               </div>
                               <div class="f_callright t_topRight">
                                   <span th:text="${isEmpty==1?0:record.recordTime}"></span>
@@ -79,7 +79,7 @@
                 <ul th:style="${isEmptyVoice==1?'display:none':''}" >
                         <li>
                               <div class="f_callleft">
-                                  来自：<span th:text="${isEmptyVoice==1?0:'95013'+voice.voiceNox}"></span>&nbsp;&nbsp; <span th:text="${isEmpty==1?0:voice.recordDuration}"></span>”<br/>
+                                  来自：<span th:text="${isEmptyVoice==1?0:voice.voiceNox}"></span>&nbsp;&nbsp; <span th:text="${isEmpty==1?0:voice.recordDuration}"></span>”<br/>
                                   <span th:text="${isEmptyVoice==1?0:voice.recordTime}"></span>
                               </div>
                               <div class="z_telmessageright f_callimg">
