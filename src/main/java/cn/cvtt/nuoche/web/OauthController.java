@@ -75,14 +75,14 @@ public class OauthController extends  BaseController{
             }
             // 获取用户信息
             SNSUserInfo snsUserInfo = WxUtils.getSNSUserInfo(accessToken, openId);
-            logger.info("snsUserInfo{}"+snsUserInfo.toString());
+            logger.info("[oauth]snsUserInfo{}"+snsUserInfo.toString()+"\n");
             BusinessCustomer  info=businessCusRepository.findByOpenidEquals(openId);
             //WxUserInfo info=userService.findByOpenidEquals(openId);
-            logger.info("WxUserInfo{}"+info.toString());
+            logger.info("[oauth]WxUserInfo{}"+info.toString()+"\n");
             RegisterVo vo= WxUtils.convertEntityVo(snsUserInfo,info);
             // 设置要传递的参数
             modelAndView.addObject("user", vo);
-            logger.info("获取用户信息：" + JsonUtils.objectToJson(snsUserInfo));
+            logger.info("[oauth]access user message：" + JsonUtils.objectToJson(snsUserInfo)+"\n");
         }
         return modelAndView;
     }
@@ -101,14 +101,13 @@ public class OauthController extends  BaseController{
     @RequestMapping("/oauth/base")
     public ModelAndView ouathBase(@RequestParam String code, @RequestParam String state,RedirectAttributes attr) {
         ModelAndView modelAndView = new ModelAndView();
-
         // 获取网页授权access_token
         WeixinOauth2Token weixinOauth2Token = WxUtils.getOauth2AccessToken(code);
         String openId = weixinOauth2Token.getOpenId();
-        logger.info("openid++++"+openId);
+        logger.info("[ouathBase]openid++++"+openId);
         // 判断如果openid为空，则引导用户重新授权
         if (StringUtils.isBlank(openId)) {
-            logger.info("code:{}已使用，转入重新授权。", code);
+            logger.info("[ouathBase]not find openId,error code is:", code+"\n");
             modelAndView.setViewName("redirect:/oauth/base/" + state);
             return modelAndView;
         }
@@ -126,7 +125,7 @@ public class OauthController extends  BaseController{
             if(obj.getIntValue("code")==200){
                 JsonUtils.handlerArgs(products,obj);
             }*/
-            logger.info("json oBJect>>>>>>>>"+products.size());
+            logger.info("[ouathBase]wx_product size is:"+products.size()+"\n");
             modelAndView.addObject("ls",products);
         }
         /****===>>**/
@@ -135,7 +134,7 @@ public class OauthController extends  BaseController{
         // 设置要传递的参数
         modelAndView.addObject("user", map);
         modelAndView.addObject("openid",openId);
-        logger.info("获取用户信息：" + JsonUtils.objectToJson(map));
+        logger.info("[ouathBase] user message：" + JsonUtils.objectToJson(map)+"\n");
         return modelAndView;
     }
 
@@ -147,14 +146,13 @@ public class OauthController extends  BaseController{
      */
     @RequestMapping("/oauth/base/{path}")
     public String redirectBase(@PathVariable String path) {
-        logger.info("util.getUrl"+util.getUrl());
-
+        logger.info("[redirectBase]util.getUrl"+util.getUrl()+"\n");
         String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
         requestUrl = requestUrl.replace("APPID", Constant.APP_ID)
                 .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/base"))
                 .replace("SCOPE", "snsapi_base")
                 .replace("STATE", path);
-        logger.info("requestUrl:::"+requestUrl);
+        logger.info("[redirectBase]requestUrl:::"+requestUrl+"\n");
         return "redirect:" + requestUrl;
     }
 
@@ -173,10 +171,10 @@ public class OauthController extends  BaseController{
         // 获取网页授权access_token
         WeixinOauth2Token weixinOauth2Token = WxUtils.getOauth2AccessToken(code);
         String openId = weixinOauth2Token.getOpenId();
-        logger.info("openid++++"+openId);
+        logger.info("[ouathOther]receive pram openid is:"+openId+"\n");
         // 判断如果openid为空，则引导用户重新授权
         if (StringUtils.isBlank(openId)) {
-            logger.info("code:{}已使用，转入重新授权。", code);
+            logger.info("[ouathOther]openid is empty,error code is:", code);
             modelAndView.setViewName("redirect:/oauth/other/" + state);
             return modelAndView;
         }
@@ -192,7 +190,7 @@ public class OauthController extends  BaseController{
         modelAndView.setViewName(state);
         modelAndView.addObject("user", map);
         modelAndView.addObject("openid",openId);
-        logger.info("获取用户信息：" + JsonUtils.objectToJson(map));
+        logger.info("[ouathOther]user message is：" + JsonUtils.objectToJson(map)+"\n");
         return modelAndView;
     }
 
@@ -204,14 +202,13 @@ public class OauthController extends  BaseController{
      */
     @RequestMapping("/oauth/other/{path}")
     public String redirectOther(@PathVariable String path) {
-        logger.info("util.getUrl"+util.getUrl());
-
+        logger.info("[redirectOther]util.getUrl"+util.getUrl());
         String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
         requestUrl = requestUrl.replace("APPID", Constant.APP_ID)
                 .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/other"))
                 .replace("SCOPE", "snsapi_base")
                 .replace("STATE", path);
-        logger.info("requestUrl:::"+requestUrl);
+        logger.info("[redirectOther]requestUrl:::"+requestUrl);
         return "redirect:" + requestUrl;
     }
 
@@ -228,7 +225,7 @@ public class OauthController extends  BaseController{
                 .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/admin"))
                 .replace("SCOPE", "snsapi_base")
                 .replace("STATE", path);
-        logger.info("requestUrl:::"+requestUrl);
+        logger.info("[redirectOther]requestUrl:::"+requestUrl);
         return "redirect:" + requestUrl;
     }
 
@@ -245,7 +242,7 @@ public class OauthController extends  BaseController{
                 .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/regex"))
                 .replace("SCOPE", "snsapi_base")
                 .replace("STATE", path);
-        logger.info("requestUrl:::"+requestUrl);
+        logger.info("[redirectOther]requestUrl:::"+requestUrl);
         return "redirect:" + requestUrl;
     }
     /**
@@ -313,10 +310,10 @@ public class OauthController extends  BaseController{
         // 获取网页授权access_token
         WeixinOauth2Token weixinOauth2Token = WxUtils.getOauth2AccessToken(code);
         String openId = weixinOauth2Token.getOpenId();
-        logger.info("openid++++"+openId);
+        logger.info("[ouathAdminBase]user openid is:"+openId);
         // 判断如果openid为空，则引导用户重新授权
         if (StringUtils.isBlank(openId)) {
-            logger.info("code:{}已使用，转入重新授权。", code);
+            logger.info("openid is empty,error code is :", code);
             modelAndView.setViewName("redirect:/oauth/admin/" + state);
             return modelAndView;
         }
@@ -332,11 +329,11 @@ public class OauthController extends  BaseController{
         map.put("openid", openId);
         // 设置要传递的参数
         modelAndView.addObject("user", map);
-        logger.info("获取用户信息：" + JsonUtils.objectToJson(map));
+        logger.info("[ouathAdminBase]access user message：" + JsonUtils.objectToJson(map));
         BusinessCustomer  cus=businessCusRepository.findByOpenidEquals(openId);
        // WxUserInfo  wxuser=userRepository.findByOpenidEquals(openId);
         String regphone=cus.getPhone();
-        logger.info(regphone+" =>>>> "+util.getBusinessKey());
+        logger.info("[ouathAdminBase]"+regphone+" =>>>> "+util.getBusinessKey());
         List<BusinessNumberRecord> records=recordRepository.findAllByUserPhoneEqualsAndBusinessIdEquals(regphone,util.getBusinessKey());
         if(records.size()<1){
             modelAndView.setViewName("buy_safenumber");
@@ -370,7 +367,7 @@ public class OauthController extends  BaseController{
             if(obj.getIntValue("code")==200){
                 JsonUtils.handlerArgs(products,obj);
             }*/
-            logger.info("products>>>>>>>>>"+products.size());
+            logger.info("[ouathAdminBase]products size is:"+products.size());
             modelAndView.addObject("products",products);
         }
 

@@ -49,7 +49,7 @@ public class PageController extends  BaseController{
      public ModelAndView  getNumber(@ModelAttribute("openid") String openid){
          ModelAndView  model=new ModelAndView();
          openid="oIFn90xXM4M-zUayrLI4hxLGZNKA";
-         logger.info("openid+++++"+openid);
+         logger.info("[getNumber]openid is:"+openid);
          BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openid);
          if(customer!=null){
              model.setViewName("buy_safenumber");
@@ -82,7 +82,7 @@ public class PageController extends  BaseController{
         map.put("numberSub", DateUtils.formatString(record.getSubts(), Constant.DATETEMPLATE));
         map.put("validDate",DateUtils.formatString(record.getValidTime(),Constant.DATETEMPLATE));
         map.put("callRestict",record.getCallrestrict());
-        System.out.println("参数为："+map);
+        logger.info("[toDetail]Prams is:"+map);
        /* map.put("voiceRecord",callRecordInterface.findVoiceRecordLately(util.getBusinessKey(),smbms,false));
         map.put("callRecord",callRecordInterface.findCallRecordLately(util.getBusinessKey(),smbms,false));*/
         String json=callRecordInterface.findHeard(util.getBusinessKey(),smbms);
@@ -96,7 +96,7 @@ public class PageController extends  BaseController{
         Map<String,Object>  re=new HashMap<>();
         String callBusiness=callRecordInterface.findCallRecordLately(util.getBusinessKey(),smbms,false);
         JSONObject obCall=JSONObject.parseObject(callBusiness);
-        logger.info("recordLoading:info:"+obCall.get("code"));
+        logger.info("[toDetail]recordLoading:info:"+obCall.get("code"));
         String tt=obCall.getString("data");
         if(StringUtils.isEmpty(tt.replace("[","").replace("]",""))){
             model.addObject("isEmpty",1);
@@ -107,7 +107,7 @@ public class PageController extends  BaseController{
             re.put("recordDuration","无");
         }else {
             JSONObject child= JSONObject.parseObject(tt.replace("[","").replace("]",""));
-            logger.info("record child is:"+child);
+            logger.info("[toDetail]record child is:"+child+"\n");
             String  temp=child.getString("a");
             re.put("recordNumberNotHide",temp);
             re.put("recordNumber",temp.substring(0,3)+"****"+temp.substring(7));
@@ -122,20 +122,18 @@ public class PageController extends  BaseController{
                 long to = simpleFormat.parse(answerTime).getTime();
                 int duration=(int)(from - to);
                 durationRecord= DateUtils.formatDurationNew(duration);
-                logger.info("durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
+                logger.info("[toDetail] durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration)+"\n");
             } catch (Exception e) {
                 e.printStackTrace();
             }
             re.put("recordDuration",durationRecord);
         }
-        System.out.println("号码详情中值为："+re);
         model.addObject("record",re);
-        System.out.println("record is："+model.getModel().get("record"));
         String voiceBusiness=callRecordInterface.findVoiceRecordLately(util.getBusinessKey(),smbms,false);
         obCall= JSONObject.parseObject(voiceBusiness);
-        logger.info("voiceLoading:info:"+obCall.get("code"));
+        logger.info("[toDetail]voiceLoading:info:"+obCall.get("code")+"\n");
         String vv=obCall.getString("data");
-        logger.info("vv is:"+vv);
+        logger.info("[toDetail]vv is:"+vv+"\n");
         re=new HashMap<>();
         if(StringUtils.isEmpty(vv.replace("[","").replace("]",""))){
             model.addObject("isEmpty",1);
@@ -154,7 +152,7 @@ public class PageController extends  BaseController{
             //录音文件路径为空
             if(StringUtils.isEmpty(child.getString("voicemailFile"))){
                 model.addObject("isEmptyVoice",1);
-                logger.info("voicePath is empty:");
+                logger.info("[toDetail]voicePath is empty:"+"\n");
             }
             re.put("voiceNox",child.getString("a"));
             re.put("voiceNumber",child.getString("x"));
@@ -168,7 +166,7 @@ public class PageController extends  BaseController{
                 long to = simpleFormat.parse(answerTime).getTime();
                 int duration=(int)(from - to);
                 durationRecord= DateUtils.formatDurationNew(duration);
-                logger.info("durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
+                logger.info("[toDetail]durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration)+"\n");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -178,7 +176,7 @@ public class PageController extends  BaseController{
             String param=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
             Map<String,String>  maps= JsonUtils.handlerJson(param);
             re.put("voicePath",maps.get("APPLICATION_VOICE_PATH")+dbVoicePath);
-            logger.info("voicePath is:"+re.get("voicePath"));
+            logger.info("[toDetail]voicePath is:"+re.get("voicePath"));
             /**end*/
         }
         model.addObject("voice",re);
@@ -196,7 +194,7 @@ public class PageController extends  BaseController{
     @RequestMapping("/CallRecord.html")
     public  ModelAndView   toCallList(@RequestParam("number") String smbms){
         ModelAndView modelAndView=new ModelAndView();
-        logger.info("smbms is:"+smbms);
+        logger.info("[toDetail]smbms is:"+smbms);
         modelAndView.setViewName("message_call");
         //Map<String,Object>  map=new HashMap<>();
         JSONArray  arrList=new JSONArray();
@@ -204,11 +202,11 @@ public class PageController extends  BaseController{
         JSONObject object=JSONObject.parseObject(json);
         if(StringUtils.isEmpty(object.getString("data"))){
             modelAndView.addObject("isEmpty",1);
-            logger.info("isEmpty"+modelAndView.getModel().get("isEmpty"));
+            logger.info("[toDetail]isEmpty"+modelAndView.getModel().get("isEmpty"));
             //map.put("isEmpty",1);
         }else {
             modelAndView.addObject("isEmpty",0);
-            logger.info("isEmpty"+modelAndView.getModel().get("isEmpty"));
+            logger.info("[toDetail]isEmpty"+modelAndView.getModel().get("isEmpty"));
             String data=object.getString("data");
             JSONArray arr=JSONArray.parseArray(data);
             for(Object  obj:arr){
@@ -228,7 +226,7 @@ public class PageController extends  BaseController{
                     long to = simpleFormat.parse(answerTime).getTime();
                     int duration=(int)(from - to);
                     durationRecord= DateUtils.formatDurationNew(duration);
-                    logger.info("durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
+                    logger.info("[toDetail]durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -251,11 +249,11 @@ public class PageController extends  BaseController{
         JSONObject object=JSONObject.parseObject(json);
         if(StringUtils.isEmpty(object.getString("data"))){
             modelAndView.addObject("isEmpty",1);
-            logger.info("isEmpty"+modelAndView.getModel().get("isEmpty"));
+            logger.info("[toDetail]isEmpty"+modelAndView.getModel().get("isEmpty"));
            // map.put("isEmpty",1);
         }else {
             modelAndView.addObject("isEmpty",0);
-            logger.info("isEmpty"+modelAndView.getModel().get("isEmpty"));
+            logger.info("[toDetail]isEmpty"+modelAndView.getModel().get("isEmpty"));
             String data=object.getString("data");
             JSONArray arr=JSONArray.parseArray(data);
             for(Object  obj:arr){
@@ -281,7 +279,7 @@ public class PageController extends  BaseController{
                     long to = simpleFormat.parse(answerTime).getTime();
                     int duration=(int)(from - to);
                     durationRecord= DateUtils.formatDurationNew(duration);
-                    logger.info("durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
+                    logger.info("[toDetail]durationRecord formatTime  is:"+DateUtils.formatDurationNew(duration));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

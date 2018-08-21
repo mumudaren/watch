@@ -65,14 +65,12 @@ public class WxConnect {
         String timesStamp = weChat.getTimestamp();
         String nonce = weChat.getNonce();
         String enchostr = weChat.getEchostr();
-        System.out.println("wechat:"+weChat.toString());
         // 验证签名
         if (SignUtil.validateSigniture(signature, timesStamp, nonce)) {
-            LOGGER.info("－－－－－接入成功－－－－－－");
+            LOGGER.info("[wechat connect]validateSigniture signature , timesStamp ,nonce is right!"+"\n");
             return enchostr;
         } else {
-            LOGGER.warn("不是微信服务器发来的消息，请小心！");
-
+            LOGGER.warn("[wechat connect]Pay Attention!!!!the method is not come from wechat sever!!!!"+"\n");
             return null;
         }
     }
@@ -91,10 +89,10 @@ public class WxConnect {
         response.setCharacterEncoding("UTF-8");
         Map<String, String> requestMap = MessageUtils.parseXml(request);
 
-        LOGGER.info("remote_ip:{} request_param:{}",
+        LOGGER.info("[eventHandler] parseXml from WeChat. remote_ip:{} request_param:{}",
                 request.getRemoteHost(), JsonUtils.objectToJson(requestMap));
         String xmlResp = wxServer.wxHandler(requestMap);
-        LOGGER.info("response:{}", xmlResp);
+        LOGGER.info("[eventHandler]response:{}", xmlResp+"\n");
         PrintWriter out = response.getWriter();
         out.print(xmlResp);
         out.close();
@@ -116,7 +114,7 @@ public class WxConnect {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         Map<String, String> requestMap = MessageUtils.parseXml(request);
-        LOGGER.info("requestMap:{}" +requestMap);
+        LOGGER.info("[paySuccess]parseXml from WeChat. requestMap is:{}" +requestMap+"\n");
        // payService.savePayOrderInfo(requestMap);
         /** 因为微信推送的的重入性,可能导致重入多次延期,故加上在redis上加入版本号 解决*/
         String trade=jedisUtils.get("nuoche:expire:"+requestMap.get("transaction_id"),"");
@@ -146,19 +144,19 @@ public class WxConnect {
                             result=numberService.bindZhiZun(bind);
                             if(result.getCode()==200){
                                String  json=productInterface.deleteSpeNumber(util.getBusinessKey(),flag.get("uidnumber"));
-                               LOGGER.info("绑定靓号result:"+json);
+                               LOGGER.info("[paySuccess]bind ZhiZun number is success and result:"+json+"\n");
                                regexId=JsonUtils.handlerNumberReturnRegexJson(json);
                             }
                         }
                     }else {
                         result=numberService.bind(bind);
-                        LOGGER.info("普通绑定result:"+result);
+                        LOGGER.info("[paySuccess]bind usual number is success and result:"+result+"\n");
                     }
                 if(result.getCode()==200){
                     JSONObject jobj = JSONObject.parseObject(result.getData().toString());
                     JSONObject res = jobj.getJSONObject("binding_Relation_response");
                     if (null == res) {
-                        LOGGER.warn(phone+">>>>绑定失败");
+                        LOGGER.warn("[paySuccess]"+phone+" bind wrong."+"\n");
                     }
                     BusinessNumberRecord  record=new BusinessNumberRecord();
                     record.setBusinessId(util.getBusinessKey());
@@ -173,18 +171,18 @@ public class WxConnect {
                     businessNumberRecordRepository.save(record);
                 }
             } else if(StringUtils.equals(operateType,"1")){
-                LOGGER.info("unusual method......");
+                LOGGER.info("[paySuccess]operateType is extend number......");
                 BusinessNumberRecord recordSearch = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                 int  sumbms=recordSearch.getRegexId();
                 if(sumbms>0){
-                    LOGGER.info("unusual continue>>>>>>>unusual");
+                    LOGGER.info("[paySuccess]number type is ZhiZun."+"\n");
                     bind.setUidnumber(flag.get("uidnumber"));
                     result = numberService.extendZhiZun(bind);
                     if (result.getCode() == 200) {
                         JSONObject jobj = JSONObject.parseObject(result.getData().toString());
                         JSONObject res = jobj.getJSONObject("extend_Relation_response");
                         if (null == res) {
-                            LOGGER.warn(phone + ">>>>unusual");
+                            LOGGER.warn("[paySuccess]"+phone + "ZhiZun bind wrong"+"\n");
                         }
                         BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                         String days = result.getMsg().toString();
@@ -197,14 +195,14 @@ public class WxConnect {
                     }
                 }
                 if(sumbms==0){
-                        LOGGER.info("normal continue>>>>>>>usual");
+                    LOGGER.info("[paySuccess]number type is usual."+"\n");
                         bind.setUidnumber(flag.get("uidnumber"));
                         result = numberService.extend(bind);
                         if (result.getCode() == 200) {
                             JSONObject jobj = JSONObject.parseObject(result.getData().toString());
                             JSONObject res = jobj.getJSONObject("extend_Relation_response");
                             if (null == res) {
-                                LOGGER.warn(phone + ">>>>普通号续费绑定失败usual");
+                                LOGGER.warn("[paySuccess]"+phone + "usual bind wrong"+"\n");
                             }
                             BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                             String days = result.getMsg().toString();
@@ -219,20 +217,20 @@ public class WxConnect {
             }
             //解冻
             else if(StringUtils.equals(operateType,"2")){
-                LOGGER.info(" operateType is ice-out. .....");
+                LOGGER.info("[paySuccess] operateType is ice-out. .....");
                 BusinessNumberRecord recordSearch = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                 int  sumbms=recordSearch.getRegexId();
                 bind.setRegphone(phone);
                 //靓号
                 if(sumbms>0){
-                    LOGGER.info("unusual number continue>>>>>>>unusual");
+                    LOGGER.info("[paySuccess]ZhiZun number is going to ice-out "+"\n");
                     bind.setUidnumber(flag.get("uidnumber"));
                     result = numberService.recoverRelationZZ(bind);
                     if (result.getCode() == 200) {
                         JSONObject jobj = JSONObject.parseObject(result.getData().toString());
                         JSONObject res = jobj.getJSONObject("extend_Relation_response");
                         if (null == res) {
-                            LOGGER.warn(phone + ">>>>unusual number");
+                            LOGGER.warn("[paySuccess]"+phone + " ZhiZun number ice-out wrong"+"\n");
                         }
                         BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                         String days = result.getMsg().toString();
@@ -246,14 +244,14 @@ public class WxConnect {
                 }
                 //普通号
                 if(sumbms==0){
-                    LOGGER.info("ice-out normal method......");
+                    LOGGER.info("[paySuccess]ice-out normal method......"+"\n");
                     bind.setUidnumber(flag.get("uidnumber"));
                     result = numberService.recoverRelation(bind);
                     if (result.getCode() == 200) {
                         JSONObject jobj = JSONObject.parseObject(result.getData().toString());
                         JSONObject res = jobj.getJSONObject("extend_Relation_response");
                         if (null == res) {
-                            LOGGER.warn(phone + ">>>>normal number ice-out  fail");
+                            LOGGER.warn("[paySuccess]"+phone + ">>>>normal number ice-out  fail"+"\n");
                         }
                         BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                         String days = result.getMsg().toString();
@@ -282,7 +280,7 @@ public class WxConnect {
     public  Map<String,String>  savePayOrderInfo(Map<String, String> info){
         String openid=info.get("openid");
         String out_trade_no=info.get("out_trade_no");
-        LOGGER.info("openid:"+openid);
+        LOGGER.info("[savePayOrderInfo]received prams openid is:"+openid+"\n");
         businessPayNotify  order=payRepository.findByOpenidEqualsAndOutTradeNo(openid,out_trade_no);
         String  return_code=info.get("return_code");
         order.setOpenid(openid);
