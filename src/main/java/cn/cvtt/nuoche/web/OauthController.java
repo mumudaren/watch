@@ -258,16 +258,17 @@ public class OauthController extends  BaseController{
         // 获取网页授权access_token
         WeixinOauth2Token weixinOauth2Token = WxUtils.getOauth2AccessToken(code);
         String openId = weixinOauth2Token.getOpenId();
-        logger.info("openid++++"+openId);
+        logger.info("[ouathRegexBase]user openid is:"+openId);
         // 判断如果openid为空，则引导用户重新授权
         if (StringUtils.isBlank(openId)) {
-            logger.info("code:{}已使用，转入重新授权。", code);
+            logger.info("[ouathRegexBase]openId is empty and code is:", code);
             modelAndView.setViewName("redirect:/oauth/regex/" + state);
             return modelAndView;
         }
         /***==> 先判断当前用户是否绑定手机号,如果没有则跳转绑定页面*/
         BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openId);
         if(customer==null||StringUtils.isEmpty(customer.getPhone())){
+            logger.info("[ouathRegexBase]access openid but sever dont have this data .customer is empty.so return validate_tel.html");
             modelAndView.setViewName("validate_tel");
             modelAndView.addObject("openid",openId);
             return  modelAndView;
