@@ -13,6 +13,8 @@ import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
 import cn.cvtt.nuoche.util.*;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +47,7 @@ public class OauthController extends  BaseController{
     IBusinessCusRepository  businessCusRepository;
     @Autowired
     IRegexInterface  regexInterface;
-
+    private static final Logger logger = LoggerFactory.getLogger(OauthController.class);
     /**
      * 获取网页授权用户信息
      * @param code

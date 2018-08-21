@@ -15,6 +15,8 @@ import cn.cvtt.nuoche.util.JsonUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,7 +43,7 @@ public class PageController extends  BaseController{
     IBusinessNumberRecordRepository  recordRepository;
     @Autowired
     IBusinessCallRecordInterface  callRecordInterface;
-
+    private static final Logger logger = LoggerFactory.getLogger(PageController.class);
      @SuppressWarnings("all")
      @RequestMapping("/getNumber")
      public ModelAndView  getNumber(@ModelAttribute("openid") String openid){
