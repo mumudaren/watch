@@ -63,7 +63,7 @@ public class businessController extends  BaseController{
     @ResponseBody
     public  Result  sendCode(String openid,String phone){
         String json=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
-        logger.info("webService:json="+json);
+        logger.info("sendCode method：getSystemConfig By Group and businessKey ,return json="+json);
         Map<String,String> map= JsonUtils.handlerJson(json);
         String code= SmsValidateUtils.randomCode(1111,9999);
         // 检查该手机号当天短信是否超出限制
@@ -93,15 +93,15 @@ public class businessController extends  BaseController{
     @ResponseBody
     @LogManager(description ="validPhone")
     public  Result   validPhone(String openid,String  code,String phone){
-        logger.info("openid"+openid);
+        logger.info("validPhone method:validPhone receive  openid is:"+openid);
         if(StringUtils.isEmpty(code)||StringUtils.isEmpty(phone)){
-            logger.info("ResultMsg:"+ResultMsg.REQUESTPARAMEXCEPTION);
+            logger.info("validPhone method:code or phone is empty.So ResultMsg is:"+ResultMsg.REQUESTPARAMEXCEPTION);
             return  new Result(ResultMsg.REQUESTPARAMEXCEPTION);
         }
         String  key="NUOCHE:"+phone;
         String  redisCode=jedisUtils.get(key,"");
         if(!StringUtils.equals(redisCode,code)){
-            logger.info("ResultMsg:"+ResultMsg.CODENOTMATCH);
+            logger.info("validPhone method:code and phone is not equal. So ResultMsg is:"+ResultMsg.CODENOTMATCH);
             return  new Result(ResultMsg.CODENOTMATCH);
         }
         try {
@@ -110,7 +110,7 @@ public class businessController extends  BaseController{
             businessCusRepository.saveAndFlush(customer);
         }catch (Exception  e){
             e.printStackTrace();
-            logger.info("ResultMsg:"+ResultMsg.WXUSERNOTFOUND);
+            logger.info("validPhone method:There is an error when find customer by openid.So ResultMsg:"+ResultMsg.WXUSERNOTFOUND);
             return new Result(ResultMsg.WXUSERNOTFOUND);
         }
         return  Result.ok();
@@ -130,10 +130,10 @@ public class businessController extends  BaseController{
     @ResponseBody
     @LogManager(description = "createOrder")
     public Result createGenerateOrder(@RequestParam("openid") String openid, @RequestParam("totalFee") String totalFee,@RequestParam("phone") String  phone,@RequestParam("uidNumber")  String uidNumber, @RequestParam("extend") String extend,@RequestParam("days") String days,@RequestParam("productId") Integer productId, HttpServletRequest request){
-        logger.info("createOrder>>>>>>>>>>>>>>>>>>>>>> start ");
+        logger.info("create Wechat Order method: "+"\n");
         /** 查看该用户绑定是否超过后台配置的最大绑定次数,超过则不让绑定*/
         String  json=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
-        logger.info("createOrder extend:"+extend);
+        logger.info("[createOrder method]:received RequestParam extend is:"+extend+"\n");
         Map<String,String>  map=JsonUtils.handlerJson(json);
         String  str=map.get("NUMBER_BIND_LIMIT");
         if(StringUtils.isNotEmpty(str)){
@@ -169,7 +169,7 @@ public class businessController extends  BaseController{
         totalFee=totalFee.substring(1);
         double  Fee=Double.parseDouble(totalFee)*100;
         Result  pojo=new Result();
-        logger.info("{}{}"+totalFee);
+        logger.info("[create Wechat Order method],request totalFee is: "+totalFee+"\n");
         String  response="";
         String  noId= UUID.randomUUID().toString().replace("-","");
         try {
@@ -177,10 +177,10 @@ public class businessController extends  BaseController{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info("response {}"+response);
+        logger.info("[createOrder method]:WechatSignGenerator's response is:"+response+"\n");
         /** 根据生成的订单信息返回wexin支付的对象  */
         JSONObject obj= WechatSignGenerator.getPayRequest(response);
-        logger.info("objResponse>>>"+obj.toJSONString());
+        logger.info("[createOrder method] WechatSignGenerator's json response is:"+obj+"\n");
         if(!(Boolean)obj.get("status")){
             pojo.setCode(500);
             pojo.error(obj.get("msg").toString());
@@ -193,12 +193,11 @@ public class businessController extends  BaseController{
         pay.setCreateTime(new Date());
         pay.setOutTradeNo(noId);
         pay.setOperateType(extend);
-        logger.info("days:>>>>>>>>>>>>>>>>>"+days);
         pay.setDays(days);
         pay.setUidNumber(uidNumber);
         payRepository.save(pay);
         pojo.setData(obj);
-        logger.info("Result:"+pojo.toString());
+        logger.info("[createOrder method]just payRepository.save(pay),fianlly return pojo Result is:"+pojo.toString()+"\n");
         return   pojo;
     }
 
@@ -206,7 +205,7 @@ public class businessController extends  BaseController{
     @RequestMapping("/commitMessage")
     public  Result   commitMessage(String  type,String textArea,String openidKey){
         BusinessCustomer user=businessCusRepository.findByOpenidEquals(openidKey);
-        logger.info("userToString:"+user.toString());
+        logger.info("[commitMessage method]get user by openidKey.user is: "+user.toString()+"\n");
         SystemFeedBack  feedBack=new SystemFeedBack();
         feedBack.setContent(textArea);
         feedBack.setCreateTime(new Date());
@@ -242,20 +241,20 @@ public class businessController extends  BaseController{
     @RequestMapping("/callRecordService")
     @ResponseBody
     public  JSONObject  CallManager(CallReleaseVo vo){
-        logger.info("CallRecord:{}"+vo.toString());
+        logger.info("[callRecordService]received Pram CallRecord vo is:{}"+vo.toString()+"\n");
         JSONObject  obj=new JSONObject();
         JSONObject  innerObj=new JSONObject();
         try {
              String json=JSONObject.toJSON(vo).toString();
-            logger.info("callRecordService json is{}:"+json+"business is:{}"+util.getBusinessKey());
+             logger.info("[callRecordService]turn vo to json is{}:"+json+",business is:{}"+util.getBusinessKey()+"\n");
              String result=callRecordInterface.saveCallRecord(json,util.getBusinessKey());
-             logger.info("resultObj{}:"+result);
-            logger.info("arc_95013"+vo.getCall_id());
-            innerObj.put("result",true);
-            obj.put("secret_call_release_response",innerObj);
+             logger.info("[callRecordService]saveCallRecord by json and business then resultObj is:{}:"+result+"\n");
+             logger.info("[callRecordService]arc_95013 vo.getCallId:"+vo.getCall_id()+"\n");
+             innerObj.put("result",true);
+             obj.put("[callRecordService]secret_call_release_response:",innerObj);
         }catch (Exception e){
             e.printStackTrace();
-            logger.info("exception:"+e.getMessage());
+            logger.info("[callRecordService]save call record wrong.and exception is:"+e.getMessage()+"\n");
             innerObj.put("code",50);
             innerObj.put("msg","recordService exception");
             innerObj.put("sub_code","");
@@ -268,7 +267,7 @@ public class businessController extends  BaseController{
 
     @RequestMapping("/changeRelationMethod")
     public  Result   changeRelation(String uidNumber ,String restrict){
-        logger.info("changeRelation's method restrict is:");
+        logger.info("[changeRelationMethod]received pram  uidNumber,restrict is:"+uidNumber+","+restrict+"\n");
         if(StringUtils.isEmpty(uidNumber)&&StringUtils.isEmpty(restrict)){
             return   new  Result(ResultMsg.REQUESTPARAMEXCEPTION);
         }
@@ -280,7 +279,7 @@ public class businessController extends  BaseController{
                 rest = numberInterface.changeRelation(util.getBusinessKey(), uidNumber, restrict);
             }catch (Exception e){
                 e.printStackTrace();
-                logger.info("changeRelation exception is:"+e.toString());
+                logger.info("[changeRelationMethod]changeRelation wrong and exception is:"+e.toString()+"\n");
                 rest = numberInterface.changeRelation(util.getBusinessKey(), uidNumber, restrict);
             }
         }
@@ -289,7 +288,7 @@ public class businessController extends  BaseController{
             rest=numberInterface.changeRelationZZ(util.getBusinessKey(),uidNumber,restrict);
             }catch (Exception e){
                 e.printStackTrace();
-                logger.info("changeRelationZZ exception is:"+e.toString());
+                logger.info("[changeRelationMethod]changeRelation ZhiZun number exception is:"+e.toString()+"\n");
                 rest=numberInterface.changeRelationZZ(util.getBusinessKey(),uidNumber,restrict);
             }
         }
@@ -298,10 +297,10 @@ public class businessController extends  BaseController{
         if(obj.getIntValue("code")==200){
             JSONObject  childObj=JSONObject.parseObject(obj.getString("msg"));
             result=childObj.getString("change_Relation_response");
-            logger.info("change_Relation_response:"+ResultMsg.OPERATESUCEESS+"\n");
+            logger.info("[changeRelationMethod]code=200 and change_Relation_response:"+ResultMsg.OPERATESUCEESS+"\n");
             return  new Result(ResultMsg.OPERATESUCEESS,result);
         }else {
-            logger.info("change_Relation_response:"+ResultMsg.OPERATEXCEPTIN+"\n");
+            logger.info("[changeRelationMethod]code!=200 andchange_Relation_response:"+ResultMsg.OPERATEXCEPTIN+"\n");
             return  new Result(ResultMsg.OPERATEXCEPTIN);
         }
     }
@@ -310,7 +309,7 @@ public class businessController extends  BaseController{
     @ResponseBody
     public JSONObject findOrder(@RequestParam("orderIndex") String orderIndex){
         JSONObject  obj=new JSONObject();
-        logger.info("receive orderIndex>>>>>>>>>>>>> "+orderIndex);
+        logger.info("[findOrder]receive pram orderIndex is: "+orderIndex+"\n");
         String json= productInterface.findRegexProduct(util.getBusinessKey(),orderIndex);
         List<wx_product> products=JsonUtils.handlerRegexJson(json);
         products.forEach((wx_product item) -> {
@@ -329,7 +328,7 @@ public class businessController extends  BaseController{
         obj.put("products",products);
         Map<String,String> map=new HashMap<>();
         obj.put("user",map);
-        logger.info("return json>>>>>>>>>>>>> "+obj);
+        logger.info("[findOrder]return result is :"+obj+"\n");
         return obj;
     }
 
@@ -339,7 +338,6 @@ public class businessController extends  BaseController{
     public static void main(String[] args) {
         CallReleaseVo  vo=new CallReleaseVo();
         vo.setCall_id("123");
-        System.out.println("json:"+ JSON.toJSONString(vo));
     }
 
 
