@@ -271,6 +271,7 @@ public class OauthController extends  BaseController{
             logger.info("[ouathRegexBase]access openid but sever dont have this data .customer is empty.so return validate_tel.html");
             modelAndView.setViewName("validate_tel");
             modelAndView.addObject("openid",openId);
+            modelAndView.addObject("path",state);
             return  modelAndView;
         }else {
             modelAndView.setViewName("buy_zhizun");
@@ -337,15 +338,32 @@ public class OauthController extends  BaseController{
         logger.info("[ouathAdminBase]"+regphone+" =>>>> "+util.getBusinessKey());
         List<BusinessNumberRecord> records=recordRepository.findAllByUserPhoneEqualsAndBusinessIdEquals(regphone,util.getBusinessKey());
         if(records.size()<1){
-            modelAndView.setViewName("buy_safenumber");
-            String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
-            List<wx_product> products=JsonUtils.handlerRegexJson(json);
-           /* JSONObject  obj=JSONObject.parseObject(json);
-            List<wx_product> products=new ArrayList<>();
-            if(obj.getIntValue("code")==200){
-                JsonUtils.handlerArgs(products,obj);
-            }*/
-            modelAndView.addObject("ls",products);
+            if(StringUtils.equals(state,"buy_safenumber")){
+                modelAndView.setViewName("buy_safenumber");
+                String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+                List<wx_product> products=JsonUtils.handlerRegexJson(json);
+               /* JSONObject  obj=JSONObject.parseObject(json);
+                List<wx_product> products=new ArrayList<>();
+                if(obj.getIntValue("code")==200){
+                    JsonUtils.handlerArgs(products,obj);
+                }*/
+                modelAndView.addObject("ls",products);
+            }else{
+                modelAndView.setViewName("buy_zhizun");
+                String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
+                //  String json= productInterface.findProduct(util.getBusinessKey());
+                List<Map<String,String>> mapZhiZun=JsonUtils.handlerNormalJson(json,"id","regexName");
+                modelAndView.addObject("regexs",mapZhiZun);
+                String productJson= productInterface.findRegexProduct(util.getBusinessKey(),mapZhiZun.get(0).get("key"));
+                List<wx_product>  ls=JsonUtils.handlerRegexJson(productJson);
+                modelAndView.addObject("products",ls);
+                String numberJson=productInterface.findSpeNumber(util.getBusinessKey(),mapZhiZun.get(0).get("key"),"");
+                List<Map<String,String>>  numbers=JsonUtils.handlerNumberJson(numberJson);
+                modelAndView.addObject("numbers",numbers);
+                Map<String,String> user=new HashMap<>();
+                user.put("openid",openId);
+                modelAndView.addObject("user",user);
+            }
         }else {
             modelAndView.setViewName("my_safenumber");
             BusinessCustomer  userInfo=businessCusRepository.findByOpenidEquals(openId);

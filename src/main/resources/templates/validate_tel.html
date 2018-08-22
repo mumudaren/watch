@@ -49,6 +49,7 @@
 
       <script th:inline="javascript">
            var openid=[[${openid}]];
+           var pathSource=[[${path}]];
           $(function(){
                $("#getcode").click(function(){
                    var  phone=$("input[name='phone']").val();
@@ -80,7 +81,7 @@
                     dataType:"JSON"
                 }).done(function(result){
                     if(result.code==200){
-                        window.location.href="/oauth/admin/OwnerSafeNumber.html";
+                        window.location.href="/oauth/admin/"+pathSource;
                     }else {
                         util.showText(result.msg,$(".z_successtext"));
                     }
