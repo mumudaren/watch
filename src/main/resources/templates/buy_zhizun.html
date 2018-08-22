@@ -21,7 +21,9 @@
 <body>
 <div class="wrap f_404wrap">
     <p class="f_zhizuninput">
-        <input type="tel" placeholder="请输入需要安全号的手机号码"   name="myNumber" style="width:92%"/><br/>
+        <!--<input type="tel" placeholder="请输入需要安全号的手机号码"   name="myNumber" style="width:92%"/>-->
+        <input type="tel"  th:value="${phone}" placeholder="请输入需要安全号的手机号码" style="width:92%" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
+        <br/>
         安全号将与输入的手机号进行绑定，呼叫安全号手机号将接听来电
     </p>
     <div class="f_tabwrap">
@@ -191,6 +193,23 @@
                 }
             }else{
                 onBridgeReady(json)
+            }
+        }
+        //更改号码
+        function toNull (number) {
+            console.log("this is to null:"+number);
+            var  phone=$("input[name='myNumber']").val();
+            console.log("this is to null myNumber:"+phone);
+            if(phone ==number){
+                $("input[name='myNumber']").val("");
+            }
+        }
+        function toValue (number) {
+            console.log("this is to value:"+number);
+            var  phone=$("input[name='myNumber']").val();
+            console.log("this is to null myNumber:"+phone);
+            if(phone ==''){
+                $("input[name='myNumber']").val(number);
             }
         }
         /** 微信支付  start **/

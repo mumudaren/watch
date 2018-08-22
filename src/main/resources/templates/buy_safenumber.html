@@ -20,8 +20,7 @@
       <div class="wrap f_404wrap">         
           <div class="f_addtelphone">
             <p>
-              手机号码
-                <input type="tel" id="phone" name=""   />
+              手机号码<!--<input type="tel" id="phone" name=""   />--><input type="tel" id="phone"  th:value="${phone}" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
                 <img src="../images/buynumber_03.png" class="f_addnumber_img"/>
             </p>
           </div>
@@ -106,6 +105,23 @@
                      }
                  });
             });
+             //更改号码
+             function toNull (number) {
+                 console.log("this is to null:"+number);
+                 var  phone=$("input[name='myNumber']").val();
+                 console.log("this is to null myNumber:"+phone);
+                 if(phone ==number){
+                     $("input[name='myNumber']").val("");
+                 }
+             }
+             function toValue (number) {
+                 console.log("this is to value:"+number);
+                 var  phone=$("input[name='myNumber']").val();
+                 console.log("this is to null myNumber:"+phone);
+                 if(phone ==''){
+                     $("input[name='myNumber']").val(number);
+                 }
+             }
             /** 微信支付  start **/
             function onBridgeReady(json){
                 WeixinJSBridge.invoke(

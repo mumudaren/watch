@@ -127,6 +127,7 @@ public class OauthController extends  BaseController{
             }*/
             logger.info("[ouathBase]wx_product size is:"+products.size()+"\n");
             modelAndView.addObject("ls",products);
+            modelAndView.addObject("phone",customer.getPhone());
         }
         /****===>>**/
         Map<String, String> map = new HashMap<>();
@@ -285,6 +286,7 @@ public class OauthController extends  BaseController{
             String numberJson=productInterface.findSpeNumber(util.getBusinessKey(),map.get(0).get("key"),"");
             List<Map<String,String>>  numbers=JsonUtils.handlerNumberJson(numberJson);
             modelAndView.addObject("numbers",numbers);
+            modelAndView.addObject("phone",customer.getPhone());
         }
         /****===>>**/
         Map<String, String> map = new HashMap<>();
@@ -348,6 +350,7 @@ public class OauthController extends  BaseController{
                     JsonUtils.handlerArgs(products,obj);
                 }*/
                 modelAndView.addObject("ls",products);
+                modelAndView.addObject("phone",regphone);
             }else{
                 modelAndView.setViewName("buy_zhizun");
                 String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
@@ -363,6 +366,7 @@ public class OauthController extends  BaseController{
                 Map<String,String> user=new HashMap<>();
                 user.put("openid",openId);
                 modelAndView.addObject("user",user);
+                modelAndView.addObject("phone",regphone);
             }
         }else {
             modelAndView.setViewName("my_safenumber");

@@ -82,6 +82,8 @@ public class TestController extends  BaseController {
         modelAndView.addObject("numbers",numbers);
         Map<String,String> user=new HashMap<>();
         user.put("openid","oIFn90xXM4M-zUayrLI4hxLGZNKA");
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals("oIFn90xXM4M-zUayrLI4hxLGZNKA");
+        modelAndView.addObject("phone",userInfo.getPhone());
         modelAndView.addObject("user",user);
         return  modelAndView;
     }

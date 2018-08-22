@@ -48,7 +48,7 @@ public class PageController extends  BaseController{
      @RequestMapping("/getNumber")
      public ModelAndView  getNumber(@ModelAttribute("openid") String openid){
          ModelAndView  model=new ModelAndView();
-         openid="oIFn90xXM4M-zUayrLI4hxLGZNKA";
+//         openid="oIFn90xXM4M-zUayrLI4hxLGZNKA";
          logger.info("[getNumber]openid is:"+openid);
          BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openid);
          if(customer!=null){
@@ -60,6 +60,7 @@ public class PageController extends  BaseController{
                  JsonUtils.handlerArgs(products,obj);
              }*/
              model.addObject("ls",products);
+             model.addObject("phone",customer.getPhone());
          }else {
              model.setViewName("validate_tel");
          }
