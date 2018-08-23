@@ -214,7 +214,11 @@ public class businessController extends  BaseController{
         feedBack.setOpenid(openidKey);
         feedBack.setType(type);
         feedBack.setState(0);
-        feedBackRepository.save(feedBack);
+        try{
+            feedBackRepository.save(feedBack);
+        }catch(Exception e){
+            return  new Result(ResultMsg.OPERATEXCEPTIN);
+        }
         return  new Result(ResultMsg.OPERATESUCEESS);
     }
 

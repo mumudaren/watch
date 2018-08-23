@@ -46,16 +46,23 @@
             function commitMessage(){
                  var  type=$(".f_suggest_taocan ul").children(".f_suggest_active").val();
                  var  textArea=$("#textArea").val();
-                $.ajax({
-                    url:'/commitMessage',
-                    contentType:'application/json',
-                    data:{type:type,textArea:textArea,openidKey:openid},
-                    dataType:'JSON'
-                }).done(function(result){
-                    if(result.code==200){
-                         window.location.href="/complain.html";
-                    }
-                })
+                 if(textArea==''){
+                     alert("留言不能为空。");
+                 }else{
+                     $.ajax({
+                         url:'/commitMessage',
+                         contentType:'application/json',
+                         data:{type:type,textArea:textArea,openidKey:openid},
+                         dataType:'JSON'
+                     }).done(function(result){
+                         if(result.code==200){
+                             window.location.href="/complain.html";
+                         }else{
+                             alert("留言提交失败，请于客服联系。")
+                         }
+                     })
+                 }
+
             }
         </script>
 

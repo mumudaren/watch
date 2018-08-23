@@ -1,13 +1,17 @@
 package cn.cvtt.nuoche.web;
 
+import cn.cvtt.nuoche.common.result.Result;
+import cn.cvtt.nuoche.common.result.ResultMsg;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
+import cn.cvtt.nuoche.entity.business.SystemFeedBack;
 import cn.cvtt.nuoche.entity.business.wx_product;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.reponsitory.ISystemFeedBack;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
 import cn.cvtt.nuoche.util.JsonUtils;
@@ -20,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +38,8 @@ public class TestController extends  BaseController {
     IBusinessNumberRecordRepository  recordRepository;
     @Autowired
     IRegexInterface  regexInterface;
+    @Autowired
+    ISystemFeedBack feedBackRepository;
     @Autowired
     IBusinessCallRecordInterface callRecordInterface;
     @Autowired
@@ -94,6 +102,19 @@ public class TestController extends  BaseController {
 
         return  "validate_tel";
     }
+
+
+
+    @RequestMapping("/testMessage")
+    public  ModelAndView  message(){
+        ModelAndView  model=new ModelAndView();
+        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
+        model.addObject("user",userInfo);
+        model.setViewName("suggest");
+        return  model;
+    }
+
 
 
     @RequestMapping("/OwnerSafeNumber.html")
