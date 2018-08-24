@@ -96,6 +96,26 @@ public class TestController extends  BaseController {
         return  modelAndView;
     }
 
+    @RequestMapping("/testSafe")
+    public  ModelAndView  testSafeNumber(){
+        ModelAndView  modelAndView=new ModelAndView();
+        modelAndView.setViewName("buy_safenumber");
+        String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+        List<wx_product> products=JsonUtils.handlerRegexJson(json);
+               /* JSONObject  obj=JSONObject.parseObject(json);
+                List<wx_product> products=new ArrayList<>();
+                if(obj.getIntValue("code")==200){
+                    JsonUtils.handlerArgs(products,obj);
+                }*/
+        modelAndView.addObject("ls",products);
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals("oIFn90xXM4M-zUayrLI4hxLGZNKA");
+        modelAndView.addObject("phone",userInfo.getPhone());
+        /****===>>**/
+        Map<String, String> map = new HashMap<>();
+        map.put("openid", "oIFn90xXM4M-zUayrLI4hxLGZNKA");
+        modelAndView.addObject("user", map);
+        return  modelAndView;
+    }
 
     @RequestMapping("/validate_tel")
     public  String  goValidate(){
@@ -115,7 +135,12 @@ public class TestController extends  BaseController {
         return  model;
     }
 
-
+    @RequestMapping("/testWongPage")
+    public  ModelAndView  testWong(){
+        ModelAndView  model=new ModelAndView();
+        model.setViewName("wrongPage");
+        return  model;
+    }
 
     @RequestMapping("/OwnerSafeNumber.html")
     public ModelAndView  OwnerSafeNumber( ){
