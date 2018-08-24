@@ -228,7 +228,10 @@
 
         function initClick(){
             $(".f_95013listnum dd:eq(0)").addClass("z_current");
-            $("#tab1 dd:eq(0)").addClass('f_tiyan f_tiyan_active ');
+            //$("#tab1 dd:eq(0)").addClass('f_tiyan f_tiyan_active ');
+            //console.log("class   is:"+$("#tab1 dd:eq(0)").attr("class"));
+            var classNew=$("#tab1 dd:eq(0)").attr("class");
+            $("#tab1 dd:eq(0)").addClass(classNew+"_active");
             $("#tab1 dd:eq(0)").find("p:eq(0)").addClass("z_requiredays_active");
             $("#tab1 dd:eq(0)").find("p:eq(1)").addClass("z_requiredays_active");
             $("#tab1 dd:eq(0)").find("p:eq(3)").addClass("z_limits3_active");
@@ -251,25 +254,42 @@
                 $(".message").text(message);
                 $(".productId").text($(this).find("p:eq(5)").text());
                 var  obj=$("#tab1 dd");
+                console.log("class   is:"+$(this).attr("class"));
+                var classNew2=$(this).attr("class").split(' ')[0];
+                $(this).addClass(classNew2+'_active').addClass(classNew2);
+                $(this).find("p:eq(0)").addClass("z_requiredays_active");
+                $(this).find("p:eq(1)").addClass("z_requiredays_active");
+                $(this).find("p:eq(3)").addClass("z_limits3_active");
+                //$("#tab1 dd").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
                 if($(this).is(obj.get(2))){
-                    $(this).addClass('f_sales_active');
-                    $(this).find("p:eq(0)").addClass("z_requiredays_active");
-                    $(this).find("p:eq(1)").addClass("z_requiredays_active");
-                    $(this).find("p:eq(3)").addClass("z_limits3_active");
-                    $("#tab1 dd").removeClass("f_tiyan_active").removeClass("f_discount_active");
+                    $("#tab1 dd:eq(1)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
+                    $("#tab1 dd:eq(0)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
                 }else if($(this).is(obj.get(1))){
-                    $(this).addClass('f_discount_active');
-                    $(this).find("p:eq(0)").addClass("z_requiredays_active");
-                    $(this).find("p:eq(1)").addClass("z_requiredays_active");
-                    $(this).find("p:eq(3)").addClass("z_limits3_active");
-                    $("#tab1 dd").removeClass("f_sales_active").removeClass("f_tiyan_active");
-                }else {
-                    $(this).addClass('f_tiyan_active');
-                    $(this).find("p:eq(0)").addClass("z_requiredays_active");
-                    $(this).find("p:eq(1)").addClass("z_requiredays_active");
-                    $(this).find("p:eq(3)").addClass("z_limits3_active");
-                    $("#tab1 dd").removeClass("f_discount_active").removeClass("f_sales_active");
+                    $("#tab1 dd:eq(0)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
+                    $("#tab1 dd:eq(2)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
+                }else{
+                    $("#tab1 dd:eq(1)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
+                    $("#tab1 dd:eq(2)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
                 }
+                // if($(this).is(obj.get(2))){
+                //     $(this).addClass('f_sales_active');
+                //     $(this).find("p:eq(0)").addClass("z_requiredays_active");
+                //     $(this).find("p:eq(1)").addClass("z_requiredays_active");
+                //     $(this).find("p:eq(3)").addClass("z_limits3_active");
+                //     $("#tab1 dd").removeClass("f_tiyan_active").removeClass("f_discount_active");
+                // }else if($(this).is(obj.get(1))){
+                //     $(this).addClass('f_discount_active');
+                //     $(this).find("p:eq(0)").addClass("z_requiredays_active");
+                //     $(this).find("p:eq(1)").addClass("z_requiredays_active");
+                //     $(this).find("p:eq(3)").addClass("z_limits3_active");
+                //     $("#tab1 dd").removeClass("f_sales_active").removeClass("f_tiyan_active");
+                // }else {
+                //     $(this).addClass('f_tiyan_active');
+                //     $(this).find("p:eq(0)").addClass("z_requiredays_active");
+                //     $(this).find("p:eq(1)").addClass("z_requiredays_active");
+                //     $(this).find("p:eq(3)").addClass("z_limits3_active");
+                //     $("#tab1 dd").removeClass("f_discount_active").removeClass("f_sales_active");
+                // }
             });
             $(".f_95013listnum dd").click(function(){
                 $(".f_95013listnum dd").removeClass("z_current");
