@@ -1,6 +1,8 @@
 package cn.cvtt.nuoche.web;
 
 import cn.cvtt.nuoche.common.Constant;
+import cn.cvtt.nuoche.common.result.Result;
+import cn.cvtt.nuoche.entity.business.BindVo;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.wx_product;
@@ -9,6 +11,7 @@ import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.ISystemParamInterface;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.server.impl.NumberServiceImpl;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
 import cn.cvtt.nuoche.util.JsonUtils;
@@ -24,7 +27,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +45,7 @@ public class PageController extends  BaseController{
     ISystemParamInterface  systemParamInterface;
     @Autowired
     ConfigUtil  util;
+    @Autowired  private NumberServiceImpl numberService;
     @Autowired
     IBusinessNumberRecordRepository  recordRepository;
     @Autowired
@@ -76,10 +83,12 @@ public class PageController extends  BaseController{
         model.setViewName("detail");
         BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openid);
         BusinessNumberRecord  record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(smbms,util.getBusinessKey());
+        //该号码由谁提供字段查询方法。
+
         Map<String,String> map=new HashMap<>();
         map.put("number",number);
         map.put("smbms",smbms);
-        map.put("userPhone",customer.getPhone());
+        map.put("userPhone",record.getUserPhone());
         map.put("numberSub", DateUtils.formatString(record.getSubts(), Constant.DATETEMPLATE));
         map.put("validDate",DateUtils.formatString(record.getValidTime(),Constant.DATETEMPLATE));
         map.put("callRestict",record.getCallrestrict());
@@ -316,7 +325,57 @@ public class PageController extends  BaseController{
         return  "wrongPage";
     }
 
+    @RequestMapping("/findStatus.html")
+    public  String  findStatusMethod(String number) throws IOException {
+        BindVo bind=new BindVo();
+        bind.setUidnumber(number);
+        Result result=numberService.queryRelation(bind);
+        if(result.getCode()==200) {
+            JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+            JSONObject res = jobj.getJSONObject("query_Relation_response");
+            JSONArray items = JSONArray.parseArray(res.getJSONArray("items").toString());
+            //遍历items
+            JSONObject buyTime = null;
+            if (items.size() > 0) {
+                for (int i = 0; i < items.size(); i++) {
+                    // 遍历 jsonarray 数组，把每一个对象转成 json 对象
+                    JSONObject job = items.getJSONObject(i);
+                    logger.info("[findStatusMethod]job is:" + job.get("subts"));
+                    if (!StringUtils.isEmpty(job.get("subts").toString())) {
+                        buyTime = job;
+                    }
+                }
+            }else{
+                return "wrongPage";
+            }
+            //JSONObject buyTime=job.getJSONObject("subts");
+            logger.info("[findStatusMethod]result is:" + res.toString());
+            logger.info("[findStatusMethod]buyTime is:" + buyTime.getDate("subts"));
+            //查询该号码的buyTime是空。绑定不成功。
+            if (StringUtils.isEmpty(buyTime.getDate("subts").toString())) {
+                logger.info("[findStatusMethod]bind or bindZhiZun fail:");
+                return "wrongPage";
+            }
+            //订购时间小于今天（考虑调用绑定接口，秒的误差），说明今天没有订购记录，延期、解冻、绑定等均不成功。
+            Date butDate = buyTime.getDate("subts");
+            Date nowTime = new Date();
+            Calendar cal1 = Calendar.getInstance();
+            cal1.setTime(nowTime);
+            // 将分钟、秒、毫秒域清零
+            cal1.set(Calendar.MINUTE, 0);
+            cal1.set(Calendar.SECOND, 0);
+            cal1.set(Calendar.MILLISECOND, 0);
+            Date nowReset = cal1.getTime();
+            logger.info("[findStatusMethod]nowReset SECOND  is:" + nowReset);
+            //购买时间小于当前时间，说明接口调用失败。
+            if (butDate.getTime() < nowTime.getTime()) {
+                return "wrongPage";
+            }
+            return "redirect:/oauth/admin/OwnerSafeNumber";
+        }else {
+            logger.info("[findStatusMethod]buy operation fail,will return wrongPage");
+            return "wrongPage";
+        }
 
-
-
+    }
 }

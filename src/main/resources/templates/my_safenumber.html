@@ -134,15 +134,15 @@
                               </p>
                           </div>
 
-                          <div class="f_delay_detail">
-                                  <span class="z_number_dalay">
+                          <div class="f_delay_detail" >
+                                  <span class="z_number_dalay" style="width:100% ">
                                       <a href="javascript:void(0);" class="number_delay">号码延期</a>
                                   </span>
-                                  <span>
-                                      <span style="display: none;"  th:text="${record.prtms}"></span>
-                                      <span style="display: none;" th:text="${record.smbms}"></span>
-                                      <a href="#" class="">号码详情</a>
-                                  </span>
+                                  <!--<span>-->
+                                      <!--<span style="display: none;"  th:text="${record.prtms}"></span>-->
+                                      <!--<span style="display: none;" th:text="${record.smbms}"></span>-->
+                                      <!--<a href="#" class="">号码详情</a>-->
+                                  <!--</span>-->
                           </div>
                    </div>
                    <div th:style="${other.size() == 0?'display:none':''}">
@@ -325,10 +325,9 @@
                     'getBrandWCPayRequest',json,
                     function(res){
                         if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                            window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
+                            window.location.href="/findStatus.html?number="+$("#uidnumber").text();
                         }else{
                             //console.log(res.err_msg);
-                            // window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
                             //window.location.reload();
                         }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
                     }

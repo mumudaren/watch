@@ -174,7 +174,6 @@
                     return;
                 }
                 var val = $("#tab1 dd p:eq(1)").text();
-                ;
                 var days = $("#tab1 dd p:eq(2)").text();
                 var productId = $("#tab1 dd p:eq(5)").text();
                 var pay = {};
@@ -228,7 +227,7 @@
                 function(res){
                     if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                         //window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
-                        window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
+                        window.location.href="/findStatus.html?number="+ $(".f_95013listnum").find(".z_current").text();
                     }else {
                         //console.log(res.err_msg);
                         //alert("res.err_msg is:"+res.err_msg);

@@ -95,9 +95,11 @@
                          var json = payUtil.payOrder(pay);
                          if (json.code != 200) {
                              alert(json.msg);
+                             console.log("json is："+json.data)
                              return;
                          } else {
                              json = json.data;
+                             console.log("json is："+json.data)
                          }
                          if (typeof WeixinJSBridge == "undefined") {
                              if (document.addEventListener) {
@@ -137,7 +139,9 @@
                     function(res){
                         if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                             window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
+                            //window.location.href="/findStatus.html?number="+$("#uidnumber").text();
                         }else {
+
                             //console.log(res.err_msg);
                             // window.location.href="/oauth/base/getNumber.html?"+Math.random()*10;
                              // window.location.href="/oauth/admin/OwnerSafeNumber.html";

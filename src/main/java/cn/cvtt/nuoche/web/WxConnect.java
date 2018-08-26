@@ -173,6 +173,9 @@ public class WxConnect {
                             result = numberService.bind(bind);
                             LOGGER.info("[paySuccess]bind usual number is success and result:" + result + "\n");
                             if (result.getCode() == 200) {
+                                //删除号码池中的号码。
+//                                String  json=productInterface.deleteSpeNumber(util.getBusinessKey(),flag.get("uidnumber"));
+//                                regexId=JsonUtils.handlerNumberReturnRegexJson(json);
                                 JSONObject jobj = JSONObject.parseObject(result.getData().toString());
                                 JSONObject res = jobj.getJSONObject("binding_Relation_response");
                                 if (null == res) {
