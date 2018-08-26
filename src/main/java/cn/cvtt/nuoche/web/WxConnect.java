@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -105,7 +106,7 @@ public class WxConnect {
      *
      * */
     @RequestMapping(value="/paySuccess",method = RequestMethod.POST)
-    public  void   paySuccess(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void paySuccess(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // 设置编码
         /** 绑定 安全号
          *  TODO
@@ -143,138 +144,182 @@ public class WxConnect {
                         synchronized (obj){
                             result=numberService.bindZhiZun(bind);
                             if(result.getCode()==200){
+                                //删除号码池中的号码。
                                String  json=productInterface.deleteSpeNumber(util.getBusinessKey(),flag.get("uidnumber"));
-                               LOGGER.info("[paySuccess]bind ZhiZun number is success and result:"+json+"\n");
                                regexId=JsonUtils.handlerNumberReturnRegexJson(json);
+                                LOGGER.info("[paySuccess]bind ZhiZun number is success and result:"+json+"\n");
+                                //获取返回结果。
+                                JSONObject jobjZhiZun = JSONObject.parseObject(result.getData().toString());
+                                JSONObject resZhiZun = jobjZhiZun.getJSONObject("binding_Relation_response");
+                                if (null == resZhiZun) {
+                                    LOGGER.warn("[paySuccess]"+phone+" bind wrong."+"\n");
+                                }
+                                //保存记录
+                                BusinessNumberRecord  record2=new BusinessNumberRecord();
+                                record2.setBusinessId(util.getBusinessKey());
+                                record2.setPrtms(resZhiZun.getString("prtms"));
+                                record2.setSmbms(resZhiZun.getString("smbms"));
+                                record2.setResult(1);
+                                record2.setCallrestrict(0+"");
+                                record2.setSubts(new Date());
+                                record2.setUserPhone(customer.getPhone());
+                                record2.setValidTime(DateUtils.parse(resZhiZun.getString("validitytime")));
+                                record2.setRegexId(Integer.parseInt(StringUtils.equals(regexId,"")?"0":regexId));
+                                businessNumberRecordRepository.save(record2);
+                            }
+                         }
+                    }else {
+                        synchronized (obj) {
+                            result = numberService.bind(bind);
+                            LOGGER.info("[paySuccess]bind usual number is success and result:" + result + "\n");
+                            if (result.getCode() == 200) {
+                                JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                                JSONObject res = jobj.getJSONObject("binding_Relation_response");
+                                if (null == res) {
+                                    LOGGER.warn("[paySuccess]" + phone + " bind wrong." + "\n");
+                                }
+                                //保存记录
+                                BusinessNumberRecord record = new BusinessNumberRecord();
+                                record.setBusinessId(util.getBusinessKey());
+                                record.setPrtms(res.getString("prtms"));
+                                record.setSmbms(res.getString("smbms"));
+                                record.setResult(1);
+                                record.setCallrestrict(0 + "");
+                                record.setSubts(new Date());
+                                record.setUserPhone(customer.getPhone());
+                                record.setValidTime(DateUtils.parse(res.getString("validitytime")));
+                                record.setRegexId(Integer.parseInt(StringUtils.equals(regexId, "") ? "0" : regexId));
+                                businessNumberRecordRepository.save(record);
                             }
                         }
-                    }else {
-                        result=numberService.bind(bind);
-                        LOGGER.info("[paySuccess]bind usual number is success and result:"+result+"\n");
                     }
-                if(result.getCode()==200){
-                    JSONObject jobj = JSONObject.parseObject(result.getData().toString());
-                    JSONObject res = jobj.getJSONObject("binding_Relation_response");
-                    if (null == res) {
-                        LOGGER.warn("[paySuccess]"+phone+" bind wrong."+"\n");
-                    }
-                    BusinessNumberRecord  record=new BusinessNumberRecord();
-                    record.setBusinessId(util.getBusinessKey());
-                    record.setPrtms(res.getString("prtms"));
-                    record.setSmbms(res.getString("smbms"));
-                    record.setResult(1);
-                    record.setCallrestrict(0+"");
-                    record.setSubts(new Date());
-                    record.setUserPhone(customer.getPhone());
-                    record.setValidTime(DateUtils.parse(res.getString("validitytime")));
-                    record.setRegexId(Integer.parseInt(StringUtils.equals(regexId,"")?"0":regexId));
-                    businessNumberRecordRepository.save(record);
-                }
+                //绑定
             } else if(StringUtils.equals(operateType,"1")){
-                LOGGER.info("[paySuccess]operateType is extend number......");
-                BusinessNumberRecord recordSearch = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
-                int  sumbms=recordSearch.getRegexId();
-                if(sumbms>0){
-                    LOGGER.info("[paySuccess]number type is ZhiZun."+"\n");
-                    bind.setUidnumber(flag.get("uidnumber"));
-                    result = numberService.extendZhiZun(bind);
-                    if (result.getCode() == 200) {
-                        JSONObject jobj = JSONObject.parseObject(result.getData().toString());
-                        JSONObject res = jobj.getJSONObject("extend_Relation_response");
-                        if (null == res) {
-                            LOGGER.warn("[paySuccess]"+phone + "ZhiZun bind wrong"+"\n");
+                synchronized (obj) {
+                        LOGGER.info("[paySuccess]operateType is extend number......");
+                        BusinessNumberRecord recordSearch = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                        int  sumbms=recordSearch.getRegexId();
+                        //靓号延期
+                        if(sumbms>0){
+                            LOGGER.info("[paySuccess]number type is ZhiZun."+"\n");
+                            bind.setUidnumber(flag.get("uidnumber"));
+                            result = numberService.extendZhiZun(bind);
+                            if (result.getCode() == 200) {
+                                JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                                JSONObject res = jobj.getJSONObject("extend_Relation_response");
+                                if (null == res) {
+                                    LOGGER.warn("[paySuccess]"+phone + "ZhiZun bind wrong"+"\n");
+                                }
+                                BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                                String days = result.getMsg().toString();
+                                Date date = record.getValidTime();
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTime(date);
+                                calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
+                                record.setValidTime(calendar.getTime());
+                                businessNumberRecordRepository.saveAndFlush(record);
+                            }
                         }
-                        BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
-                        String days = result.getMsg().toString();
-                        Date date = record.getValidTime();
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(date);
-                        calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
-                        record.setValidTime(calendar.getTime());
-                        businessNumberRecordRepository.saveAndFlush(record);
-                    }
+                        //非靓号延期
+                        if(sumbms==0){
+                            LOGGER.info("[paySuccess]number type is usual."+"\n");
+                                bind.setUidnumber(flag.get("uidnumber"));
+                                result = numberService.extend(bind);
+                                if (result.getCode() == 200) {
+                                    JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                                    JSONObject res = jobj.getJSONObject("extend_Relation_response");
+                                    if (null == res) {
+                                        LOGGER.warn("[paySuccess]"+phone + "usual bind wrong"+"\n");
+                                    }
+                                    BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                                    String days = result.getMsg().toString();
+                                    Date date = record.getValidTime();
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTime(date);
+                                    calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
+                                    record.setValidTime(calendar.getTime());
+                                    businessNumberRecordRepository.saveAndFlush(record);
+                                }
+                        }
                 }
-                if(sumbms==0){
-                    LOGGER.info("[paySuccess]number type is usual."+"\n");
+            } else if(StringUtils.equals(operateType,"2")){
+                synchronized (obj) {
+                    //解冻
+                    LOGGER.info("[paySuccess] operateType is ice-out. .....");
+                    BusinessNumberRecord recordSearch = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                    int sumbms = recordSearch.getRegexId();
+                    bind.setRegphone(phone);
+                    //靓号
+                    if (sumbms > 0) {
+                        LOGGER.info("[paySuccess]ZhiZun number is going to ice-out " + "\n");
                         bind.setUidnumber(flag.get("uidnumber"));
-                        result = numberService.extend(bind);
+                        result = numberService.recoverRelationZZ(bind);
                         if (result.getCode() == 200) {
                             JSONObject jobj = JSONObject.parseObject(result.getData().toString());
                             JSONObject res = jobj.getJSONObject("extend_Relation_response");
                             if (null == res) {
-                                LOGGER.warn("[paySuccess]"+phone + "usual bind wrong"+"\n");
+                                LOGGER.warn("[paySuccess]" + phone + " ZhiZun number ice-out wrong" + "\n");
                             }
                             BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
                             String days = result.getMsg().toString();
-                            Date date = record.getValidTime();
+                            Date date = new Date();
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTime(date);
                             calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
                             record.setValidTime(calendar.getTime());
                             businessNumberRecordRepository.saveAndFlush(record);
                         }
-                }
-            }
-            //解冻
-            else if(StringUtils.equals(operateType,"2")){
-                LOGGER.info("[paySuccess] operateType is ice-out. .....");
-                BusinessNumberRecord recordSearch = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
-                int  sumbms=recordSearch.getRegexId();
-                bind.setRegphone(phone);
-                //靓号
-                if(sumbms>0){
-                    LOGGER.info("[paySuccess]ZhiZun number is going to ice-out "+"\n");
-                    bind.setUidnumber(flag.get("uidnumber"));
-                    result = numberService.recoverRelationZZ(bind);
-                    if (result.getCode() == 200) {
-                        JSONObject jobj = JSONObject.parseObject(result.getData().toString());
-                        JSONObject res = jobj.getJSONObject("extend_Relation_response");
-                        if (null == res) {
-                            LOGGER.warn("[paySuccess]"+phone + " ZhiZun number ice-out wrong"+"\n");
-                        }
-                        BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
-                        String days = result.getMsg().toString();
-                        Date date = new Date();
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(date);
-                        calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
-                        record.setValidTime(calendar.getTime());
-                        businessNumberRecordRepository.saveAndFlush(record);
                     }
-                }
-                //普通号
-                if(sumbms==0){
-                    LOGGER.info("[paySuccess]ice-out normal method......"+"\n");
-                    bind.setUidnumber(flag.get("uidnumber"));
-                    result = numberService.recoverRelation(bind);
-                    if (result.getCode() == 200) {
-                        JSONObject jobj = JSONObject.parseObject(result.getData().toString());
-                        JSONObject res = jobj.getJSONObject("extend_Relation_response");
-                        if (null == res) {
-                            LOGGER.warn("[paySuccess]"+phone + ">>>>normal number ice-out  fail"+"\n");
+                    //普通号
+                    if (sumbms == 0) {
+                        LOGGER.info("[paySuccess]ice-out normal method......" + "\n");
+                        bind.setUidnumber(flag.get("uidnumber"));
+                        result = numberService.recoverRelation(bind);
+                        if (result.getCode() == 200) {
+                            JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                            JSONObject res = jobj.getJSONObject("extend_Relation_response");
+                            if (null == res) {
+                                LOGGER.warn("[paySuccess]" + phone + ">>>>normal number ice-out  fail" + "\n");
+                            }
+                            BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
+                            String days = result.getMsg().toString();
+                            Date date = new Date();
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
+                            record.setValidTime(calendar.getTime());
+                            businessNumberRecordRepository.saveAndFlush(record);
                         }
-                        BusinessNumberRecord record = businessNumberRecordRepository.findBySmbmsEqualsAndBusinessIdEquals(flag.get("uidnumber"), util.getBusinessKey());
-                        String days = result.getMsg().toString();
-                        Date date = new Date();
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(date);
-                        calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
-                        record.setValidTime(calendar.getTime());
-                        businessNumberRecordRepository.saveAndFlush(record);
                     }
                 }
             }
         }
-        /**  123123*/
+        /**  业务流程处理完成返回微信消息*/
+        /** 微信返回通知结果**/
+        String returnRes=success();
+        PrintWriter out = response.getWriter();
+        out.print(returnRes);
+        out.close();
+    }
+
+    public String success(){
+        /**  业务流程成功*/
         StringBuffer  sb=new StringBuffer();
         sb.append("<xml>");
         sb.append("<return_code>").append("<![CDATA[SUCCESS]]>").append("</return_code>");
         sb.append("<return_msg>").append("<![CDATA[OK]]>").append("</return_msg>");
         sb.append("</xml>");
-        PrintWriter out = response.getWriter();
-        out.print(sb.toString());
-        out.close();
+        return  sb.toString();
+    }
 
+    public String fail(){
+        /**  业务流程失败*/
+        StringBuffer  sb=new StringBuffer();
+        sb.append("<xml>");
+        sb.append("<return_code>").append("<![CDATA[FAIL]]>").append("</return_code>");
+        sb.append("<return_msg>").append("<![CDATA[WRONG]]>").append("</return_msg>");
+        sb.append("</xml>");
+        return  sb.toString();
     }
 
     public  Map<String,String>  savePayOrderInfo(Map<String, String> info){

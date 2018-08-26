@@ -235,6 +235,7 @@
             openid=[[${user.openid}]];
             var isValidValue;
             var sendPhone;
+            var clicktag = 0;  //微信支付标志
             $(function(){
                 $(".number_detail").click(function(){
                     showDetail($(this));
@@ -260,58 +261,80 @@
 
             function  initialPay(){
                 $(".fastPay").click(function(){
-                    var  val=$("#Area").text();
-                    var  days=$("#validDays").text();
-                    var  phone=$(".sessionPhone").text();
-                    var  productId=$("#productId").text();
-                    var pay={};
-                    pay.openid=openid;
-                    pay.totalFee=val;
-                    console.log("send phone is："+phone);
-                    pay.phone=sendPhone;
-                    if(isValidValue){
-                        console.log("should ice_out");
-                        pay.extend=2;
-                    }else{
-                        console.log("should extend");
-                        pay.extend=1;
-                    }
-                    pay.days=days;
-                    pay.uidNumber=phone;
-                    pay.productId=productId;
-                    console.log("pay"+JSON.stringify(pay));
-                    var  json=payUtil.payOrder(pay);//1表示延期
-                    if(json.code!=200){
-                        alert("fastPay");
-                        return ;
-                    }else {
-                        json=json.data;
-                    }
-                    if (typeof WeixinJSBridge == "undefined"){
-                        if(document.addEventListener ){
-                            document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
-                        }else if (document.attachEvent){
-                            document.attachEvent('WeixinJSBridgeReady',   onBridgeReady(json));
-                            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
+                    if (clicktag == 0) {  //判断标志
+                        clicktag = 1;   //进行标志，防止多次点击
+                        setTimeout(function () {
+                            clicktag = 0
+                        }, 4000);
+                        var val = $("#Area").text();
+                        var days = $("#validDays").text();
+                        var phone = $(".sessionPhone").text();
+                        var productId = $("#productId").text();
+                        var pay = {};
+                        pay.openid = openid;
+                        pay.totalFee = val;
+                        console.log("send phone is：" + phone);
+                        pay.phone = sendPhone;
+                        if (isValidValue) {
+                            console.log("should ice_out");
+                            pay.extend = 2;
+                        } else {
+                            console.log("should extend");
+                            pay.extend = 1;
                         }
-                    }else{
-                        onBridgeReady(json)
+                        pay.days = days;
+                        pay.uidNumber = phone;
+                        pay.productId = productId;
+                        console.log("pay" + JSON.stringify(pay));
+                        var json = payUtil.payOrder(pay);//1表示延期
+                        if (json.code != 200) {
+                            alert("fastPay");
+                            return;
+                        } else {
+                            json = json.data;
+                        }
+                        if (typeof WeixinJSBridge == "undefined") {
+                            if (document.addEventListener) {
+                                document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
+                            } else if (document.attachEvent) {
+                                document.attachEvent('WeixinJSBridgeReady', onBridgeReady(json));
+                                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
+                            }
+                        } else {
+                            onBridgeReady(json)
+                        }
                     }
                 });
             }
+            // /** 微信支付  start **/
+            // function onBridgeReady(json){
+            //     WeixinJSBridge.invoke(
+            //         'getBrandWCPayRequest',json,
+            //         function(res){
+            //             if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+            //                 window.location.href="/oauth/admin/OwnerSafeNumber.html";
+            //             }else {
+            //                 //window.location.href="/oauth/admin/OwnerSafeNumber.html";
+            //             }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+            //         }
+            //     );
+            // }
             /** 微信支付  start **/
             function onBridgeReady(json){
                 WeixinJSBridge.invoke(
                     'getBrandWCPayRequest',json,
                     function(res){
                         if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                            window.location.href="/oauth/admin/OwnerSafeNumber.html";
-                        }else {
-                            //window.location.href="/oauth/admin/OwnerSafeNumber.html";
+                            window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
+                        }else{
+                            //console.log(res.err_msg);
+                            // window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
+                            //window.location.reload();
                         }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
                     }
                 );
             }
+
             function delayFun(obj){
                  var  resourceObj= $(obj).parent().parent().prev();
                  var  uidnumber= $(resourceObj).find(".z_mynumber95013").text();

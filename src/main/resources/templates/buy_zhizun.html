@@ -90,6 +90,7 @@
     </div>
     <script th:inline="javascript">
         var openid=[[${user.openid}]];
+        var clicktag = 0;  //微信支付标志
         $(function() {
             $(".f_zhizuntab ul li:eq(0)").addClass("z_actived");
             initClick();
@@ -156,43 +157,51 @@
             });
         });
         function justPay(){
-            var  phone=$("input[name='myNumber']").val();
-            var  uidNumber=$(".f_95013listnum").find(".z_current").text();
-            if(!util.validPhone(phone)){
-                //util.showText("不是有效的手机号码!",$(".z_successtext"));
-                alert("不是有效的手机号码!");
-                return ;
-            }
-            if(uidNumber==""||uidNumber==null){
-               alert("当前套餐中没有可以绑定的号码!");return;
-            }
-            var  val=$("#tab1 dd p:eq(1)").text();;
-            var  days=$("#tab1 dd p:eq(2)").text();
-            var  productId=$("#tab1 dd p:eq(5)").text();
-            var pay={};
-            pay.openid=openid;
-            pay.totalFee=val;
-            pay.phone=phone;
-            pay.extend=0;
-            pay.days=days;
-            pay.uidNumber=uidNumber;
-            pay.productId=productId;
-            var  json=payUtil.payOrder(pay);
-            if(json.code!=200){
-                alert(json.msg);
-                return;
-            }else {
-                json=json.data;
-            }
-            if (typeof WeixinJSBridge == "undefined"){
-                if(document.addEventListener ){
-                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
-                }else if (document.attachEvent){
-                    document.attachEvent('WeixinJSBridgeReady',   onBridgeReady(json));
-                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
+            if (clicktag == 0) {  //判断标志
+                clicktag = 1;   //进行标志，防止多次点击
+                setTimeout(function () {
+                    clicktag = 0
+                }, 4000);
+                var phone = $("input[name='myNumber']").val();
+                var uidNumber = $(".f_95013listnum").find(".z_current").text();
+                if (!util.validPhone(phone)) {
+                    //util.showText("不是有效的手机号码!",$(".z_successtext"));
+                    alert("不是有效的手机号码!");
+                    return;
                 }
-            }else{
-                onBridgeReady(json)
+                if (uidNumber == "" || uidNumber == null) {
+                    alert("当前套餐中没有可以绑定的号码!");
+                    return;
+                }
+                var val = $("#tab1 dd p:eq(1)").text();
+                ;
+                var days = $("#tab1 dd p:eq(2)").text();
+                var productId = $("#tab1 dd p:eq(5)").text();
+                var pay = {};
+                pay.openid = openid;
+                pay.totalFee = val;
+                pay.phone = phone;
+                pay.extend = 0;
+                pay.days = days;
+                pay.uidNumber = uidNumber;
+                pay.productId = productId;
+                var json = payUtil.payOrder(pay);
+                if (json.code != 200) {
+                    alert(json.msg);
+                    return;
+                } else {
+                    json = json.data;
+                }
+                if (typeof WeixinJSBridge == "undefined") {
+                    if (document.addEventListener) {
+                        document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
+                    } else if (document.attachEvent) {
+                        document.attachEvent('WeixinJSBridgeReady', onBridgeReady(json));
+                        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
+                    }
+                } else {
+                    onBridgeReady(json)
+                }
             }
         }
         //更改号码
@@ -218,9 +227,12 @@
                 'getBrandWCPayRequest',json,
                 function(res){
                     if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                        window.location.href="/oauth/admin/OwnerSafeNumber.html";
+                        //window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
+                        window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
                     }else {
-                        // window.location.href="/oauth/admin/OwnerSafeNumber.html";
+                        //console.log(res.err_msg);
+                        //alert("res.err_msg is:"+res.err_msg);
+                         //window.location.href="/oauth/regex/buy_zhizun.html?"+Math.random()*10;
                     }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
                 }
             );

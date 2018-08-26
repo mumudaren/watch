@@ -310,7 +310,11 @@ public class PageController extends  BaseController{
          return  "complain";
     }
 
+    @RequestMapping("/wrong.html")
+    public  String  wrongPage(){
 
+        return  "wrongPage";
+    }
 
 
 
