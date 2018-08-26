@@ -150,11 +150,12 @@ public class TestController extends  BaseController {
         String  url= userInfo.getHeadimgurl();
         model.addObject("url",url);
         model.addObject("phone",userInfo.getPhone());
-        List<BusinessNumberRecord>  ls=recordRepository.findAllByPrtmsEqualsAndBusinessIdEqualsOrderBySubtsDesc(userInfo.getPhone(),util.getBusinessKey());
+        Date now=DateUtils.addDay(new Date(),"-60");
+        List<BusinessNumberRecord>  ls=recordRepository.findAllByPrtmsEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),util.getBusinessKey(),now);
         handlerList(model,ls);
         model.addObject("ls",ls);
         logger.info("record is:"+ls.get(0).getIsValid().toString());
-        List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsOrderBySubtsDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey());
+        List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey(),now);
 
         model.addObject("other",other);
         handlerOther(other);
