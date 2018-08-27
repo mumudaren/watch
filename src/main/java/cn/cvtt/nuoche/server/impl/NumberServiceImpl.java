@@ -160,7 +160,7 @@ public class NumberServiceImpl implements NumberService {
         map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
         map.put("uuidinpartner", "");
         map.put("validitytime", param.getExpiretime());
-
+        map.put("subts", DateUtils.format(new Date()));
         map.put("appkey", args.get("SAFENUMBER_APP_KEY"));
         map.put("msgid", "1");
         map.put("service", "SafeNumber");
@@ -197,7 +197,7 @@ public class NumberServiceImpl implements NumberService {
         map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
         map.put("uuidinpartner", "");
         map.put("validitytime", param.getExpiretime());
-
+        map.put("subts", DateUtils.format(new Date()));
         map.put("appkey", args.get("SAFENUMBER_APP_KEY_ZZ"));
         map.put("msgid", "1");
         map.put("service", "SafeNumber");

@@ -327,7 +327,8 @@
                     'getBrandWCPayRequest',json,
                     function(res){
                         if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                            window.location.href="/findNumnberType.html?number="+$("#uidnumber").text();
+                            //window.location.href="/findNumnberType.html?number="+ $(".sessionPhone").text();
+                            window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
                         }else{
                             //console.log(res.err_msg);
                             //window.location.reload();

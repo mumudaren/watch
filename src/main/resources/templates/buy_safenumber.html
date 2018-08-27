@@ -19,10 +19,14 @@
     <body>
       <div class="wrap f_404wrap">         
           <div class="f_addtelphone">
+              <form id="sendPhone" th:action="@{/findStatus.html}"  th:method="post">
             <p>
-              手机号码<!--<input type="tel" id="phone" name=""   />--><input type="tel" id="phone"  th:value="${phone}" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
-                <img src="../images/buynumber_03.png" class="f_addnumber_img"/>
+              手机号码<!--<input type="tel" id="phone" name=""   />-->
+                <input type="tel" id="phone"  th:value="${phone}" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
+                <input style="display:none" id="phoneType" name="phoneType" value="normal" />
+              <img src="../images/buynumber_03.png" class="f_addnumber_img"/>
             </p>
+              </form>
           </div>
           <p class="z_safenumberbind">安全号将与输入的号码进行绑定，呼叫安全号手机号将接听来电！</p>
           <p class="z_buysafenum_seltaocan">选择套餐</p>
@@ -67,6 +71,7 @@
         <script th:inline="javascript">
              var openid=[[${user.openid}]];
              var clicktag = 0;  //微信支付标志
+             var form = document.getElementById('sendPhone');
             $(function(){
                  $(".f_dayscontent ul li:eq(0)").trigger('click');
                  $(".fastPay").click(function(){
@@ -139,7 +144,7 @@
                     function(res){
                         if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                             //window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
-                            window.location.href="/findStatus.html?number="+$("#phone").text()+"%26"+"type=normal";
+                            form.submit();
                         }else {
 
                             //console.log(res.err_msg);
