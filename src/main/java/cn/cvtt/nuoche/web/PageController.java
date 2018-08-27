@@ -324,7 +324,18 @@ public class PageController extends  BaseController{
 
         return  "wrongPage";
     }
-
+    //延期、解冻支付成功后跳转的接口。根据号码绑定记录判断是靓号还是普通号。
+    @RequestMapping("/findNumnberType.html")
+    public  String  findNumnberTypeMethod(String number) throws IOException {
+         String type="normal";
+        BusinessNumberRecord  record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(number,util.getBusinessKey());
+        if(record.getRegexId()>0){
+            type="ZhiZun";
+        }
+        logger.info("[findNumnberTypeMethod]number type is:"+type);
+        return "redirect:/findStatus.html?number="+number+"&type="+type;
+    }
+    //判断延期、购买、解冻等是否成功。
     @RequestMapping("/findStatus.html")
     public  String  findStatusMethod(String number,String type) throws IOException {
         BindVo bind=new BindVo();
