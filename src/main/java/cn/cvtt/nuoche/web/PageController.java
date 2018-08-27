@@ -326,10 +326,19 @@ public class PageController extends  BaseController{
     }
 
     @RequestMapping("/findStatus.html")
-    public  String  findStatusMethod(String number) throws IOException {
+    public  String  findStatusMethod(String number,String type) throws IOException {
         BindVo bind=new BindVo();
         bind.setUidnumber(number);
-        Result result=numberService.queryRelation(bind);
+        Result result=null;
+        if(StringUtils.equals(type,"normal")){
+            logger.info("[findStatusMethod]number's type is normal");
+            result=numberService.queryNormalRelation(bind);
+        }else{
+            logger.info("[findStatusMethod]number's type is ZhiZun");
+            result=numberService.queryRelation(bind);
+        }
+
+        logger.info("[findStatusMethod]numberService result is:"+result.toString());
         if(result.getCode()==200) {
             JSONObject jobj = JSONObject.parseObject(result.getData().toString());
             JSONObject res = jobj.getJSONObject("query_Relation_response");
@@ -340,17 +349,21 @@ public class PageController extends  BaseController{
                 for (int i = 0; i < items.size(); i++) {
                     // 遍历 jsonarray 数组，把每一个对象转成 json 对象
                     JSONObject job = items.getJSONObject(i);
-                    logger.info("[findStatusMethod]job is:" + job.get("subts"));
                     if (!StringUtils.isEmpty(job.get("subts").toString())) {
-                        buyTime = job;
+                        Date dateRecent=job.getDate("subts");
+                        Date dateTemp=new Date(0);
+                        if(dateRecent.getTime()>dateTemp.getTime()){
+                            dateTemp=dateRecent;
+                            buyTime = job;
+                            logger.info("[findStatusMethod]foreach buyTime is:" + buyTime.get("subts"));
+                        }
                     }
                 }
             }else{
                 return "wrongPage";
             }
             //JSONObject buyTime=job.getJSONObject("subts");
-            logger.info("[findStatusMethod]result is:" + res.toString());
-            logger.info("[findStatusMethod]buyTime is:" + buyTime.getDate("subts"));
+            logger.info("[findStatusMethod]final buyTime is:" + buyTime.getDate("subts"));
             //查询该号码的buyTime是空。绑定不成功。
             if (StringUtils.isEmpty(buyTime.getDate("subts").toString())) {
                 logger.info("[findStatusMethod]bind or bindZhiZun fail:");
@@ -362,7 +375,6 @@ public class PageController extends  BaseController{
             Calendar cal1 = Calendar.getInstance();
             cal1.setTime(nowTime);
             // 将分钟、秒、毫秒域清零
-            cal1.set(Calendar.MINUTE, 0);
             cal1.set(Calendar.SECOND, 0);
             cal1.set(Calendar.MILLISECOND, 0);
             Date nowReset = cal1.getTime();

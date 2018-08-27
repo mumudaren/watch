@@ -138,8 +138,8 @@
                     'getBrandWCPayRequest',json,
                     function(res){
                         if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                            window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
-                            //window.location.href="/findStatus.html?number="+$("#uidnumber").text();
+                            //window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
+                            window.location.href="/findStatus.html?number="+$("#phone").text()+"%26"+"type=normal";
                         }else {
 
                             //console.log(res.err_msg);
