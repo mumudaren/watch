@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -375,10 +376,11 @@ public class OauthController extends  BaseController{
             String  url= userInfo.getHeadimgurl();
             modelAndView.addObject("url",url);
             modelAndView.addObject("phone",userInfo.getPhone());
-            List<BusinessNumberRecord>  ls=recordRepository.findAllByPrtmsEqualsAndBusinessIdEqualsOrderBySubtsDesc(userInfo.getPhone(),util.getBusinessKey());
+            Date now=DateUtils.addDay(new Date(),"-60");
+            List<BusinessNumberRecord>  ls=recordRepository.findAllByPrtmsEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),util.getBusinessKey(),now);
             handlerList(modelAndView,ls);
             modelAndView.addObject("ls",ls);
-            List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsOrderBySubtsDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey());
+            List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey(),now);
             modelAndView.addObject("other",other);
             handlerOther(other);
             logger.info("businessKey"+util.getBusinessKey());
