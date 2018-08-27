@@ -41,9 +41,9 @@
             <a href="">用户协议</a>
           </p>
 
-          <div class="f_successwrap" style="display:none;">
+          <div class="f_successwrap" style="display: none">
               <div class="f_successlightbox"></div>
-              <span class="z_successtext"></span>
+              <span class="z_successtext">122222</span>
           </div>
       </div>
 
@@ -52,6 +52,7 @@
            var pathSource=[[${path}]];
           $(function(){
                $("#getcode").click(function(){
+                   $(".z_successtext").text("test");
                    var  phone=$("input[name='phone']").val();
                    if(!util.validPhone(phone)){
                        util.showText("请输入正确的手机号码!",$(".z_successtext"));return;
@@ -83,6 +84,7 @@
                     if(result.code==200){
                         window.location.href="/oauth/admin/"+pathSource;
                     }else {
+                        console.log("result is:"+result.msg);
                         util.showText(result.msg,$(".z_successtext"));
                     }
                 });

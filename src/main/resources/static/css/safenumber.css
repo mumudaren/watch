@@ -414,3 +414,11 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     left: -.1rem;
     bottom: .1rem;
 }
+
+
+
+.f_errorwrap,.f_successwrap{position:fixed;top:0;width:10rem;height:1.5rem;line-height:1.5rem;z-index:100;}
+.f_errorlightbox,.f_successlightbox{width:10rem;height:1.5rem;z-index:101;background:#1561a4;filter:alpha(Opacity=70);-moz-opacity:0.7;opacity: 0.7;position: absolute;top: 0px;left: 0px;}
+.f_errorlightbox{background: #333;filter:alpha(Opacity=50);-moz-opacity:0.5;opacity: 0.5;}
+.z_errortext,.z_successtext{color:#fff;font-size:.5rem;position:absolute;z-index:200;text-align:center;width:10rem;}
+.z_errortext{color: #f00;}

@@ -93,10 +93,9 @@ public class businessController extends  BaseController{
     @ResponseBody
     @LogManager(description ="validPhone")
     public  Result   validPhone(String openid,String  code,String phone){
-        logger.info("validPhone method:validPhone receive  openid is:"+openid);
         if(StringUtils.isEmpty(code)||StringUtils.isEmpty(phone)){
             logger.info("validPhone method:code or phone is empty.So ResultMsg is:"+ResultMsg.REQUESTPARAMEXCEPTION);
-            return  new Result(ResultMsg.REQUESTPARAMEXCEPTION);
+            return  Result.error("验证码不能为空。");
         }
         String  key="NUOCHE:"+phone;
         String  redisCode=jedisUtils.get(key,"");
