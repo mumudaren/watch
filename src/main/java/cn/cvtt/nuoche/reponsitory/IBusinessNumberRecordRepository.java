@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface IBusinessNumberRecordRepository extends JpaRepository<BusinessNumberRecord,Long>,JpaSpecificationExecutor {
-
+    //根据用户手机号查询数据
     List<BusinessNumberRecord>  findAllByUserPhoneEqualsAndBusinessIdEquals(String phone, String business);
     List<BusinessNumberRecord>  findAllByPrtmsEqualsAndBusinessIdEqualsOrderBySubtsDesc(String phone, String business);
     List<BusinessNumberRecord>  findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsOrderBySubtsDesc(String prtms,String UserPhone, String business);
@@ -18,7 +18,8 @@ public interface IBusinessNumberRecordRepository extends JpaRepository<BusinessN
     //BusinessNumberRecord  findBusinessNumberRecordByPrtmsEqualsAndSmbms(String phone, String smbms);
     //List<BusinessNumberRecord>  findBusinessNumberRecordByPrtmsEqualsAndSmbms(String smbms);
     BusinessNumberRecord  findBySmbmsEqualsAndBusinessIdEquals(String smbms,String business);
-
+    //根据prtms查找数据
+    List<BusinessNumberRecord>  findAllByPrtmsEqualsAndBusinessIdEquals(String phone, String business);
 
 
 

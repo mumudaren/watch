@@ -339,7 +339,7 @@ public class OauthController extends  BaseController{
        // WxUserInfo  wxuser=userRepository.findByOpenidEquals(openId);
         String regphone=cus.getPhone();
         logger.info("[ouathAdminBase]"+regphone+" =>>>> "+util.getBusinessKey());
-        List<BusinessNumberRecord> records=recordRepository.findAllByUserPhoneEqualsAndBusinessIdEquals(regphone,util.getBusinessKey());
+        List<BusinessNumberRecord> records=recordRepository.findAllByPrtmsEqualsAndBusinessIdEquals(regphone,util.getBusinessKey());
         if(records.size()<1){
             if(StringUtils.equals(state,"buy_safenumber")){
                 modelAndView.setViewName("buy_safenumber");
