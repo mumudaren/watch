@@ -123,7 +123,11 @@ public class TestController extends  BaseController {
         return  "validate_tel";
     }
 
+    @RequestMapping("/keyboardTest")
+    public  String  keyboardTest(){
 
+        return  "keyboard";
+    }
 
     @RequestMapping("/testMessage")
     public  ModelAndView  message(){

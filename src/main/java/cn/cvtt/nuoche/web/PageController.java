@@ -308,9 +308,14 @@ public class PageController extends  BaseController{
      }
 
 
+    @RequestMapping("/keyboardPage")
+    public  String  keyboardPage(){
+         return "keyboard";
+    }
+
     @RequestMapping("/suggest")
     public  String  suggest(){
-         return "suggest";
+        return "suggest";
     }
 
     @RequestMapping("/complain.html")

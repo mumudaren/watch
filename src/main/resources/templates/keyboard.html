@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="Description" content="拨号盘" />
+    <title>拨号盘</title>
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes">
+    <meta content="telephone=no" name="format-detection">
+    <link rel="stylesheet" type="text/css" href="css/safenumber.css" />
+    <style type="text/css">
+        [v-cloak]{
+            display: none !important;
+        }
+        .f_keyboardcontent{padding: .5rem;}
+        .f_keyboard{position: relative;}
+        .f_keyboard input{width: 8rem;height: .7rem;line-height: .7rem;padding: .3rem .5rem;background-color: #fff;border: none;font-size: .5rem;box-shadow: 5px 5px 5px #d4e5f5; }
+        .f_keyboard img{width: 1rem;position: absolute;right: .5rem;top: .38rem;}
+        .f_keyboard_call{position: fixed;bottom:.5rem;}
+        .f_keyboard_call ul{display: flex;display: -webkit-flex;flex-direction: row;flex-wrap: wrap;}
+        .f_keyboard_call ul li{width: 2.5rem;padding: .3rem 0;text-align:center;background-color: #fff;border-radius: .15rem;flex: 1 1 auto;-webkit-flex: 1 1 auto;margin-right: .5rem;margin-top: .3rem;font-size: .6rem;color: #808080;}
+        .f_keyboard_call ul li.active{background-color:#ebedee; }
+        .f_call{margin-top: .5rem;}
+        .f_call a{display: block;width:9rem;height: .6rem;line-height: .6rem;padding:.5rem 0;border-radius: .5rem;color: #fff;font-size: .6rem;text-align: center;box-shadow: 5px 5px 30px #c0e3fb;
+            background-color: #2f89ef;
+            background: -webkit-linear-gradient(left, #2f89ef , #54bafb); /* Safari 5.1 - 6.0 */
+            background: -o-linear-gradient(right, #2f89ef , #54bafb); /* Opera 11.1 - 12.0 */
+            background: -moz-linear-gradient(right, #2f89ef , #54bafb); /* Firefox 3.6 - 15 */
+            background: linear-gradient(to right, #2f89ef , #54bafb); /* 标准的语法 */}
+        .f_call a img{width: .8rem;margin-top: -.1rem;margin-right: .3rem;}
+        .f_call a:hover{text-decoration: none;}
+    </style>
+    <script type="text/javascript" src="js/flexible.js"></script>
+    <script type="text/javascript" src="js/flexible_css.js"></script>
+    <script type="text/javascript" src="js/vue.min.js"></script>
+</head>
+<body>
+<div id="keyboard" class="wrap" style="background-color: #f2f7fc;min-height: 15rem; ">
+    <div class="f_keyboardcontent">
+        <p class="f_keyboard">
+            <input type="tel" id="" name="" v-model="phone"  >
+            <img src="images/close_03.png" @click="clear"/>
+        </p>
+        <div class="f_keyboard_call">
+            <ul>
+                <li v-for="(item,index) in callNumber" v-on:click="valClick(index)" v-cloak>{{item}}</li>
+            </ul>
+            <p class="f_call">
+                <a :href="'tel:'+ phone">
+                    <img src="images/tel_03.png" />拨号
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#keyboard",
+        data: {
+            inputVal: [95013],
+            callNumber: [1,2,3,4,5,6,7,8,9,'*',0,'#'],
+            phone: '95013'
+        },
+        methods:
+            {
+                valClick: function(index){
+                    let numberList = this.callNumber[index];
+                    let number = this.inputVal.push(numberList);
+                    this.phone = this.inputVal.join('');
+                },
+                clear: function(){
+                    let str = this.inputVal;
+                    this.inputVal= str.slice(0,str.length-1);
+                    this.phone = this.inputVal.join('');
+                }
+            }
+
+    })
+
+</script>
+</body>
+</html>

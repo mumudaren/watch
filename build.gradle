@@ -59,4 +59,5 @@ dependencies {
 	compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
 	runtime('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile('net.sourceforge.nekohtml:nekohtml:1.9.22')
 }
