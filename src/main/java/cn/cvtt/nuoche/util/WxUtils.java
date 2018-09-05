@@ -25,6 +25,7 @@ public class WxUtils {
     private static final String URL_OPENID = "https://api.weixin.qq.com/sns/oauth2/access_token";
     private static final String URL_OPENIDLIST = "https://api.weixin.qq.com/cgi-bin/user/get";
     private static final String URL_ACCESSTOKEN = "https://api.weixin.qq.com/cgi-bin/token";
+    private static final String URL_JSAPITOKEN = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
     private static final String URL_USERINFO = "https://api.weixin.qq.com/cgi-bin/user/info";
     /**
      * 通过网页授权获取用户信息url
@@ -114,7 +115,33 @@ public class WxUtils {
 
         return at;
     }
+    /**
+     * 获取JSPAI_token
+     * @return
+     */
+    public static JSAPIToken getJSAPIToken(String accessToken) {
+        Map<String, String> map = new HashMap<>();
+        map.put("access_token", accessToken);
+        map.put("type", "jsapi");
+        String sResult = HttpClientUtil.doGet(URL_JSAPITOKEN, map);
 
+        if (StringUtils.equals("504", sResult)) {
+            return null;
+        }
+        JSONObject jObj = JSONObject.parseObject(sResult);
+        JSAPIToken at = null;
+        if (null != jObj) {
+            try {
+                at = new JSAPIToken();
+                at.setJSAPIToken(jObj.getString("ticket"));
+                at.setExpiresIn(jObj.getIntValue("expires_in"));
+            } catch (Exception e) {
+                log.error("[getJSAPIToken]access JSAPIToken fail");
+                at = null;
+            }
+        }
+        return at;
+    }
     /**
      * 获取微信用户
      * @param accessToken
