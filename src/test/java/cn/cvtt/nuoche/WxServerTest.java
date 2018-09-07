@@ -1,20 +1,30 @@
-package cn.cvtt.nuoche.server;
+package cn.cvtt.nuoche;
 
 import cn.cvtt.nuoche.common.Constant;
 import cn.cvtt.nuoche.entity.AccessToken;
 import cn.cvtt.nuoche.entity.JSAPIToken;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
-import cn.cvtt.nuoche.util.*;
+import cn.cvtt.nuoche.server.SubScribeEventServer;
+import cn.cvtt.nuoche.util.ApiSignUtils;
+import cn.cvtt.nuoche.util.DateUtils;
+import cn.cvtt.nuoche.util.HttpClientUtil;
+import cn.cvtt.nuoche.util.JedisUtils;
+import cn.cvtt.nuoche.util.MessageUtils;
+import cn.cvtt.nuoche.util.WxUtils;
 import cn.cvtt.nuoche.util.requestTemplate.TextMessage;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -27,8 +37,10 @@ import java.util.Map;
  * @author Yampery
  * @date 2018/3/8 11:55
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes=Application.class)
 @Service
-public class WxServer {
+public class WxServerTest {
 
      @Autowired
      private SubScribeEventServer SubService;
@@ -38,7 +50,7 @@ public class WxServer {
      private String ACCESS_TOKEN_KEY;
     @Value("${redis.nuonuo:jsapiToken}")
     private String JSAPI_TOKEN_KEY;
-     private static final Logger logger = LoggerFactory.getLogger(WxServer.class);
+     private static final Logger logger = LoggerFactory.getLogger(WxServerTest.class);
      @Autowired
      private IBusinessCusRepository cusRespository;
 
@@ -207,7 +219,7 @@ public class WxServer {
      * 定时器维护access_token
      * 从0分钟开始每半时执行一次
      */
-    @Scheduled(cron = "0 0/30 * * *  *")
+    @Test
     public void AccessTokenTask() {
         //获取AccessToken
         AccessToken at = WxUtils.getAccessToken();
@@ -243,7 +255,7 @@ public class WxServer {
      * 定时器维护JSAPI_token
      * 从3分钟开始每半小时执行一次
      */
-    @Scheduled(cron = "0 3/30 * * *  *")
+    @Test
     public void JSAPITokenTask()  {
         //函数调用次数
         String  accessToken=getAccessToken();
