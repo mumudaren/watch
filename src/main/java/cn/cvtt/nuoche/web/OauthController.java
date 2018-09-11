@@ -265,6 +265,7 @@ public class OauthController extends  BaseController{
         if (StringUtils.isBlank(openId)) {
             logger.info("[ouathRegexBase]openId is empty and code is:", code);
             modelAndView.setViewName("redirect:/oauth/regex/" + state);
+            logger.info("[ouathRegexBase]redirect:/oauth/regex/" + state);
             return modelAndView;
         }
         /***==> 先判断当前用户是否绑定手机号,如果没有则跳转绑定页面*/
@@ -276,6 +277,7 @@ public class OauthController extends  BaseController{
             modelAndView.addObject("path",state);
             return  modelAndView;
         }else {
+            logger.info("[ouathRegexBase]will go to buy_zhizun.html");
             modelAndView.setViewName("buy_zhizun");
             String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
             //  String json= productInterface.findProduct(util.getBusinessKey());
