@@ -24,11 +24,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import cn.cvtt.nuoche.server.WxServer;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static cn.cvtt.nuoche.util.WechatSignGenerator.jsapiSign;
 
 @Controller
 public class TestController extends  BaseController {
@@ -114,6 +117,12 @@ public class TestController extends  BaseController {
         Map<String, String> map = new HashMap<>();
         map.put("openid", "oIFn90xXM4M-zUayrLI4hxLGZNKA");
         modelAndView.addObject("user", map);
+        try {
+            String jsapiSign=jsapiSign();
+            logger.info("jsapiSign is:"+jsapiSign);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return  modelAndView;
     }
 

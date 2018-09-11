@@ -119,7 +119,11 @@ public class WxUtils {
      * 获取JSPAI_token
      * @return
      */
-    public static JSAPIToken getJSAPIToken(String accessToken) {
+    public static JSAPIToken getJSAPIToken() {
+        String accessToken=null;
+        if(null!=getAccessToken()){
+            accessToken=getAccessToken().getAccessToken();
+        }
         Map<String, String> map = new HashMap<>();
         map.put("access_token", accessToken);
         map.put("type", "jsapi");

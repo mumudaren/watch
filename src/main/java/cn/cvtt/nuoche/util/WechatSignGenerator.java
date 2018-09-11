@@ -77,7 +77,20 @@ public class WechatSignGenerator {
 		 System.out.println("sb:"+sb.toString());
 		 return  map;
 	 }
-	 
+	public  static   String  jsapiSign() throws Exception{
+		String timeStamp=System.currentTimeMillis()+"";
+		System.out.println("timeStamp:"+timeStamp);
+		//sha1加密
+		String content="jsapi_ticket="+WxUtils.getJSAPIToken().getJSAPIToken()+"&"+"noncestr="+ Constant.NONCE_STR+"&"+"timestamp="+timeStamp+"&"+"url=http://mp.weixin.qq.com?params=value";
+		System.out.println("String is:"+content);
+		MessageDigest md = null;
+		String sha = null;
+		md = MessageDigest.getInstance("SHA-1");
+		// 3. 将拼接后的字串进行SHA1加密
+		byte[] digest = md.digest(content.toString().getBytes());
+		sha = SignUtil.byteToStr(digest);
+		return  sha;
+	}
 	 
 	 public static String doXmlPost(String httpUrl, Map<String, Object> params) throws IOException
 		{
