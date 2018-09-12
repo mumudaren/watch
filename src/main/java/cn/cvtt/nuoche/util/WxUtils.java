@@ -4,6 +4,7 @@ import cn.cvtt.nuoche.common.Constant;
 import cn.cvtt.nuoche.common.result.Result;
 import cn.cvtt.nuoche.entity.*;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
+import cn.cvtt.nuoche.server.WxServer;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -121,8 +122,8 @@ public class WxUtils {
      */
     public static JSAPIToken getJSAPIToken() {
         String accessToken=null;
-        if(null!=getAccessToken()){
-            accessToken=getAccessToken().getAccessToken();
+        if(null!= WxServer.getAccessToken()){
+            accessToken=WxServer.getAccessToken();
         }
         Map<String, String> map = new HashMap<>();
         map.put("access_token", accessToken);

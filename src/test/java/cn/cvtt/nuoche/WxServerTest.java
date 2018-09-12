@@ -267,7 +267,7 @@ public class WxServerTest {
                 AccessTokenTask();
             }else{
                 //成功获取到accessToken后，获取jsapi的token
-                JSAPIToken atJSAPI = WxUtils.getJSAPIToken(accessToken);
+                JSAPIToken atJSAPI = WxUtils.getJSAPIToken();
                 if(null!=atJSAPI){
                     // 存储到redis数据库
                     jedisUtils.set(JSAPI_TOKEN_KEY, atJSAPI.getJSAPIToken());

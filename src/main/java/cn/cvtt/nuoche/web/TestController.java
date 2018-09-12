@@ -99,7 +99,8 @@ public class TestController extends  BaseController {
         return  modelAndView;
     }
 
-    @RequestMapping("/testSafe")
+    @RequestMapping("" +
+            "")
     public  ModelAndView  testSafeNumber(){
         ModelAndView  modelAndView=new ModelAndView();
         modelAndView.setViewName("buy_safenumber");
@@ -151,7 +152,7 @@ public class TestController extends  BaseController {
     @RequestMapping("/testWongPage")
     public  ModelAndView  testWong(){
         ModelAndView  model=new ModelAndView();
-        model.setViewName("wrongPage");
+        model.setViewName("gift/wrongPage");
         return  model;
     }
 

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,23 +34,42 @@ public class WxServer {
      @Autowired
      private SubScribeEventServer SubService;
      @Resource
-     private JedisUtils jedisUtils;
-     @Value("${redis.nuonuo.token}")
-     private String ACCESS_TOKEN_KEY;
+     private  JedisUtils jedisUtils;
     @Value("${redis.nuonuo:jsapiToken}")
     private String JSAPI_TOKEN_KEY;
      private static final Logger logger = LoggerFactory.getLogger(WxServer.class);
      @Autowired
      private IBusinessCusRepository cusRespository;
+    //     @Value("${redis.nuonuo.token}")
+    //     private   String ACCESS_TOKEN_KEY;
+    // 维护一个本类的静态变量
+    private static WxServer switchUtil;
+
+    // 初始化的时候，将本类中的sysConfigManager赋值给静态的本类变量
+    @PostConstruct
+    public void init() {
+        switchUtil = this;
+        switchUtil.jedisUtils = this.jedisUtils;
+    }
+    //accesstoken,key
+
+    private static String ACCESS_TOKEN_KEY;
+
+    public static String getAccessTokenKey() {
+        return ACCESS_TOKEN_KEY;
+    }
+    @Value("${redis.nuonuo.token}")
+    public void setAccessTokenKey(String ACCESS_TOKEN_KEY) {
+        WxServer.ACCESS_TOKEN_KEY = ACCESS_TOKEN_KEY;
+    }
 
 
 
-
-    /**
-     * 微信事件、消息处理器
-     * @param requestMap
-     * @return
-     */
+        /**
+         * 微信事件、消息处理器
+         * @param requestMap
+         * @return
+         */
     public String wxHandler(Map<String, String> requestMap) {
         // xml格式的消息数据
         String respXml = null;
@@ -158,13 +178,16 @@ public class WxServer {
         return respXml;
     }
 
+
     /**
      * 从redis中获取access_token
      * @return
      */
-    public String getAccessToken() {
+    public static String getAccessToken() {
+
         try {
-            return jedisUtils.get(ACCESS_TOKEN_KEY, "");
+            logger.error("ACCESS_TOKEN_KEY:{}", ACCESS_TOKEN_KEY);
+            return switchUtil.jedisUtils.get(ACCESS_TOKEN_KEY, "");
         } catch (Exception e) {
             logger.error("缓存池获取access_tocken失败 exception:{}", e.getMessage());
             throw e;

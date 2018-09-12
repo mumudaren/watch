@@ -14,9 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.security.DigestException;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.Map.Entry;
+
+import static cn.cvtt.nuoche.util.SignUtil.SHA1;
 
 /**
  * weixin pay util
@@ -79,17 +82,26 @@ public class WechatSignGenerator {
 	 }
 	public  static   String  jsapiSign() throws Exception{
 		String timeStamp=System.currentTimeMillis()+"";
-		System.out.println("timeStamp:"+timeStamp);
-		//sha1加密
-		String content="jsapi_ticket="+WxUtils.getJSAPIToken().getJSAPIToken()+"&"+"noncestr="+ Constant.NONCE_STR+"&"+"timestamp="+timeStamp+"&"+"url=http://mp.weixin.qq.com?params=value";
-		System.out.println("String is:"+content);
-		MessageDigest md = null;
-		String sha = null;
-		md = MessageDigest.getInstance("SHA-1");
-		// 3. 将拼接后的字串进行SHA1加密
-		byte[] digest = md.digest(content.toString().getBytes());
-		sha = SignUtil.byteToStr(digest);
-		return  sha;
+		Map<String,Object> maps = new HashMap<String,Object>();
+		maps.put("jsapi_ticket", WxUtils.getJSAPIToken().getJSAPIToken());
+		maps.put("noncestr",Constant.NONCE_STR);
+		maps.put("timestamp",timeStamp.substring(0,timeStamp.length()-3));
+		maps.put("url", "http://testcar.95013.com/testWongPage");
+		String str=null;
+		try {
+			str = SHA1(maps);
+			System.out.println("timeStamp:"+timeStamp+"content:"+str);
+		} catch (DigestException e) {
+        // TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		MessageDigest md = null;
+//		String sha = null;
+//		md = MessageDigest.getInstance("SHA-1");
+//		// 3. 将拼接后的字串进行SHA1加密
+//		byte[] digest = md.digest(content.toString().getBytes());
+//		sha = SignUtil.byteToStr(digest);
+		return  str;
 	}
 	 
 	 public static String doXmlPost(String httpUrl, Map<String, Object> params) throws IOException
