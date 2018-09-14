@@ -266,7 +266,7 @@ public class WxServer {
      * 定时器维护JSAPI_token
      * 从3分钟开始每半小时执行一次
      */
-    @Scheduled(cron = "0 3/30 * * *  *")
+    @Scheduled(cron = "0 1/30 * * *  *")
     public void JSAPITokenTask()  {
         //函数调用次数
         String  accessToken=getAccessToken();
@@ -279,13 +279,19 @@ public class WxServer {
             }else{
                 //成功获取到accessToken后，获取jsapi的token
                 JSAPIToken atJSAPI = WxUtils.getJSAPIToken();
-                if(null!=atJSAPI){
-                    // 存储到redis数据库
-                    jedisUtils.set(JSAPI_TOKEN_KEY, atJSAPI.getJSAPIToken());
-                    logger.info("[JSAPITokenTask]set JSAPIToken success，validTime{}'s , token is:{}", atJSAPI.getExpiresIn(), atJSAPI.getJSAPIToken());
-                    break;
+                if(atJSAPI.getJSAPIToken()!=null){
+                    try{
+                        // 存储到redis数据库
+                        String jsapiKey= atJSAPI.getJSAPIToken();
+                        logger.info("atJSAPI is:"+atJSAPI.toString());
+                        jedisUtils.set(JSAPI_TOKEN_KEY,jsapiKey);
+                        logger.info("[JSAPITokenTask]set JSAPIToken success，validTime{}'s , token is:{}", atJSAPI.getExpiresIn(), atJSAPI.getJSAPIToken());
+                        break;
+                    }catch (Exception e){
+                        //用过期的accessToken获取JSAPI的token会获取不到。或因为未知原因获取不到JSAPI的token需要重新获取accessToken。
+                        AccessTokenTask();
+                    }
                 }else{
-                    //用过期的accessToken获取JSAPI的token会获取不到。或因为未知原因获取不到JSAPI的token需要重新获取accessToken。
                     AccessTokenTask();
                 }
             }

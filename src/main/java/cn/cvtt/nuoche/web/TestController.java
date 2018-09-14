@@ -118,12 +118,6 @@ public class TestController extends  BaseController {
         Map<String, String> map = new HashMap<>();
         map.put("openid", "oIFn90xXM4M-zUayrLI4hxLGZNKA");
         modelAndView.addObject("user", map);
-        try {
-            String jsapiSign=jsapiSign();
-            logger.info("jsapiSign is:"+jsapiSign);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return  modelAndView;
     }
 
@@ -152,7 +146,7 @@ public class TestController extends  BaseController {
     @RequestMapping("/testWongPage")
     public  ModelAndView  testWong(){
         ModelAndView  model=new ModelAndView();
-        model.setViewName("gift/wrongPage");
+        model.setViewName("gift/share_number");
         return  model;
     }
 
@@ -176,8 +170,8 @@ public class TestController extends  BaseController {
        /* List<wx_product> products= productRespository.findAll();
         model.addObject("products",products);
 */
-       String businessId=util.getBusinessKey();
-       logger.info("bussinessId is:"+businessId);
+        String businessId=util.getBusinessKey();
+        logger.info("bussinessId is:"+businessId);
         String json= productInterface.findRegexProduct(businessId,"0");
         List<wx_product> products=JsonUtils.handlerRegexJson(json);
         model.addObject("products",products);

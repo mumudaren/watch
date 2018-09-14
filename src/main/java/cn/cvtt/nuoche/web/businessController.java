@@ -1,5 +1,6 @@
 package cn.cvtt.nuoche.web;
 
+import cn.cvtt.nuoche.common.Constant;
 import cn.cvtt.nuoche.common.aop.LogManager;
 import cn.cvtt.nuoche.common.result.Result;
 import cn.cvtt.nuoche.common.result.ResultMsg;
@@ -32,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import static cn.cvtt.nuoche.util.WechatSignGenerator.jsapiSign;
 
 @RestController
 public class businessController extends  BaseController{
@@ -200,6 +203,28 @@ public class businessController extends  BaseController{
         return   pojo;
     }
 
+
+    @RequestMapping("/shareToFriend")
+    public  JSONObject   shareToFriend(String  url){
+        JSONObject obj=new JSONObject();
+        String jsapiSign=null;
+        try {
+            jsapiSign=jsapiSign(url);
+            logger.info("[shareToFriend]jsapiSign is:"+jsapiSign);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String signature=StringUtils.substringBefore(jsapiSign,"_");
+        String timeStamp=StringUtils.substringAfterLast(jsapiSign,"_");
+        String nonceStr=StringUtils.substringBetween(jsapiSign,"_","_");
+
+        obj.put("appId", Constant.APP_ID);
+        obj.put("timeStamp", timeStamp);
+        obj.put("nonceStr", nonceStr);
+        obj.put("signature", signature);
+        logger.info("[shareToFriend]return is:"+obj.toString());
+        return obj;
+    }
 
     @RequestMapping("/commitMessage")
     public  Result   commitMessage(String  type,String textArea,String openidKey){

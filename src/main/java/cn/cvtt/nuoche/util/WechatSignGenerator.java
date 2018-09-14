@@ -80,13 +80,13 @@ public class WechatSignGenerator {
 		 System.out.println("sb:"+sb.toString());
 		 return  map;
 	 }
-	public  static   String  jsapiSign() throws Exception{
+	public  static   String  jsapiSign(String url) throws Exception{
 		String timeStamp=System.currentTimeMillis()+"";
 		Map<String,Object> maps = new HashMap<String,Object>();
 		maps.put("jsapi_ticket", WxUtils.getJSAPIToken().getJSAPIToken());
 		maps.put("noncestr",Constant.NONCE_STR);
 		maps.put("timestamp",timeStamp.substring(0,timeStamp.length()-3));
-		maps.put("url", "http://testcar.95013.com/testWongPage");
+		maps.put("url", url);
 		String str=null;
 		try {
 			str = SHA1(maps);
@@ -101,7 +101,7 @@ public class WechatSignGenerator {
 //		// 3. 将拼接后的字串进行SHA1加密
 //		byte[] digest = md.digest(content.toString().getBytes());
 //		sha = SignUtil.byteToStr(digest);
-		return  str;
+		return  str+"_"+Constant.NONCE_STR+"_"+timeStamp.substring(0,timeStamp.length()-3);
 	}
 	 
 	 public static String doXmlPost(String httpUrl, Map<String, Object> params) throws IOException
