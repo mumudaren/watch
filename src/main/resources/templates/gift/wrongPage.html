@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>        
+        <meta charset="utf-8" />
+        <meta name="Description" content="失败" />
+        <title>测试分享页面</title>
+        <meta content="yes" name="apple-mobile-web-app-capable"/>
+        <meta content="yes" name="apple-touch-fullscreen"/>
+        <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"/>
+        <meta content="telephone=no" name="format-detection"/>
+        <link rel="stylesheet" type="text/css" href="css/safenumber.css" />
+        <script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+        <!--<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>-->
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js"></script>
+        <script type="text/javascript" src="js/flexible_css.js"></script>
+    </head>
+    <body>
+      <div class="wrap">         
+          <div class="f_notallowimg">
+            <img src="images/wrong_03.png"/>
+          </div>
+          <p class="f_notallow_tel">diergeyemian！</p>
+          <p class="f_notallow_question">如有问题，请<a href="tel:1234567">联系客服</a></p>
+          <p class="f_bindsuc_share f_notallow_validate">
+            <a href="javascript:void(0);">重试</a>
+          </p>
+          <!--<p class="f_bindsuc_sharebj"></p>-->
+      </div>
+    </body>
+    <script>
+        var url=window.location.href.split('#')[0];
+        url = url.replace(/&/g, '%26');
+        console.log("url:"+url);
+        $.ajax({
+            url: "/shareToFriend.action?url="+url,
+            type: "POST",
+            async:true,
+            cache: false,
+            dataType: "json",
+            success: function(data){
+                console.log("shareToFriend return data:"+data);
+                wx.config({
+                    debug:false,
+                    appId: data.appId,
+                    timestamp:data.timeStamp,
+                    nonceStr:data.nonceStr,
+                    signature:data.signature,
+                    jsApiList: ["checkJsApi",  "onMenuShareAppMessage","onMenuShareTimeline"]
+                });}
+        });
+
+        wx.ready(function () {
+            console.log("wx.ready method");
+            wx.onMenuShareAppMessage({
+                title: '转发朋友测试', // 分享标题
+                desc: '宝宝的睡眠很重要，你的睡眠也很重要', // 分享描述
+                link: 'http://testcar.95013.com/testWongPage',
+                imgUrl: 'http://testcar.95013.com/images/test.jpg', // 分享图标
+                success: function () {
+                    // 用户点击了分享后执行的回调函数
+                    alert("回调");
+                }
+            });
+            wx.onMenuShareTimeline({
+                title: '转发朋友圈测试', // 分享标题
+                desc: '嘛哩嘛哩哄快快成功吧555555', // 分享描述
+                link: 'http://testcar.95013.com/testWongPage',
+                imgUrl: 'http://testcar.95013.com/images/test.jpg', // 分享图标
+                success: function () {
+                    // 用户点击了分享后执行的回调函数
+                    alert("回调");
+                }
+            });
+        });
+
+
+    </script>
+</html>
