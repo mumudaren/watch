@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>share_number</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -568,7 +568,8 @@
 
       <!-- Unnamed (Image) -->
       <div id="u3303" class="ax_default image">
-        <img id="u3303_img" class="img " src="images/share_number/u3303.png"/>
+        <!--<img id="u3303_img" class="img " src="images/share_number/u3303.png"/>-->
+        <img id="u3303_img" class="img " th:src="${user.headimgurl}"/>
         <!-- Unnamed () -->
         <div id="u3304" class="text" style="display: none; visibility: hidden">
           <p><span></span></p>
@@ -578,9 +579,10 @@
       <!-- Unnamed (Paragraph) -->
       <div id="u3305" class="ax_default paragraph">
         <img id="u3305_img" class="img " src="images/recive_card_info/u2671.png"/>
+        <!--<img id="u3305_img" class="img " th:src="${user.headimgurl}"/>-->
         <!-- Unnamed () -->
         <div id="u3306" class="text" style="visibility: visible;">
-          <p><span>36K纯帅</span></p>
+          <p><span th:text="${user.nickname}">36K纯帅</span></p>
         </div>
       </div>
 
@@ -589,7 +591,9 @@
         <img id="u3307_img" class="img " src="images/share_number/u3307.png"/>
         <!-- Unnamed () -->
         <div id="u3308" class="text" style="visibility: visible;">
-          <p style="font-size:14px;"><span>分享给朋友</span></p><p style="font-size:14px;"><span>朋友将获得30元代金券</span></p><p style="font-size:12px;"><span>你也将获得10积分</span></p>
+          <p style="font-size:14px;"><span>分享给朋友</span></p><p style="font-size:14px;">
+          <span th:text="'朋友将获得'+(${coupon.amount}/10)+'元代金券'">朋友将获得30元代金券</span></p><p style="font-size:12px;">
+          <span th:text="'你也将获得'+${coupon.point}+'积分'">你也将获得10积分</span></p>
         </div>
       </div>
 
@@ -642,6 +646,7 @@
           dataType: "json",
           success: function(data){
               console.log("shareToFriend return data:"+data);
+              // getHostPath();
               wx.config({
                   debug:false,
                   appId: data.appId,
@@ -657,8 +662,8 @@
           wx.onMenuShareAppMessage({
               title: '转发朋友测试', // 分享标题
               desc: '宝宝的睡眠很重要，你的睡眠也很重要', // 分享描述
-              link: 'http://testcar.95013.com/testWongPage',
-              imgUrl: 'http://testcar.95013.com/images/test.jpg', // 分享图标
+              link: getHostPath()+'/testWongPage',
+              imgUrl: getHostPath()+'/images/test.jpg', // 分享图标
               success: function () {
                   // 用户点击了分享后执行的回调函数
                   alert("回调");
@@ -667,8 +672,8 @@
           wx.onMenuShareTimeline({
               title: '转发朋友圈测试', // 分享标题
               desc: '嘛哩嘛哩哄快快成功吧555555', // 分享描述
-              link: 'http://testcar.95013.com/testWongPage',
-              imgUrl: 'http://testcar.95013.com/images/test.jpg', // 分享图标
+              link: getHostPath()+'/testWongPage',
+              imgUrl: getHostPath()+'/images/test.jpg', // 分享图标
               success: function () {
                   // 用户点击了分享后执行的回调函数
                   alert("回调");
@@ -676,6 +681,34 @@
           });
       });
 
+      function getHostPath(){
 
+          //获取当前网址，如： http://localhost:8083/myproj/view/my.jsp
+
+          var curWwwPath=window.document.location.href;
+
+          //获取主机地址之后的目录，如： myproj/view/my.jsp
+
+          var pathName=window.document.location.pathname;
+
+          var pos=curWwwPath.indexOf(pathName);
+
+          //获取主机地址，如： http://localhost:8083
+
+          var localhostPath=curWwwPath.substring(0,pos);
+
+          //获取带"/"的项目名，如：/myproj
+
+          // var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+
+          //得到了 http://localhost:8083/myproj
+
+          // var realPath=localhostPaht+projectName;
+
+          // alert(realPath);
+          console.log('localhostPath:'+localhostPath);
+          return localhostPath;
+
+      }
   </script>
 </html>

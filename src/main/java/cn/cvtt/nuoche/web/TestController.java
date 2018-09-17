@@ -6,11 +6,13 @@ import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.SystemFeedBack;
 import cn.cvtt.nuoche.entity.business.wx_product;
+import cn.cvtt.nuoche.entity.gift.GiftCoupon;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponRepository;
 import cn.cvtt.nuoche.reponsitory.ISystemFeedBack;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
@@ -47,6 +49,8 @@ public class TestController extends  BaseController {
     IBusinessCallRecordInterface callRecordInterface;
     @Autowired
     IBusinessCusRepository   businessCusRepository;
+    @Autowired
+    IGiftCouponRepository giftCouponRepository;
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     @RequestMapping("/getAll")
     @ResponseBody
@@ -142,10 +146,29 @@ public class TestController extends  BaseController {
         model.setViewName("suggest");
         return  model;
     }
-
+    //转发朋友圈等
     @RequestMapping("/testWongPage")
     public  ModelAndView  testWong(){
         ModelAndView  model=new ModelAndView();
+        //授权登录，获取头像
+        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
+        model.addObject("user",userInfo);
+        GiftCoupon coupon=giftCouponRepository.findByIsAbleEquals(1);
+        model.addObject("coupon",coupon);
+        model.setViewName("gift/share_number");
+        return  model;
+    }
+    //转发朋友圈后跳转
+    @RequestMapping("/testReturn")
+    public  ModelAndView  testReturn(){
+        ModelAndView  model=new ModelAndView();
+        //授权登录，获取头像
+        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
+        model.addObject("user",userInfo);
+        GiftCoupon coupon=giftCouponRepository.findByIsAbleEquals(1);
+        model.addObject("coupon",coupon);
         model.setViewName("gift/share_number");
         return  model;
     }
@@ -169,7 +192,7 @@ public class TestController extends  BaseController {
         handlerOther(other);
        /* List<wx_product> products= productRespository.findAll();
         model.addObject("products",products);
-*/
+       */
         String businessId=util.getBusinessKey();
         logger.info("bussinessId is:"+businessId);
         String json= productInterface.findRegexProduct(businessId,"0");
