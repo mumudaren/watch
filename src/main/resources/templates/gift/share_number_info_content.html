@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>share_number_info_content</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -86,7 +86,8 @@
 
       <!-- Unnamed (Image) -->
       <div id="u3359" class="ax_default image">
-        <img id="u3359_img" class="img " src="images/share_number/u3303.png"/>
+        <!--<img id="u3359_img" class="img " src="images/share_number/u3303.png"/>-->
+        <img id="u3359_img" class="img " th:src="${senderUser.headimgurl}"/>
         <!-- Unnamed () -->
         <div id="u3360" class="text" style="display: none; visibility: hidden">
           <p><span></span></p>
@@ -98,7 +99,7 @@
         <img id="u3361_img" class="img " src="images/recive_card_info/u2671.png"/>
         <!-- Unnamed () -->
         <div id="u3362" class="text" style="visibility: visible;">
-          <p><span>36K纯帅</span></p>
+          <p><span th:text="${senderUser.nickname}">36K纯帅</span></p>
         </div>
       </div>
 
@@ -107,7 +108,8 @@
         <img id="u3363_img" class="img " src="images/recive_card_info/u2667.png"/>
         <!-- Unnamed () -->
         <div id="u3364" class="text" style="visibility: visible;">
-          <p style="font-size:14px;"><span>送给你30元代金券，赶紧来领取吧</span></p><p style="font-size:12px;"><span>可用于购买95号码</span></p>
+          <p style="font-size:14px;"> <span th:text="'送给你'+(${coupon.amount}/10)+'元代金券，赶紧来领取吧'">送给你30元代金券，赶紧来领取吧</span></p>
+          <p style="font-size:12px;"><span>可用于购买95号码</span></p>
         </div>
       </div>
 
@@ -134,7 +136,13 @@
         <div id="u3369_div" class=""></div>
         <!-- Unnamed () -->
         <div id="u3370" class="text" style="visibility: visible;">
-          <p style="font-size:22px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;color:#999999;">￥</span><span style="font-family:'PingFangHK-Medium', 'PingFang HK Medium', 'PingFang HK';font-weight:500;color:#990000;">30</span><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;color:#666666;"></span></p><p style="font-size:10px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;color:#666666;">有效期：2019.08.22-2020.08.22</span></p>
+          <p style="font-size:22px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;color:#999999;">￥</span>
+            <span style="font-family:'PingFangHK-Medium', 'PingFang HK Medium', 'PingFang HK';font-weight:500;color:#990000;" th:text="(${coupon.amount}/10)">30</span>
+            <span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;color:#666666;"></span>
+          </p>
+          <p style="font-size:10px;">
+            <span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;color:#666666;" th:text="'有效期：'+${coupon.effectiveTime}+'-'+${coupon.endTime}">有效期：2019.08.22-2020.08.22</span>
+          </p>
         </div>
       </div>
     </div>
