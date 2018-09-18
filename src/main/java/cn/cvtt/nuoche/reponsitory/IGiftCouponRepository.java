@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IGiftCouponRepository extends JpaRepository<GiftCoupon,Long> {
     GiftCoupon findByIsAbleEquals(int isAble);
+    GiftCoupon findByIdEquals(long couponId);
 }

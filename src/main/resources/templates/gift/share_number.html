@@ -634,7 +634,9 @@
       </div>
     </div>
   </body>
-  <script>
+  <script th:inline="javascript">
+      var couponId=[[${coupon.id}]];
+      var openid=[[${user.openid}]];
       var url=window.location.href.split('#')[0];
       url = url.replace(/&/g, '%26');
       console.log("url:"+url);
@@ -659,24 +661,25 @@
 
       wx.ready(function () {
           console.log("wx.ready method");
+          console.log("getHostPath:"+getHostPath()+'/testReturn?couponId='+couponId+'&senderId='+openid);
           wx.onMenuShareAppMessage({
               title: '转发朋友测试', // 分享标题
               desc: '宝宝的睡眠很重要，你的睡眠也很重要', // 分享描述
-              link: getHostPath()+'/testWongPage',
+              link: getHostPath()+'/testReturn?couponId='+couponId+'&senderId='+openid,
               imgUrl: getHostPath()+'/images/test.jpg', // 分享图标
               success: function () {
                   // 用户点击了分享后执行的回调函数
-                  alert("回调");
+                  //alert("回调");
               }
           });
           wx.onMenuShareTimeline({
               title: '转发朋友圈测试', // 分享标题
               desc: '嘛哩嘛哩哄快快成功吧555555', // 分享描述
-              link: getHostPath()+'/testWongPage',
+              link: getHostPath()+'/testReturn?couponId='+couponId+'&senderId='+openid,
               imgUrl: getHostPath()+'/images/test.jpg', // 分享图标
               success: function () {
                   // 用户点击了分享后执行的回调函数
-                  alert("回调");
+                  //alert("回调");
               }
           });
       });

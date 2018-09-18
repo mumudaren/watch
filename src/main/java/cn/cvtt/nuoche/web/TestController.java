@@ -155,21 +155,32 @@ public class TestController extends  BaseController {
         BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
         model.addObject("user",userInfo);
         GiftCoupon coupon=giftCouponRepository.findByIsAbleEquals(1);
-        model.addObject("coupon",coupon);
+        if(coupon==null){
+            GiftCoupon couponNew=new GiftCoupon();
+            couponNew.setAmount(0);
+            couponNew.setPoint(0);
+            couponNew.setId(0L);
+            model.addObject("coupon",couponNew);
+        }else{
+            model.addObject("coupon",coupon);
+        }
         model.setViewName("gift/share_number");
         return  model;
     }
     //转发朋友圈后跳转
     @RequestMapping("/testReturn")
-    public  ModelAndView  testReturn(){
+    public  ModelAndView  testReturn(@RequestParam("couponId") Long couponId, @RequestParam("senderId") String senderId){
         ModelAndView  model=new ModelAndView();
-        //授权登录，获取头像
-        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
-        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
-        model.addObject("user",userInfo);
-        GiftCoupon coupon=giftCouponRepository.findByIsAbleEquals(1);
+        //朋友圈转发后
+        String openid="oIFn906CjOF7cak3Jwjr3liQdA8k";
+        logger.info("[testReturn]couponId is:"+couponId+"senderId is:"+senderId);
+        BusinessCustomer receiveUser= businessCusRepository.findByOpenidEquals(openid);
+        model.addObject("receiveUser",receiveUser);
+        BusinessCustomer senderUser= businessCusRepository.findByOpenidEquals(senderId);
+        model.addObject("senderUser",senderUser);
+        GiftCoupon coupon=giftCouponRepository.findByIdEquals(couponId);
         model.addObject("coupon",coupon);
-        model.setViewName("gift/share_number");
+        model.setViewName("gift/share_number_info_content");
         return  model;
     }
 
