@@ -79,12 +79,13 @@
           <div id="u3357_div" class=""></div>
           <!-- Unnamed () -->
           <div id="u3358" class="text" style="visibility: visible;">
-            <form th:action="@{/testReceive.html}"  th:method="post">
+            <form th:action="@{/testReceive.html}"  th:method="post" id="parmForm">
               <input style="display:none" id="coupon" name="coupon" th:value="${coupon.id}">
               <input style="display:none" id="senderUser" name="senderUser" th:value="${senderUser.openid}">
               <input style="display:none" id="receiveUser" name="receiveUser" th:value="${receiveUser.openid}">
             </form>
-            <p><span onclick="submitMethod()">领&nbsp;&nbsp; 取</span></p>
+            <p><span>领&nbsp;&nbsp; 取</span></p>
+            <p><span><a href="javascript:submitMethod()">领&nbsp;&nbsp; 取</a></span></p>
           </div>
         </div>
       </div>
@@ -152,7 +153,9 @@
       </div>
     </div>
     <script th:inline="javascript">
+        var form = document.getElementById('parmForm');
       function submitMethod() {
+          console.log("submitMethod");
           form.submit();
       }
     </script>

@@ -8,6 +8,8 @@ import cn.cvtt.nuoche.entity.business.SystemFeedBack;
 import cn.cvtt.nuoche.entity.business.wx_product;
 import cn.cvtt.nuoche.entity.gift.GiftCoupon;
 import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
+import cn.cvtt.nuoche.entity.gift.GiftPoint;
+import cn.cvtt.nuoche.entity.gift.GiftPointRecord;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
@@ -15,6 +17,8 @@ import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCouponRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCouponRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftPointRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftPointRepository;
 import cn.cvtt.nuoche.reponsitory.ISystemFeedBack;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
@@ -55,6 +59,10 @@ public class TestController extends  BaseController {
     IGiftCouponRepository giftCouponRepository;
     @Autowired
     IGiftCouponRecordRepository giftCouponRecordRepository;
+    @Autowired
+    IGiftPointRecordRepository giftPointRecordRepository;
+    @Autowired
+    IGiftPointRepository giftPointRepository;
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     @RequestMapping("/getAll")
     @ResponseBody
@@ -176,9 +184,9 @@ public class TestController extends  BaseController {
     public  ModelAndView  testReturn(@RequestParam(value ="couponId",defaultValue ="1") Long couponId, @RequestParam(value ="senderId",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String senderId){
         ModelAndView  model=new ModelAndView();
         //朋友圈转发后
-        String openid="oIFn906CjOF7cak3Jwjr3liQdA8k";
+        String receiverOpenid="oIFn90393PZMsIt-kprqw0GWmVko";
         logger.info("[testReturn]couponId is:"+couponId+"senderId is:"+senderId);
-        BusinessCustomer receiveUser= businessCusRepository.findByOpenidEquals(openid);
+        BusinessCustomer receiveUser= businessCusRepository.findByOpenidEquals(receiverOpenid);
         model.addObject("receiveUser",receiveUser);
         BusinessCustomer senderUser= businessCusRepository.findByOpenidEquals(senderId);
         model.addObject("senderUser",senderUser);
@@ -196,16 +204,63 @@ public class TestController extends  BaseController {
         //如未领取过同一用户发送的优惠券，优惠券领取表增加一条记录
         GiftCouponRecord couponRecord=giftCouponRecordRepository.findGiftCouponRecordBySenderOpenidEqualsAndReceiverOpenidEquals(senderUser,receiveUser);
         if(couponRecord==null){
+            //优惠券领取记录表增加receiver的记录
             GiftCouponRecord couponRecordNew=new GiftCouponRecord();
             couponRecordNew.setSenderOpenid(senderUser);
             couponRecordNew.setReceiverOpenid(receiveUser);
             couponRecordNew.setGetTime(new Date());
             couponRecordNew.setCouponId(coupon);
             giftCouponRecordRepository.saveAndFlush(couponRecordNew);
+            GiftCoupon couponItem=giftCouponRepository.findByIdEquals(coupon);
+            model.addObject("coupon",couponItem);
+            //积分变更表增加receiver的记录
+            GiftPointRecord pointRecord= new GiftPointRecord();
+            pointRecord.setChangePoint(couponItem.getPoint());
+            pointRecord.setOpenid(receiveUser);
+            pointRecord.setResource(1);
+            pointRecord.setUpdateTime(new Date());
+            giftPointRecordRepository.saveAndFlush(pointRecord);
+            //积分变更表增加sender的记录
+            GiftPointRecord pointSenderRecord= new GiftPointRecord();
+            pointSenderRecord.setChangePoint(couponItem.getPoint());
+            pointSenderRecord.setOpenid(senderUser);
+            pointSenderRecord.setResource(1);
+            pointSenderRecord.setUpdateTime(new Date());
+            giftPointRecordRepository.saveAndFlush(pointSenderRecord);
+            //积分表修改receiver的积分
+            GiftPoint userPointSearch=giftPointRepository.findByOpenidEquals(receiveUser);
+            if(userPointSearch==null) {
+                //从未得到过积分。
+                GiftPoint userPoint = new GiftPoint();
+                userPoint.setOpenid(receiveUser);
+                userPoint.setPointTotal(couponItem.getPoint());
+                userPoint.setPointUsed(0);
+                giftPointRepository.saveAndFlush(userPoint);
+            }else{
+                //曾有积分，则增加本次分享所得积分。
+                int oldUserPoint=userPointSearch.getPointTotal();
+                userPointSearch.setPointTotal(oldUserPoint+couponItem.getPoint());
+                giftPointRepository.saveAndFlush(userPointSearch);
+            }
+             //积分表修改sender的积分
+            GiftPoint senderPointSearch=giftPointRepository.findByOpenidEquals(senderUser);
+            if(senderPointSearch==null) {
+                //该sender从未得到过积分。
+                GiftPoint senderPoint = new GiftPoint();
+                senderPoint.setOpenid(senderUser);
+                senderPoint.setPointTotal(couponItem.getPoint());
+                senderPoint.setPointUsed(0);
+                giftPointRepository.saveAndFlush(senderPoint);
+            }else{
+                int oldSenderPoint=senderPointSearch.getPointTotal();
+                senderPointSearch.setPointTotal(oldSenderPoint+couponItem.getPoint());
+                giftPointRepository.saveAndFlush(senderPointSearch);
+            }
             model.setViewName("gift/share_number_success");
         }else{
             logger.info("[testReceive]you have received a coupon buy the same sender before.");
             //领取过优惠券，跳转到错误页面。
+            model.setViewName("/OwnerSafeNumber.html");
         }
         return  model;
     }

@@ -183,7 +183,13 @@
         <div id="u3408_div" class=""></div>
         <!-- Unnamed () -->
         <div id="u3409" class="text" style="visibility: visible;">
-          <p style="font-size:22px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;color:#999999;">￥</span><span style="font-family:'PingFangHK-Medium', 'PingFang HK Medium', 'PingFang HK';font-weight:500;color:#990000;">30</span><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;color:#666666;"></span></p><p style="font-size:10px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;color:#666666;">有效期：2019.08.22-2020.08.22</span></p>
+          <p style="font-size:22px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;color:#999999;">￥</span>
+            <span style="font-family:'PingFangHK-Medium', 'PingFang HK Medium', 'PingFang HK';font-weight:500;color:#990000;" th:text="(${coupon.amount}/10)">30</span>
+            <span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;color:#666666;"></span>
+          </p>
+          <p style="font-size:10px;">
+            <span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;color:#666666;" th:text="'有效期：'+${coupon.effectiveTime}+'-'+${coupon.endTime}">有效期：2019.08.22-2020.08.22</span>
+          </p>
         </div>
       </div>
 
