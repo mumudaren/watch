@@ -7,11 +7,13 @@ import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.SystemFeedBack;
 import cn.cvtt.nuoche.entity.business.wx_product;
 import cn.cvtt.nuoche.entity.gift.GiftCoupon;
+import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCouponRepository;
 import cn.cvtt.nuoche.reponsitory.ISystemFeedBack;
 import cn.cvtt.nuoche.util.ConfigUtil;
@@ -51,6 +53,8 @@ public class TestController extends  BaseController {
     IBusinessCusRepository   businessCusRepository;
     @Autowired
     IGiftCouponRepository giftCouponRepository;
+    @Autowired
+    IGiftCouponRecordRepository giftCouponRecordRepository;
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     @RequestMapping("/getAll")
     @ResponseBody
@@ -167,9 +171,9 @@ public class TestController extends  BaseController {
         model.setViewName("gift/share_number");
         return  model;
     }
-    //转发朋友圈后跳转
+    //转发朋友圈后跳转页面
     @RequestMapping("/testReturn")
-    public  ModelAndView  testReturn(@RequestParam("couponId") Long couponId, @RequestParam("senderId") String senderId){
+    public  ModelAndView  testReturn(@RequestParam(value ="couponId",defaultValue ="1") Long couponId, @RequestParam(value ="senderId",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String senderId){
         ModelAndView  model=new ModelAndView();
         //朋友圈转发后
         String openid="oIFn906CjOF7cak3Jwjr3liQdA8k";
@@ -181,6 +185,37 @@ public class TestController extends  BaseController {
         GiftCoupon coupon=giftCouponRepository.findByIdEquals(couponId);
         model.addObject("coupon",coupon);
         model.setViewName("gift/share_number_info_content");
+        return  model;
+    }
+
+    //领取优惠券
+    @RequestMapping("/testReceive")
+    public  ModelAndView  testReceive(@RequestParam(value = "coupon",defaultValue ="1" ) Long coupon, @RequestParam(value = "senderUser",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String senderUser,@RequestParam(value = "receiveUser",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String receiveUser){
+
+        ModelAndView  model=new ModelAndView();
+        //如未领取过同一用户发送的优惠券，优惠券领取表增加一条记录
+        GiftCouponRecord couponRecord=giftCouponRecordRepository.findGiftCouponRecordBySenderOpenidEqualsAndReceiverOpenidEquals(senderUser,receiveUser);
+        if(couponRecord==null){
+            GiftCouponRecord couponRecordNew=new GiftCouponRecord();
+            couponRecordNew.setSenderOpenid(senderUser);
+            couponRecordNew.setReceiverOpenid(receiveUser);
+            couponRecordNew.setGetTime(new Date());
+            couponRecordNew.setCouponId(coupon);
+            giftCouponRecordRepository.saveAndFlush(couponRecordNew);
+            model.setViewName("gift/share_number_success");
+        }else{
+            logger.info("[testReceive]you have received a coupon buy the same sender before.");
+            //领取过优惠券，跳转到错误页面。
+        }
+        return  model;
+    }
+    //领取积分奖励
+    @RequestMapping("/testReceivePoint")
+    public  ModelAndView  testReceivePoint(@RequestParam("coupon") Long coupon, @RequestParam("senderUser") String senderUser,@RequestParam("receiveUser") String receiveUser){
+        ModelAndView  model=new ModelAndView();
+        //如当天未分享过，则该用户增加一次积分。
+
+        model.setViewName("gift/share_number_success");
         return  model;
     }
 

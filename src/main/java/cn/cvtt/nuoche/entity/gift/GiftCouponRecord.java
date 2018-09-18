@@ -6,9 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
-@Table(name="gift_point")
+@Table(name="gift_coupon_record")
 public class GiftCouponRecord {
 
     @Id
@@ -18,17 +19,20 @@ public class GiftCouponRecord {
     private  String  senderOpenid;
     @Column(name="receiver_openid")
     private   String  receiverOpenid;
-    @Column(name="point_used")
-    private  Integer  pointUsed;
+    @Column(name="coupon_id")
+    private  Long  couponId;
+    @Column(name="get_time")
+    private Date getTime;
 
     public GiftCouponRecord() {
     }
 
-    public GiftCouponRecord(Long id, String senderOpenid, String receiverOpenid, Integer pointUsed) {
+    public GiftCouponRecord(Long id, String senderOpenid, String receiverOpenid, Long pointUsed,Date getTime) {
         this.id = id;
         this.senderOpenid = senderOpenid;
         this.receiverOpenid = receiverOpenid;
-        this.pointUsed = pointUsed;
+        this.couponId = pointUsed;
+        this.getTime = getTime;
 
     }
 
@@ -56,11 +60,19 @@ public class GiftCouponRecord {
         this.receiverOpenid = receiverOpenid;
     }
 
-    public Integer getPointUsed() {
-        return pointUsed;
+    public Long getCouponId() {
+        return couponId;
     }
 
-    public void setPointUsed(Integer pointUsed) {
-        this.pointUsed = pointUsed;
+    public void setCouponId(Long couponId) {
+        this.couponId = couponId;
+    }
+
+    public Date getGetTime() {
+        return getTime;
+    }
+
+    public void setGetTime(Date getTime) {
+        this.getTime = getTime;
     }
 }
