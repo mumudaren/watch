@@ -264,13 +264,31 @@ public class TestController extends  BaseController {
         }
         return  model;
     }
-    //领取积分奖励
+    //当日分享给好友或朋友圈后领取积分奖励
     @RequestMapping("/testReceivePoint")
     public  ModelAndView  testReceivePoint(@RequestParam("coupon") Long coupon, @RequestParam("senderUser") String senderUser,@RequestParam("receiveUser") String receiveUser){
         ModelAndView  model=new ModelAndView();
         //如当天未分享过，则该用户增加一次积分。
 
         model.setViewName("gift/share_number_success");
+        return  model;
+    }
+    //送卡首页
+    @RequestMapping("/testCard")
+    public  ModelAndView  testReceivePoint(){
+        ModelAndView  model=new ModelAndView();
+        //如当天未分享过，则该用户增加一次积分。
+
+        model.setViewName("gift/gift");
+        return  model;
+    }
+    //送套餐卡
+    @RequestMapping("/testRegexGift")
+    public  ModelAndView  testRegexGift(){
+        ModelAndView  model=new ModelAndView();
+        //如当天未分享过，则该用户增加一次积分。
+
+        model.setViewName("gift/gift_card");
         return  model;
     }
 
