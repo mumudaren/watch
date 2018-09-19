@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name="gift_point")
@@ -14,53 +15,32 @@ public class GiftCardRecord {
     @Id
     @GeneratedValue
     private  Long    id;
-    @Column(name="openid")
-    private  String  openid;
-    @Column(name="point_total")
-    private  Integer  pointTotal;
-    @Column(name="point_used")
-    private  Integer  pointUsed;
+
+    @Column(name="card_id")
+    private  Long    cardId;
+
+    @Column(name="sender_openid")
+    private  String  senderOpenid;
+
+    @Column(name="receiver_openid")
+    private   String  receiverOpenid;
+
+    @Column(name="message")
+    private   String  message;
+
+    @Column(name="get_time")
+    private Date getTime;
 
     public GiftCardRecord() {
     }
 
-    public GiftCardRecord(Long id, String openid, Integer pointTotal, Integer pointUsed) {
+    public GiftCardRecord(Long id, String senderOpenid, String receiverOpenid, String message,Date getTime) {
         this.id = id;
-        this.openid = openid;
-        this.pointTotal = pointTotal;
-        this.pointUsed = pointUsed;
-
+        this.senderOpenid = senderOpenid;
+        this.receiverOpenid = receiverOpenid;
+        this.message = message;
+        this.getTime = getTime;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOpenid() {
-        return openid;
-    }
-
-    public void setOpenid(String openid) {
-        this.openid = openid;
-    }
-
-    public Integer getPointTotal() {
-        return pointTotal;
-    }
-
-    public void setPointTotal(Integer pointTotal) {
-        this.pointTotal = pointTotal;
-    }
-
-    public Integer getPointUsed() {
-        return pointUsed;
-    }
-
-    public void setPointUsed(Integer pointUsed) {
-        this.pointUsed = pointUsed;
-    }
 }
