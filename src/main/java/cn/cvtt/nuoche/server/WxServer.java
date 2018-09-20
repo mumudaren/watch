@@ -86,43 +86,49 @@ public class WxServer {
             String msgType = requestMap.get("MsgType");
             logger.info("args:"+fromUserName+","+toUserName+","+msgType);
             // 文本消息
-            if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_TEXT)) {
+            if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_TEXT)
+                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_IMAGE)
+                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VOICE)
+                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VIDEO)
+                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_SHORTVIDEO)
+                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LOCATION)
+                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LINK)) {
                 // 回复文本消息
                 TextMessage textMessage = new TextMessage();
                 textMessage.setToUserName(fromUserName);
                 textMessage.setFromUserName(toUserName);
                 textMessage.setCreateTime(new Date().getTime());
                 textMessage.setMsgType(MessageUtils.RESP_MESSAGE_TYPE_TEXT);
-                respContent = "您发送的是文本消息！";
+                respContent = "有什么问题都可以直接在这里问我哦，我们会尽快为您解答！";
                 // 设置文本消息的内容
                 textMessage.setContent(respContent);
                 // 将文本消息对象转换成xml
                 respXml = MessageUtils.messageToXml(textMessage, TextMessage.class);
             }
-            // 图片消息
-            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_IMAGE)) {
-                respContent = "您发送的是图片消息！";
-            }
-            // 语音消息
-            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VOICE)) {
-                respContent = "您发送的是语音消息！";
-            }
-            // 视频消息
-            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VIDEO)) {
-                respContent = "您发送的是视频消息！";
-            }
-            // 视频消息
-            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_SHORTVIDEO)) {
-                respContent = "您发送的是小视频消息！";
-            }
-            // 地理位置消息
-            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LOCATION)) {
-                respContent = "您发送的是地理位置消息！";
-            }
-            // 链接消息
-            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LINK)) {
-                respContent = "您发送的是链接消息！";
-            }
+//            // 图片消息
+//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_IMAGE)) {
+//                //respContent = "您发送的是图片消息！";
+//            }
+//            // 语音消息
+//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VOICE)) {
+//                //respContent = "您发送的是语音消息！";
+//            }
+//            // 视频消息
+//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VIDEO)) {
+//                //respContent = "您发送的是视频消息！";
+//            }
+//            // 视频消息
+//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_SHORTVIDEO)) {
+//                //respContent = "您发送的是小视频消息！";
+//            }
+//            // 地理位置消息
+//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LOCATION)) {
+//                //respContent = "您发送的是地理位置消息！";
+//            }
+//            // 链接消息
+//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LINK)) {
+//                //respContent = "您发送的是链接消息！";
+//            }
             // 事件推送
             else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_EVENT)) {
                 // 事件类型
@@ -134,7 +140,14 @@ public class WxServer {
                     textMessage.setToUserName(fromUserName);
                     textMessage.setFromUserName(toUserName);
                     textMessage.setCreateTime(new Date().getTime());
-                    textMessage.setContent("感谢您的关注!");
+                    String content="感谢您关注“95013安全号”官方微信\n" +
+                            "95013安全号是您真实联系方式的忠诚保护伞\n" +
+                            "代替真实号码实现通信功能\n" +
+                            "避免号码泄露防止各种骚扰\n" +
+                           "\uD83D\uDC4D"+ "<a href=\"http://i.95013.com/wechatsite/helpcenter/help\">如何使用安全号？</a>\n" +
+                            "\uD83C\uDFDD"+"<a href=\"http://i.95013.com/wechatsite/helpcenter/scene\">生活中哪些情况需要安全号？</a>\n" +
+                           "\uD83C\uDFC5"+ "<a href=\"http://i.95013.com/oauth/base/getNumber.html\">申请安全号</a>";
+                    textMessage.setContent(content);
                     textMessage.setMsgType(MessageUtils.RESP_MESSAGE_TYPE_TEXT);
                     // 将文本消息对象转换成xml
                     /**  先删除 已经存在的用户 再保存**/
