@@ -279,7 +279,7 @@ public class businessController extends  BaseController{
              logger.info("[callRecordService]saveCallRecord by json and business then resultObj is:{}:"+result+"\n");
              logger.info("[callRecordService]arc_95013 vo.getCallId:"+vo.getCall_id()+"\n");
              innerObj.put("result",true);
-             obj.put("[callRecordService]secret_call_release_response:",innerObj);
+             obj.put("secret_call_release_response:",innerObj);
         }catch (Exception e){
             e.printStackTrace();
             logger.info("[callRecordService]save call record wrong.and exception is:"+e.getMessage()+"\n");
