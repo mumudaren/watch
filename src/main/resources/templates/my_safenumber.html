@@ -61,13 +61,13 @@
                           <div class="z_mynumber_list">
                                 <p>
                                   <span th:class="${record.isValid == 1?'z_imgkey z_imgkey_gray':'z_imgkey'}">
-                                    <img src="images/key.png" />
+                                    <img th:src="@{/images/key.png}" />
                                   </span>
                                   <span th:class="${record.isValid == 1?'z_mynumber95013 z_mynumber95013_gray':'z_mynumber95013'}" th:text="${record.smbms}">950135901234785</span>
                                 </p>
                                 <p class="f_myimg_tel">
                                   <span  th:class="${record.isValid == 1?'z_imgkey z_imgtel z_imgtel_gray':'z_imgkey z_imgtel'}"   >
-                                    <img src="images/tel.png" />
+                                    <img th:src="@{/images/tel.png}" />
                                   </span>
                                   <span  th:class="${record.isValid == 1?'z_mynumber_telphone z_mynumber_telphone_gray':'z_mynumber_telphone'}" th:text="${record.prtms}">13466787750</span>
                                   <span  th:class="${record.isValid == 1?'z_todatetime z_todatetime_gray':'z_todatetime'}"  class="" th:text="'有效期至:'+${record.time}">有效期至：今天</span>
@@ -121,13 +121,13 @@
                           <div class="z_mynumber_list">
                               <p>
                                   <span th:class="${record.isValid == 1?'z_imgkey  z_imgkey_gray':' z_imgkey'}">
-                                    <img src="images/key.png" />
+                                    <img th:src="@{/images/key.png}" />
                                   </span>
                                   <span th:class="${record.isValid == 1?'z_mynumber95013 z_mynumber95013_gray':'z_mynumber95013'}" th:text="${record.smbms}">950135901234785</span>
                               </p>
                               <p class="f_myimg_tel">
                                   <span  th:class="${record.isValid == 1?'z_imgkey z_imgtel z_imgtel_gray':'z_imgkey z_imgtel'}"   >
-                                    <img src="images/tel.png" />
+                                    <img th:src="@{/images/tel.png}" />
                                   </span>
                                   <span  th:class="${record.isValid == 1?'z_mynumber_telphone z_mynumber_telphone_gray':'z_mynumber_telphone'}" th:text="${record.prtms}">13466787750</span>
                                   <span  th:class="${record.isValid == 1?'z_todatetime z_todatetime_gray':'z_todatetime'}"  class="" th:text="'有效期至:'+${record.time}">有效期至：今天</span>
