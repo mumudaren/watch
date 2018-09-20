@@ -142,7 +142,7 @@ public class TestController extends  BaseController {
 
         return  "validate_tel";
     }
-
+    //拨号盘
     @RequestMapping("/keyboardTest")
     public  String  keyboardTest(){
 
@@ -277,7 +277,6 @@ public class TestController extends  BaseController {
     @RequestMapping("/testCard")
     public  ModelAndView  testReceivePoint(){
         ModelAndView  model=new ModelAndView();
-        //如当天未分享过，则该用户增加一次积分。
 
         model.setViewName("gift/gift");
         return  model;
