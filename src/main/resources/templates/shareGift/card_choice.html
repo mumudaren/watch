@@ -25,7 +25,7 @@
                                     <em th:text="${'可选择'+p.regexName}">可选择生日号、三连号</em></span>
                                 <span class="z_choiceone_img">
                                     <!-- <img src="images/cardimg_05.png"> -->
-                                    ￥<i>299</i>
+                                    ￥<i  th:text="${p.price}/10">299</i>
                                 </span>
                             </div>
                             <div class="z_choiceone_bottom">
@@ -93,7 +93,7 @@
       <script th:inline="javascript">
           function toCardPage (id) {
               console.log("toCardPage");
-              window.location.href('/testChooseCard?cardId='+id);
+              window.location.href="/testChooseCard?cardId="+id;
           }
       </script>
     </body>     

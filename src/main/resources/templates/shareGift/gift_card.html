@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
         <meta name="Description" content="买靓号送朋友" />
@@ -22,8 +22,9 @@
                 </div>
                 <img src="images/giftImage/gift_03.jpg">
                 <img src="images/giftImage/gift_04.jpg">
-            </div> 
-            <div style="width: 10rem;margin:0 auto;position: relative;z-index:0;">
+            </div>
+          <!--no choice-->
+            <div style="width: 10rem;margin:0 auto;position: relative;z-index:0;" th:if="${isHideOldDiv ==false}" >
                 <div class="f_gift_content f_cardnumber">
                     <p class="z_cardnumber_text">
                         <span class="z_numbercard">挑选号码卡</span>
@@ -31,9 +32,28 @@
                     </p>               
                 </div>
             </div>
+          <!--choose one regex-->
+          <div class="z_cardshow_wrap" style="position: absolute;top:5rem;z-index: 10;"  th:if="${isHideOldDiv ==true}">
+              <div class="z_choiceone_content">
+                  <div class="z_choiceone_top">
+                                <span class="z_cardshowone"><strong th:text="${card.cardName}">大吉大利卡</strong><br>
+                                    <b class="z_taocamnumber_price">￥<i  th:text="${card.price}/10">299</i></b>有效期：一年
+                                </span>
+                      <span class="z_choiceone_img">
+                                    <img src="images/giftImage/cardimg_05.png">
+                                </span>
+                  </div>
+                  <div class="z_choiceone_bottom">
+                      <span class="z_choiceone_requiretime">可选择生日号、三连号</span>
+                      <span class="z_choiceone_activedcard">
+                                    <a href="/testChooseRegex">重新选择</a>
+                                </span>
+                  </div>
+              </div>
+          </div>
             <p class="write_text">写祝福语</p>   
             <p class="write_textcontent">
-                <textarea rows="5" cols="50" placeholder="大吉大利，今晚有靓号！"></textarea>
+                <textarea rows="5" cols="50" placeholder="大吉大利，今晚有靓号！" ></textarea>
             </p> 
             <p class="wirte_casher">
                 <span class="z_cashjuan">现金券</span>

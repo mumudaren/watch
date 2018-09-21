@@ -28,6 +28,7 @@ import cn.cvtt.nuoche.util.JsonUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -280,20 +281,24 @@ public class TestController extends  BaseController {
         model.setViewName("gift/share_number_success");
         return  model;
     }
-    //送卡首页
+    //选择两种套餐赠送页面
     @RequestMapping("/testCard")
     public  ModelAndView  testReceivePoint(){
         ModelAndView  model=new ModelAndView();
-
         model.setViewName("shareGift/gift");
         return  model;
     }
-    //送套餐卡
+    //套餐卡页面
     @RequestMapping("/testRegexGift")
-    public  ModelAndView  testRegexGift(){
+    public  ModelAndView  testRegexGiftMethod(@RequestParam(value ="isHideOldDiv",defaultValue ="false") boolean isHideOldDiv,@RequestParam(value ="cardId",defaultValue ="noId") String cardId){
         ModelAndView  model=new ModelAndView();
-        //如当天未分享过，则该用户增加一次积分。
-
+        logger.info("[testRegexGift]isHideOldDiv is:"+isHideOldDiv);
+        if(!StringUtils.equals(cardId,"noId")){
+          long cardIdSearch=Long.parseLong(cardId);
+          GiftCard card=giftCardRepository.findByIdEquals(cardIdSearch);
+          model.addObject("card",card);
+        }
+        model.addObject("isHideOldDiv",isHideOldDiv);
         model.setViewName("shareGift/gift_card");
         return  model;
     }
@@ -336,13 +341,12 @@ public class TestController extends  BaseController {
 
     //选中套餐卡
     @RequestMapping("/testChooseCard")
-    public  ModelAndView  testChooseCard(@RequestParam("cardId") Long cardId){
-        ModelAndView  model=new ModelAndView();
+    public  String  testChooseCard(@RequestParam("cardId") String cardId){
         if(cardId!=null){
             logger.info("[testChooseCard]testChooseCard is:"+cardId);
         }
-        model.setViewName("gift/testCard");
-        return  model;
+        boolean isHideOldDiv=true;
+        return  "redirect:"+"testRegexGift?isHideOldDiv="+isHideOldDiv+"&cardId="+cardId;
     }
 
     @RequestMapping("/OwnerSafeNumber.html")

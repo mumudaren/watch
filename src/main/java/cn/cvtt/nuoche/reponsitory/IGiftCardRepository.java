@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface IGiftCardRepository extends JpaRepository<GiftCard,Long> {
     List<GiftCard>  findAllByCardTypeEquals(int type);
+    GiftCard findByIdEquals(long id);
 }
