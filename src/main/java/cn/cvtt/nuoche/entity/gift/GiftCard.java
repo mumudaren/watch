@@ -17,7 +17,7 @@ public class GiftCard {
     private  Long    id;
 
     @Column(name="regex_id")
-    private  Long    regexId;
+    private  String    regexId;
 
     @Column(name="card_name")
     private  String  cardName;
@@ -40,7 +40,7 @@ public class GiftCard {
 
     public GiftCard() {
     }
-    public GiftCard(Long id,Integer cardType,String number, Long regexId, String cardName, Integer price,Integer validTimeUnit,Integer validTimeNumber) {
+    public GiftCard(Long id,Integer cardType,String number, String regexId, String cardName, Integer price,Integer validTimeUnit,Integer validTimeNumber) {
         this.id = id;
         this.regexId = regexId;
         this.cardType = cardType;
@@ -59,11 +59,11 @@ public class GiftCard {
         this.id = id;
     }
 
-    public Long getRegexId() {
+    public String getRegexId() {
         return regexId;
     }
 
-    public void setRegexId(Long regexId) {
+    public void setRegexId(String regexId) {
         this.regexId = regexId;
     }
 

@@ -6,6 +6,7 @@ import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.SystemFeedBack;
 import cn.cvtt.nuoche.entity.business.wx_product;
+import cn.cvtt.nuoche.entity.gift.GiftCard;
 import cn.cvtt.nuoche.entity.gift.GiftCoupon;
 import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
 import cn.cvtt.nuoche.entity.gift.GiftPoint;
@@ -15,6 +16,7 @@ import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCardRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCouponRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCouponRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftPointRecordRepository;
@@ -23,7 +25,9 @@ import cn.cvtt.nuoche.reponsitory.ISystemFeedBack;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
 import cn.cvtt.nuoche.util.JsonUtils;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +67,8 @@ public class TestController extends  BaseController {
     IGiftPointRecordRepository giftPointRecordRepository;
     @Autowired
     IGiftPointRepository giftPointRepository;
+    @Autowired
+    IGiftCardRepository giftCardRepository;
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     @RequestMapping("/getAll")
     @ResponseBody
@@ -295,6 +301,23 @@ public class TestController extends  BaseController {
     public  ModelAndView  testChooseRegex(){
         ModelAndView  model=new ModelAndView();
 
+        JSONArray objRegex=new JSONArray();
+        objRegex.add(1);
+
+
+
+        GiftCard giftCard=new GiftCard();
+        giftCard.setRegexId(objRegex.toString());
+        giftCard.setCardName("大吉大利卡");
+        giftCard.setCardType(1);
+        giftCard.setPrice(5000);
+        giftCard.setValidTimeNumber(1);
+        giftCard.setValidTimeUnit(1);
+        giftCardRepository.save(giftCard);
+
+        List<GiftCard>  giftCardList=giftCardRepository.findAllByCardTypeEquals(1);
+        model.addObject("giftCardList",giftCardList);
+        logger.info("[testChooseRegex]giftCardList is:"+giftCardList.toString());
         model.setViewName("gift/card_choice");
         return  model;
     }
