@@ -294,7 +294,7 @@ public class TestController extends  BaseController {
         ModelAndView  model=new ModelAndView();
         //如当天未分享过，则该用户增加一次积分。
 
-        model.setViewName("gift/gift_card");
+        model.setViewName("shareGift/gift_card");
         return  model;
     }
     //送套餐卡选套餐
@@ -330,7 +330,7 @@ public class TestController extends  BaseController {
         }
         //遍历套餐id,查询套餐名字。
         model.addObject("giftCardList",giftCardList);
-        model.setViewName("gift/card_choice");
+        model.setViewName("shareGift/card_choice");
         return  model;
     }
 
