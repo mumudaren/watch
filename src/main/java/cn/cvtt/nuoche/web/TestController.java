@@ -290,6 +290,14 @@ public class TestController extends  BaseController {
         model.setViewName("gift/gift_card");
         return  model;
     }
+    //送套餐卡选套餐
+    @RequestMapping("/testChooseRegex")
+    public  ModelAndView  testChooseRegex(){
+        ModelAndView  model=new ModelAndView();
+
+        model.setViewName("gift/card_choice");
+        return  model;
+    }
 
     @RequestMapping("/OwnerSafeNumber.html")
     public ModelAndView  OwnerSafeNumber( ){
