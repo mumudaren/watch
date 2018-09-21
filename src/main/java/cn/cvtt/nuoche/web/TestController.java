@@ -285,7 +285,7 @@ public class TestController extends  BaseController {
     public  ModelAndView  testReceivePoint(){
         ModelAndView  model=new ModelAndView();
 
-        model.setViewName("gift/gift");
+        model.setViewName("shareGift/gift");
         return  model;
     }
     //送套餐卡
