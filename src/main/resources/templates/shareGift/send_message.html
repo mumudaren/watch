@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>        
+        <meta charset="utf-8">
+        <meta name="Description" content="发短信" />
+        <title>发短信</title>       
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="yes" name="apple-touch-fullscreen">
+        <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
+        <meta content="telephone=no" name="format-detection">
+        <link rel="stylesheet" type="text/css" href="css/gift.css" />
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js"></script>
+        <script type="text/javascript" src="js/flexible_css.js"></script>   
+       
+    </head>
+    <body>  
+      <div class="wrap f_sendmessage_wrap">
+        <div class="f_sendmessage">
+            <span>收信人：<em>95013</em></span>
+        </div>
+        <div class="f_sendmessage f_insertmessage">
+            <textarea rows="8" cols="47" id="" name="" value="" placeholder="输入短信内容:"></textarea>
+        </div>
+        <div class="f_sendmessage f_wordtext">
+                <span><img src="images/word.png"><em>使用快捷短语</em></span>
+        </div>
+        <p class="f_bindsuc_share">
+                <a href="javascript:void(0);">发送</a>
+        </p>
+        <p class="f_bindsuc_sharebj">&nbsp;</p>
+      </div>
+
+      <!--点击快捷短语弹窗-->
+      <div class="fast_message">
+            <div class="tb_overflay"></div>
+            <div class="fast_message_content">
+                <ul>
+                    <li class="current"><span>您好，麻烦到楼下取下快递！在一楼大厅！</span></li>
+                    <li><span>请稍晚打我手机，谢谢。</span></li>
+                    <li><span>您的快递正在配送中，会尽快送到您的手中。</span></li>
+                    <li><span>您的宝贝已经出发了，请耐心等待片刻。</span></li>
+                </ul>
+            </div>            
+      </div>
+      
+      <script type="text/javascript">
+        //点击快捷短语js
+        $(function(){
+            $(".f_wordtext").click(function(){
+               $(".fast_message").show(); 
+            })
+
+            $(".fast_message_content ul li").click(function(){
+                var text = $(this).find("span").text();
+                $(this).addClass("current");
+                $(this).siblings().removeClass("current");   
+                $(".f_insertmessage").find("textarea").val(text);
+                $(".fast_message").hide();
+            })
+        })
+      </script>
+    </body>     
+</html>

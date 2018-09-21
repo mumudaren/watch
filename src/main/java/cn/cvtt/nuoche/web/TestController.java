@@ -40,6 +40,7 @@ import cn.cvtt.nuoche.server.WxServer;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -300,25 +301,47 @@ public class TestController extends  BaseController {
     @RequestMapping("/testChooseRegex")
     public  ModelAndView  testChooseRegex(){
         ModelAndView  model=new ModelAndView();
-
-        JSONArray objRegex=new JSONArray();
-        objRegex.add(1);
-
-
-
-        GiftCard giftCard=new GiftCard();
-        giftCard.setRegexId(objRegex.toString());
-        giftCard.setCardName("大吉大利卡");
-        giftCard.setCardType(1);
-        giftCard.setPrice(5000);
-        giftCard.setValidTimeNumber(1);
-        giftCard.setValidTimeUnit(1);
-        giftCardRepository.save(giftCard);
-
+//送套餐卡的规则数据
+//        JSONObject obj=new JSONObject();
+//        obj.put("三连号",1);
+//        obj.put("四连号",2);
+//        GiftCard giftCard=new GiftCard();
+//        giftCard.setRegexId(obj.toString());
+//        giftCard.setCardName("大吉大利卡");
+//        giftCard.setCardType(1);
+//        giftCard.setPrice(5000);
+//        giftCard.setValidTimeNumber(1);
+//        giftCard.setValidTimeUnit(1);
+//        giftCardRepository.save(giftCard);
+        //查询type是套餐卡的所有套餐
         List<GiftCard>  giftCardList=giftCardRepository.findAllByCardTypeEquals(1);
+        for(GiftCard eachGift :giftCardList)
+        {
+            JSONObject eachGiftArray= JSONObject.parseObject(eachGift.getRegexId());
+            //遍历套餐，获取套餐名字
+            String regexName="";
+            for(String str:eachGiftArray.keySet()){
+                regexName=regexName+str+",";
+                logger.info("[testChooseRegex]eachGiftRegex is:"+regexName);
+            }
+            String finalRegexName=regexName.substring(0,regexName.length()-1);
+            logger.info("[testChooseRegex]finalRegexName is:"+finalRegexName);
+            eachGift.setRegexName(finalRegexName);
+        }
+        //遍历套餐id,查询套餐名字。
         model.addObject("giftCardList",giftCardList);
-        logger.info("[testChooseRegex]giftCardList is:"+giftCardList.toString());
         model.setViewName("gift/card_choice");
+        return  model;
+    }
+
+    //选中套餐卡
+    @RequestMapping("/testChooseCard")
+    public  ModelAndView  testChooseCard(@RequestParam("cardId") Long cardId){
+        ModelAndView  model=new ModelAndView();
+        if(cardId!=null){
+            logger.info("[testChooseCard]testChooseCard is:"+cardId);
+        }
+        model.setViewName("gift/testCard");
         return  model;
     }
 

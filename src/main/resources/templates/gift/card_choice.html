@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>card_choice</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -84,143 +84,41 @@
               </div>
             </div>
           </div>
-
-          <!-- Unnamed (Rectangle) -->
-          <div id="u2439" class="ax_default label">
-            <div id="u2439_div" class=""></div>
-            <!-- Unnamed () -->
-            <div id="u2440" class="text" style="visibility: visible;">
-              <p style="font-size:16px;"><span style="font-family:'PingFangHK-Regular', 'PingFang HK';font-weight:400;">大吉大利卡</span><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;"></span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;">可选择生日号、三连号</span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;"><br></span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;">号码有效期:一年</span></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Unnamed (Rectangle) -->
-        <div id="u2441" class="ax_default box_2">
-          <div id="u2441_div" class=""></div>
-          <!-- Unnamed () -->
-          <div id="u2442" class="text" style="visibility: visible;">
-            <p><span>选这个卡</span></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Unnamed (Group) -->
-      <div id="u2443" class="ax_default">
-
-        <!-- Unnamed (Group) -->
-        <div id="u2444" class="ax_default">
-
-          <!-- Unnamed (Group) -->
-          <div id="u2445" class="ax_default">
-
-            <!-- Unnamed (Rectangle) -->
-            <div id="u2446" class="ax_default box_2">
-              <div id="u2446_div" class=""></div>
+          <!--选择套餐-->
+       <div  th:each="p:${giftCardList}">
+            <!-- 卡信息 -->
+            <div id="u2439" class="ax_default label">
+              <div id="u2439_div" class=""></div>
               <!-- Unnamed () -->
-              <div id="u2447" class="text" style="display: none; visibility: hidden">
-                <p><span></span></p>
+              <div id="u2440" class="text" style="visibility: visible;">
+                <p style="font-size:16px;">
+                  <span style="font-family:'PingFangHK-Regular', 'PingFang HK';font-weight:400;" th:text="${p.cardName}">大吉大利卡</span>
+                  <span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;"></span>
+                </p>
+                <p style="font-size:14px;">
+                  <span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;" th:text="${'可选择'+p.regexName}">可选择生日号、三连号</span>
+                </p>
+                <p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;"><br></span></p>
+                <p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;"  th:text="${'号码有效期:'+p.validTimeNumber+p.validTimeUnit}">号码有效期:一年</span></p>
               </div>
             </div>
-          </div>
-
-          <!-- Unnamed (Rectangle) -->
-          <div id="u2448" class="ax_default label">
-            <div id="u2448_div" class=""></div>
+          <!-- 选择 -->
+          <div id="u2441" class="ax_default box_2" th:onclick="'javascript:toCardPage('+${p.id}+')'">
+            <div id="u2441_div" class=""></div>
             <!-- Unnamed () -->
-            <div id="u2449" class="text" style="visibility: visible;">
-              <p style="font-size:16px;"><span style="font-family:'PingFangHK-Regular', 'PingFang HK';font-weight:400;">大吉大利卡</span><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;"></span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;">可选择四连号、三连号、五连号</span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;"><br></span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;">号码有效期:一年</span></p>
+            <div id="u2442" class="text" style="visibility: visible;" >
+              <p><span >选这个卡</span></p>
             </div>
           </div>
-        </div>
-
-        <!-- Unnamed (Rectangle) -->
-        <div id="u2450" class="ax_default box_2">
-          <div id="u2450_div" class=""></div>
-          <!-- Unnamed () -->
-          <div id="u2451" class="text" style="visibility: visible;">
-            <p><span>选这个卡</span></p>
-          </div>
-        </div>
+       </div>
       </div>
-
-      <!-- Unnamed (Group) -->
-      <div id="u2452" class="ax_default">
-
-        <!-- Unnamed (Group) -->
-        <div id="u2453" class="ax_default">
-
-          <!-- Unnamed (Group) -->
-          <div id="u2454" class="ax_default">
-
-            <!-- Unnamed (Rectangle) -->
-            <div id="u2455" class="ax_default box_2">
-              <div id="u2455_div" class=""></div>
-              <!-- Unnamed () -->
-              <div id="u2456" class="text" style="display: none; visibility: hidden">
-                <p><span></span></p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Unnamed (Rectangle) -->
-          <div id="u2457" class="ax_default label">
-            <div id="u2457_div" class=""></div>
-            <!-- Unnamed () -->
-            <div id="u2458" class="text" style="visibility: visible;">
-              <p style="font-size:16px;"><span style="font-family:'PingFangHK-Regular', 'PingFang HK';font-weight:400;">大吉大利卡</span><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;"></span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;">可选择生日号、三连号</span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;"><br></span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;">号码有效期:一年</span></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Unnamed (Rectangle) -->
-        <div id="u2459" class="ax_default box_2">
-          <div id="u2459_div" class=""></div>
-          <!-- Unnamed () -->
-          <div id="u2460" class="text" style="visibility: visible;">
-            <p><span>选这个卡</span></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Unnamed (Group) -->
-      <div id="u2461" class="ax_default">
-
-        <!-- Unnamed (Group) -->
-        <div id="u2462" class="ax_default">
-
-          <!-- Unnamed (Group) -->
-          <div id="u2463" class="ax_default">
-
-            <!-- Unnamed (Rectangle) -->
-            <div id="u2464" class="ax_default box_2">
-              <div id="u2464_div" class=""></div>
-              <!-- Unnamed () -->
-              <div id="u2465" class="text" style="display: none; visibility: hidden">
-                <p><span></span></p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Unnamed (Rectangle) -->
-          <div id="u2466" class="ax_default label">
-            <div id="u2466_div" class=""></div>
-            <!-- Unnamed () -->
-            <div id="u2467" class="text" style="visibility: visible;">
-              <p style="font-size:16px;"><span style="font-family:'PingFangHK-Regular', 'PingFang HK';font-weight:400;">大吉大利卡</span><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;font-size:14px;"></span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;">可选择生日号、三连号</span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;"><br></span></p><p style="font-size:14px;"><span style="font-family:'PingFangHK-Thin', 'PingFang HK Thin', 'PingFang HK';font-weight:200;">号码有效期:一年</span></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Unnamed (Rectangle) -->
-        <div id="u2468" class="ax_default box_2">
-          <div id="u2468_div" class=""></div>
-          <!-- Unnamed () -->
-          <div id="u2469" class="text" style="visibility: visible;">
-            <p><span>选这个卡</span></p>
-          </div>
-        </div>
       </div>
     </div>
+    <script th:inline="javascript">
+        function toCardPage (id) {
+            console.log("toCardPage");
+            window.location.href('/testChooseCard?cardId='+id);
+            }
+    </script>
   </body>
 </html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>        
+        <meta charset="utf-8">
+        <meta name="Description" content="微信送礼" />
+        <title>微信送礼</title>       
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="yes" name="apple-touch-fullscreen">
+        <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
+        <meta content="telephone=no" name="format-detection">
+        <link rel="stylesheet" type="text/css" href="css/gift.css" />
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js"></script>
+        <script type="text/javascript" src="js/flexible_css.js"></script>   
+       
+    </head>
+    <body>  
+      <div class="wrap mygift_givewrap">
+          <p class="f_mypointsimg">可用积分<span>2000</span></p>
+          <div id="tab">
+                <div class="f_tabnav">
+                        <ul>
+                            <li class="z_tabnav_actived"> 我得到的</li>
+                            <li>我消耗的</li>
+                        </ul>
+                </div>
+          
+                <div class="f_tabcontent f_tabpoints">              
+                      <dl>
+                          <dd>
+                              <ul>
+                                          <li>
+                                              <div class="z_tablist z_pointsone">
+                                                  <p class="z_pointsday">每日分享到朋友圈<span>+10分</span></p>
+                                                  <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
+                                                  <p class="z_pointsbg"></p>
+                                              </div>
+                                          </li>
+                                          <li>
+                                              <div class="z_tablist z_pointsone">
+                                                  <p class="z_pointsday z_pointstwoday">每日分享给朋友<span>+10分</span></p>
+                                                  <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
+                                                  <p class="z_pointsbg z_pointsbg_two"></p>
+                                              </div>
+                                          </li>
+                                          <li>
+                                              <div class="z_tablist z_pointsone">
+                                                  <p class="z_pointsday z_pointsthreeday">三毛&nbsp;领取您的代金券<span>+10分</span></p>
+                                                  <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
+                                                  <p class="z_pointsbg z_pointsbg_three"></p>
+                                              </div>
+                                          </li>
+                                          <li>
+                                                <div class="z_tablist z_pointsone">
+                                                    <p class="z_pointsday">每日分享到朋友圈<span>+10分</span></p>
+                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
+                                                    <p class="z_pointsbg"></p>
+                                                </div>
+                                          </li>                                            
+                              </ul>
+                          </dd>
+                          <dd style="display:none;">
+                                <ul>
+                                            <li>
+                                                <div class="z_tablist z_pointsone">
+                                                    <p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>
+                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
+                                                    <p class="z_pointsbg z_usebg"></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="z_tablist z_pointsone">
+                                                    <p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>
+                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
+                                                    <p class="z_pointsbg z_usebg"></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="z_tablist z_pointsone">
+                                                    <p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>
+                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
+                                                    <p class="z_pointsbg z_usebg"></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="z_tablist z_pointsone">
+                                                    <p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>
+                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
+                                                    <p class="z_pointsbg z_usebg"></p>
+                                                </div>
+                                            </li>
+                                                                                    
+                                </ul>
+                            </dd>               
+                      </dl>               
+                </div>   
+          </div>
+          
+      </div>  
+      
+      <script type="text/javascript">
+            $(function(){
+                $(".f_tabnav ul li").click(function(){
+                    var index = $(this).index();
+                    $(this).addClass("z_tabnav_actived");
+                    $(this).siblings().removeClass("z_tabnav_actived");
+                    $(".f_tabcontent dl dd").eq(index).show();
+                    $(".f_tabcontent dl dd").eq(index).siblings().hide();
+                    
+                })
+            })
+      </script>
+    </body>     
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>        
+        <meta charset="utf-8">
+        <meta name="Description" content="礼品卡" />
+        <title>礼品卡</title>       
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="yes" name="apple-touch-fullscreen">
+        <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
+        <meta content="telephone=no" name="format-detection">
+        <link rel="stylesheet" type="text/css" href="css/gift.css" />
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js"></script>
+        <script type="text/javascript" src="js/flexible_css.js"></script>   
+       
+    </head>
+    <body>  
+      <div class="wrap give_wrap">
+           <div class="f_givefriend_top f_recive_numbercard">
+                <span class="z_giverfriend_send">好开森，赶紧来领取！</span>
+           </div>
+           <div class="z_giverfriend_content">
+                <p class="z_friend_personimg">
+                    <img src="images/pic.png">
+                </p>
+                <div class="z_givefriend_listcontent">
+                    <span class="z_gumi">旅人<br>送给你靓号</span>
+                    <span class="z_choice_goodnumber">祝您<br>大吉大利，今晚有靓号！</span>                    
+                    <span class="z_choicethree z_recivethreefour">95013333310001</span>  
+                    <ul class="z_reciveimg">
+                        <li>
+                            <a href="tel:95013">
+                                <img src="images/recivecard_01.png"><br>
+                                拨打电话
+                            </a>                            
+                        </li>
+                        <li>
+                            <img src="images/recivecard_02.png"><br>
+                            来电留言箱
+                        </li>
+                        <li>
+                            <img src="images/recivecard_03.png"><br>
+                            防骚扰
+                        </li>
+                    </ul>                
+                </div>                          
+           </div>
+           <div class="z_choice_flowerimg">
+                <img src="images/give_05.png">
+            </div>
+            <div class="longpic">
+                    <span>领取我的靓号</span>
+            </div>  
+      </div> 
+      
+       <!--点击领取我的靓号弹窗-->
+       <div class="selectnumber_show">
+            <div class="tb_overflay"></div>
+            <div class="selectnum_showcontent">
+                <p class="z_selectnum_img">
+                    <img src="images/close.png">
+                </p>
+                <p class="z_getgoodnumber">领取我的靓号</p>
+                <div class="z_selectnuminput">
+                    <input type="tel" id="" name="" placeholder="手机号码">
+                    <input type="tel" id="" name="" placeholder="验证码">
+                    <input type="button" id="getcode" name="" value="获取验证码" style="position: absolute;top:3.7rem;">
+                    <span class="z_number_get">领取</span>
+                </div>
+            </div>
+        </div>
+
+          <script type="text/javascript">
+            $(function(){    
+    
+               //点击选这个号之后的弹窗
+               $(".longpic").click(function(){
+                 $(".selectnumber_show").show();  
+               })
+    
+               $(".z_selectnum_img").click(function(){
+                $(".selectnumber_show").hide(); 
+               })
+               $(".tb_overflay").click(function(){
+                $(".selectnumber_show").hide();    
+               })
+            })
+          </script>
+           <script type="text/javascript">  
+            var wait=60;  
+            function time(o) {  
+                    if (wait == 0) {  
+                        o.removeAttribute("disabled");            
+                        o.value="获取验证码";  
+                        o.style.color = "#1d68a9";
+                        wait = 60;  
+                    } else {  
+                        o.setAttribute("disabled", true);  
+                        o.value="" + wait + "s后重新获取"; 
+                        o.style.color = "#6a7388";
+                        wait--;  
+                        setTimeout(function() {  
+                            time(o)  
+                        },  
+                        1000)  
+                    }  
+                }  
+            document.getElementById("getcode").onclick=function(){time(this);}
+          </script>
+
+    </body>     
+</html>

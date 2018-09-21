@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>        
+        <meta charset="utf-8">
+        <meta name="Description" content="选择靓号" />
+        <title>选择靓号</title>       
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="yes" name="apple-touch-fullscreen">
+        <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
+        <meta content="telephone=no" name="format-detection">
+        <link rel="stylesheet" type="text/css" href="css/gift.css" />
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js"></script>
+        <script type="text/javascript" src="js/flexible_css.js"></script>   
+       
+    </head>
+    <body>  
+      <div class="wrap gift_wrap">
+          <div class="f_selectnumber_top">
+                <div class="f_selectnumber_toplist">
+                    <ul>
+                        <li class="current">
+                            <img src="images/icon1.png"><br>生日
+                        </li>
+                        <li>
+                            <img src="images/icon2.png"><br>纪念日
+                        </li>
+                        <li>
+                            <img src="images/icon3.png"><br>恋爱
+                        </li>
+                        <li>
+                            <img src="images/icon4.png"><br>老板号
+                        </li>
+                        <li>
+                            <img src="images/icon5.png"><br>连号
+                        </li>
+                    </ul>
+                    <div class="f_searchinput">
+                        <input type="text" placeholder="输入您想要的号码" value="" id="" name="" class="z_searchnumber">
+                        <input type="button" value="搜索" id="search" name="search" class="z_searchnumber_btn">
+                    </div>
+                </div>
+          </div>
+
+          <div class="f_searchnumber_list">
+            <ul>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>&nbsp;朋友送的号码卡，可免费领取
+                            <span class="z_number_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>&nbsp;朋友送的号码卡，可免费领取
+                            <span class="z_number_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>&nbsp;朋友送的号码卡，可免费领取
+                            <span class="z_number_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>&nbsp;朋友送的号码卡，可免费领取
+                            <span class="z_number_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>&nbsp;朋友送的号码卡，可免费领取
+                            <span class="z_number_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+            </ul>
+          </div>
+      </div>
+
+      <!--点击选这个号的弹窗-->
+      <div class="selectnumber_show">
+        <div class="tb_overflay"></div>
+        <div class="selectnum_showcontent">
+            <p class="z_selectnum_img">
+                <img src="images/close.png">
+            </p>
+            <p class="z_getgoodnumber">领取我的靓号</p>
+            <p class="z_selecnum_shownumber">95013&nbsp;&nbsp;68983</p>
+            <div class="z_selectnuminput">
+                <input type="tel" id="" name="" placeholder="手机号码">
+                <input type="tel" id="" name="" placeholder="验证码">
+                <input type="button" id="getcode" name="" value="获取验证码">
+                <span class="z_number_get">领取</span>
+            </div>
+        </div>
+      </div>
+
+      <script type="text/javascript">
+        $(function(){
+
+           //顶部的几个号码选择
+           $(".f_selectnumber_toplist ul li").click(function(){
+               $(this).addClass("current");
+               $(this).siblings().removeClass("current");
+           }) 
+
+           //点击选这个号之后的弹窗
+           $(".z_number_selected").click(function(){
+             $(".selectnumber_show").show();  
+           })
+
+           $(".z_selectnum_img").click(function(){
+            $(".selectnumber_show").hide(); 
+           })
+           $(".tb_overflay").click(function(){
+            $(".selectnumber_show").hide();    
+           })
+        })
+      </script>
+       <script type="text/javascript">  
+        var wait=60;  
+        function time(o) {  
+                if (wait == 0) {  
+                    o.removeAttribute("disabled");            
+                    o.value="获取验证码";  
+                    o.style.color = "#1d68a9";
+                    wait = 60;  
+                } else {  
+                    o.setAttribute("disabled", true);  
+                    o.value="" + wait + "s后重新获取"; 
+                    o.style.color = "#6a7388";
+                    wait--;  
+                    setTimeout(function() {  
+                        time(o)  
+                    },  
+                    1000)  
+                }  
+            }  
+        document.getElementById("getcode").onclick=function(){time(this);}
+      </script>
+
+    </body>     
+</html>

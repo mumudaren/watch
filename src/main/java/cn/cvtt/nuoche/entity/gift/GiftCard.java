@@ -6,7 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="gift_card")
@@ -37,10 +39,12 @@ public class GiftCard {
     @Column(name="valid_time_number")
     private  Integer  validTimeNumber;
 
+    @Transient
+    private String regexName;
 
     public GiftCard() {
     }
-    public GiftCard(Long id,Integer cardType,String number, String regexId, String cardName, Integer price,Integer validTimeUnit,Integer validTimeNumber) {
+    public GiftCard(Long id,Integer cardType,String number, String regexId, String cardName, Integer price,Integer validTimeUnit,Integer validTimeNumber,String regexName) {
         this.id = id;
         this.regexId = regexId;
         this.cardType = cardType;
@@ -116,4 +120,11 @@ public class GiftCard {
         this.number = number;
     }
 
+    public String getRegexName() {
+        return regexName;
+    }
+
+    public void setRegexName(String regexName) {
+        this.regexName = regexName;
+    }
 }
