@@ -40,6 +40,9 @@ public class GiftCard {
     private  Integer  validTimeNumber;
 
     @Transient
+    private String validTimeUnitName;
+
+    @Transient
     private String regexName;
 
     public GiftCard() {
@@ -126,5 +129,13 @@ public class GiftCard {
 
     public void setRegexName(String regexName) {
         this.regexName = regexName;
+    }
+
+    public String getValidTimeUnitName() {
+        return validTimeUnitName;
+    }
+
+    public void setValidTimeUnitName(String validTimeUnitName) {
+        this.validTimeUnitName = validTimeUnitName;
     }
 }

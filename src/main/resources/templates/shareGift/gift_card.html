@@ -37,14 +37,15 @@
               <div class="z_choiceone_content">
                   <div class="z_choiceone_top">
                                 <span class="z_cardshowone"><strong th:text="${card.cardName}">大吉大利卡</strong><br>
-                                    <b class="z_taocamnumber_price">￥<i  th:text="${card.price}/10">299</i></b>有效期：一年
+                                    <b class="z_taocamnumber_price">￥<i  th:text="${card.price}/10">299</i></b>
+                                    <b  th:text="${'号码有效期:'+card.validTimeNumber+card.validTimeUnitName}">有效期：一年</b>
                                 </span>
                       <span class="z_choiceone_img">
                                     <img src="images/giftImage/cardimg_05.png">
                                 </span>
                   </div>
                   <div class="z_choiceone_bottom">
-                      <span class="z_choiceone_requiretime">可选择生日号、三连号</span>
+                      <span class="z_choiceone_requiretime" th:text="${'可选择'+card.regexName}">可选择生日号、三连号</span>
                       <span class="z_choiceone_activedcard">
                                     <a href="/testChooseRegex">重新选择</a>
                                 </span>

@@ -29,7 +29,7 @@
                                 </span>
                             </div>
                             <div class="z_choiceone_bottom">
-                                <span class="z_choiceone_requiretime"   th:text="${'号码有效期:'+p.validTimeNumber+p.validTimeUnit}">号码有效期：一年</span>
+                                <span class="z_choiceone_requiretime"   th:text="${'号码有效期:'+p.validTimeNumber+p.validTimeUnitName}">号码有效期：一年</span>
                                 <span class="z_choiceone_activedcard">
                                     <a th:onclick="'javascript:toCardPage('+${p.id}+')'" >选这个卡</a>
                                 </span>

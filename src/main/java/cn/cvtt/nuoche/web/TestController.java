@@ -296,6 +296,29 @@ public class TestController extends  BaseController {
         if(!StringUtils.equals(cardId,"noId")){
           long cardIdSearch=Long.parseLong(cardId);
           GiftCard card=giftCardRepository.findByIdEquals(cardIdSearch);
+          //可购买的套餐名称
+            JSONObject eachGiftArray= JSONObject.parseObject(card.getRegexId());
+            //遍历套餐，获取套餐名字
+            String regexName="";
+            for(String str:eachGiftArray.keySet()){
+                regexName=regexName+str+",";
+                logger.info("[testRegexGift]eachGiftRegex is:"+regexName);
+            }
+            String finalRegexName=regexName.substring(0,regexName.length()-1);
+            logger.info("[testRegexGift]finalRegexName is:"+finalRegexName);
+            card.setRegexName(finalRegexName);
+            //判断有效期是年、月、日
+            switch(card.getValidTimeUnit()){
+                case 1:
+                    card.setValidTimeUnitName("日");
+                    break;
+                case 2:
+                    card.setValidTimeUnitName("月");
+                    break;
+                case 3:
+                    card.setValidTimeUnitName("年");
+                    break;
+            }
           model.addObject("card",card);
         }
         model.addObject("isHideOldDiv",isHideOldDiv);
@@ -332,6 +355,21 @@ public class TestController extends  BaseController {
             String finalRegexName=regexName.substring(0,regexName.length()-1);
             logger.info("[testChooseRegex]finalRegexName is:"+finalRegexName);
             eachGift.setRegexName(finalRegexName);
+            //判断有效期是年、月、日
+            switch(eachGift.getValidTimeUnit()){
+                case 1:
+                    logger.info("[testChooseRegex]eachGift getValidTimeUnit is:"+1);
+                    eachGift.setValidTimeUnitName("日");
+                    break;
+                case 2:
+                    logger.info("[testChooseRegex]eachGift getValidTimeUnit is:"+2);
+                    eachGift.setValidTimeUnitName("月");
+                    break;
+                case 3:
+                    logger.info("[testChooseRegex]eachGift getValidTimeUnit is:"+3);
+                    eachGift.setValidTimeUnitName("年");
+                    break;
+            }
         }
         //遍历套餐id,查询套餐名字。
         model.addObject("giftCardList",giftCardList);
