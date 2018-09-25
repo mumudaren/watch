@@ -260,8 +260,8 @@ opacity: .5;
     background: -moz-linear-gradient(bottom, #55b5f9 , #2f7fec); /* Firefox 3.6 - 15 */
     background: linear-gradient(to bottom, #55b5f9 , #2f7fec); /* 标准的语法 */
 }
-.f_selectnumber_toplist ul{padding:.4rem .3rem;display:flex;flex-direction: row;flex-flow: nowrap;}
-.f_selectnumber_toplist ul li{padding:.1rem 0;background-color:#fff;border-radius:.3rem;width:1.8rem;text-align: center;margin-left:.1rem;color:#2f7fec;font-size:.38rem;}
+.f_selectnumber_toplist ul{padding:.4rem .3rem;display:flex;flex-direction: row;flex-flow: wrap;}
+.f_selectnumber_toplist ul li{padding:.1rem 0;background-color:#fff;border-radius:.3rem;width:1.8rem;text-align: center;margin-left:.1rem;color:#2f7fec;font-size:.38rem;margin-bottom:.2rem;}
 .f_selectnumber_toplist ul li:nth-child(1){margin-left:0;}
 .f_selectnumber_toplist ul li img{width:1rem;}
 .f_selectnumber_toplist ul li.current{background-color:#caebff;}
@@ -377,8 +377,8 @@ opacity: .5;
 .f_mynumber_time span{color: #2f89ef;font-size: .5rem;}
 .f_mynumberbtn{margin-top: .2rem;}
 .f_mynum_top{background: #fff;padding: .3rem;width: 9.4rem;overflow: hidden;box-shadow: 5px 7px 7px #d2e3f5;}
-.f_mynum_left{float: left;width: 2rem;height: 2rem;background: #dbedfd;border-radius: 50%;margin-right: .2rem;}
-.f_mynum_left img{width: 1.093rem;padding-left: .48rem;padding-top: .3rem;}
+.f_mynum_left{float: left;margin-right: .2rem;}
+.f_mynum_left img{width: 2rem;height: 2rem;border-radius:50%;}
 .f_mynum_right{color: #000;font-size: .4rem;margin-top: .2rem;}
 .z_telphone b{color: #007eda;}
 .z_telphone a{color: #007eda;font-size: .4rem;float: right;text-decoration: underline;}
@@ -401,7 +401,7 @@ opacity: .5;
 .z_imgkey{width: .5rem;height: .5rem;background: #007eda;border-radius: 50%;margin-right: .3rem;display: inline-block;vertical-align: middle;}
 .z_imgkey img{width: .25rem;padding-left: .12rem;padding-top: .06rem;}
 .z_imgtel{background: #f31e66;}
-.z_mynumber95013{color: #007eda;}
+.z_mynumber95013{color: #007eda;font-size:.4rem;}
 .z_mynumber_telphone{color: #f31e66;}
 .z_imgtel img{width: .25rem;padding-left: .132rem;padding-top: .06rem;}
 .z_todatetime{float: right;color: #ff9033;font-size: .4rem;margin-top: .05rem;}

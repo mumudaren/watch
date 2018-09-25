@@ -17,8 +17,10 @@
     <body>  
       <div class="wrap lottery_wrap">
           <div class="f_lotterybj" id="lottery">
-            <ul >
-                <li class="lotter_list" th:each="award:${awards}">  <img  th:src="${award.imgurl}"  width="160px" height="110px"></li>
+            <ul>
+                <li class="lotter_list" th:each="award:${awards}">
+                    <img  th:src="${award.imgurl}"  style="width:1.6rem;vertical-align: middle;">
+                </li>
             </ul>
           </div> 
           <div class="f_lottery_prize">

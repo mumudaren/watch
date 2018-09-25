@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <meta name="Description" content="购买至尊安全号" />
-    <title>购买智能靓号</title>
+    <meta name="Description" content="购买海牛助手" />
+    <title>购买海牛助手</title>
     <meta content="yes" name="apple-mobile-web-app-capable"/>
     <meta content="yes" name="apple-touch-fullscreen"/>
     <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"/>
@@ -23,24 +23,24 @@
     <form id="sendPhone" th:action="@{/findStatus.html}"  th:method="post">
     <p class="f_zhizuninput">
         <!--<input type="tel" placeholder="请输入需要安全号的手机号码"   name="myNumber" style="width:92%"/>-->
-        <input type="tel"  th:value="${phone}" placeholder="请输入需要安全号的手机号码" style="width:92%" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
+        <input type="tel"  th:value="${phone}" placeholder="请输入需要海牛助手的手机号码" style="width:92%" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
         <input style="display:none" id="phoneType" name="phoneType" value="ZhiZun" />
         <br/>
-        安全号将与输入的手机号进行绑定，呼叫安全号手机号将接听来电
+        海牛助手将与输入的手机号进行绑定，呼叫海牛助手手机号将接听来电
     </p>
     </form>
     <div class="f_tabwrap">
         <div class="f_zhizuntab">
             <ul >
-                <li  th:each="reg:${regexs}" th:text="${reg.value}" th:value="${reg.key}"> AABB</li>
+                <li  th:each=
+                             </div>"reg:${regexs}" th:text="${reg.value}" th:value="${reg.key}"> AABB</li>
             </ul>
-        </div>
         <div class="f_zhizuntabcon">
             <ul>
                 <li>
                     <div class="f_zhizuntablist">
                         <p class="f_zhizuninput">
-                            <input type="tel" placeholder="请输入需要查找的安全号" style="width:97%"  class="searchNumber" name=""/>
+                            <input type="tel" placeholder="请输入需要查找的海牛助手号" style="width:97%"  class="searchNumber" name=""/>
                         </p>
                         <dl class="f_95013listnum">
                             <dd th:each="n:${numbers}" th:text="${n.number}">9501378110</dd>
