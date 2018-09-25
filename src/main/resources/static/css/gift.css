@@ -383,7 +383,7 @@ opacity: .5;
 .z_telphone b{color: #007eda;}
 .z_telphone a{color: #007eda;font-size: .4rem;float: right;text-decoration: underline;}
 .z_mynumlist{margin-top: .2rem;}
-.z_mynumlist ul li{float: left;color: #6a7388;border-right: 1px solid #d8dae0;padding: 0 .78rem;}
+.z_mynumlist ul li{float: left;color: #6a7388;border-right: 1px solid #d8dae0;padding: 0 .7rem;}
 .z_mynumlist ul li span{display: block;}
 .z_mynumlist ul li span.z_number{color: #000;font-weight: bold;text-align: center;}
 .z_mynumlist ul li span.z_number.z_f31e66{color: #f31e66;}
@@ -471,12 +471,12 @@ opacity: .5;
 .mynumber_list{margin:.2rem 0;}
 .mynumber_list ul{display: flex;flex-direction: row;flex-flow: nowrap;}
 .mynumber_list ul li{width:3.2rem;text-align: center;margin-left:.1rem;}
-.f_mynumber_gift{height:2.1rem;border-radius:1rem;color:#fff;font-size:.4rem;background-color:#6c84fd;padding: .2rem 0;
+.f_mynumber_gift{height:1.6rem;border-radius:1rem;color:#fff;font-size:.3rem;background-color:#6c84fd;padding: .1rem 0;
     background: -webkit-linear-gradient(left, #6c84fd , #2c49f9); /* Safari 5.1 - 6.0 */
     background: -o-linear-gradient(right, #6c84fd , #2c49f9); /* Opera 11.1 - 12.0 */
     background: -moz-linear-gradient(right, #6c84fd , #2c49f9); /* Firefox 3.6 - 15 */
     background: linear-gradient(to right, #6c84fd , #2c49f9); /* 标准的语法 */}
-.f_mynumber_gift img{width:1.5rem;}
+.f_mynumber_gift img{width:1rem;}
 .f_mynumber_gift em{font-size:.3rem;}
 .f_mynumber_gifttwo{background-color:#febc31;
     background: -webkit-linear-gradient(left, #febc31 , #fa6f27); /* Safari 5.1 - 6.0 */
