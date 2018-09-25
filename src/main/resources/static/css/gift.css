@@ -214,7 +214,7 @@ opacity: .5;
 .z_giverfriend_send{color:#fdf036;text-align: center;display: block;padding-top:1.5rem;padding-left:.5rem;}
 .z_giverfriend_content{border-radius:.3rem;background-color:#fff;padding-bottom:.5rem;width:9.4rem;margin: -2rem auto 0;position: relative;}
 .z_friend_personimg{position: absolute;top:-1rem;left:3.7rem;}
-.z_friend_personimg img{width: 2.1rem;}
+.z_friend_personimg img{width: 1rem;}
 .z_givefriend_listcontent{text-align: center;margin: 0 auto;}
 .z_givefriend_listcontent span{display: block;}
 .z_gumi{padding-top:1.8rem;color:#030303;opacity: .8;font-size:.35rem;}
@@ -260,7 +260,7 @@ opacity: .5;
     background: -moz-linear-gradient(bottom, #55b5f9 , #2f7fec); /* Firefox 3.6 - 15 */
     background: linear-gradient(to bottom, #55b5f9 , #2f7fec); /* 标准的语法 */
 }
-.f_selectnumber_toplist ul{padding:.4rem .3rem;display:flex;flex-direction: row;flex-flow: wrap;}
+.f_selectnumber_toplist ul{padding:.4rem .3rem;display:flex;flex-direction: row;flex-flow: nowrap;}
 .f_selectnumber_toplist ul li{padding:.1rem 0;background-color:#fff;border-radius:.3rem;width:1.8rem;text-align: center;margin-left:.1rem;color:#2f7fec;font-size:.38rem;margin-bottom:.2rem;}
 .f_selectnumber_toplist ul li:nth-child(1){margin-left:0;}
 .f_selectnumber_toplist ul li img{width:1rem;}
@@ -310,7 +310,7 @@ opacity: .5;
 .z_numberbuy_selected{float:right;margin-right:.2rem;}
 
 .f_giftshow{border-radius:.2rem;border:1px solid #bfc3ce;background-color:#fff;width:9.5rem;margin:0 auto;margin-top:-1.7rem;}
-.f_giftshow_content span{padding:.4rem .2rem;display:inline-block;}
+.f_giftshow_content span{padding:.4rem .1rem;display:inline-block;}
 .z_giftshow_img img{width:1.3rem;vertical-align: 0;}
 .z_giftshow_number{font-size:.5rem;color:#2f7fec;}
 .z_giftshow_number em{color:#f13784;font-size:.4rem;}
@@ -506,7 +506,7 @@ opacity: .5;
 .z_tablist_price{color:#f31e66;font-size:.4rem;}
 .z_tabdatetime{display:inline-block;margin-left:.3rem;}
 .z_tablist_content{overflow: hidden;}
-.z_tablist_content img{width:2.5rem;margin-top:.5rem;float:left;}
+.z_tablist_content img{width:1rem;margin-top:.5rem;float:left;}
 .z_tablist_text{display:inline-block;color:#6a7388;font-size:.4rem;margin-top:.6rem;margin-left:.2rem;line-height:.7rem;}
 .z_tablist_nouse{color:#ff9033;font-size:.35rem;border-radius:.5rem;border:1px solid #ff9033;padding: .05rem .2rem 0;}
 .z_tanlist_notusedate{display:inline-block;color:#6a7388;font-size:.4rem;margin-top:.7rem;}

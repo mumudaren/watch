@@ -9,17 +9,21 @@
         <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
         <meta content="telephone=no" name="format-detection">
         <link rel="stylesheet" type="text/css" th:href="@{/css/gift.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/dist/css/swiper.min.css}" />
        <script type="text/javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/flexible.js}"></script>
        <script type="text/javascript" th:src="@{/js/flexible_css.js}"></script>
-       
+        <style type="text/css">
+            .swiper-wrapper{margin-left:-3.88rem;}
+            .f_selectnumber_toplist ul li{width:1.8rem !important;}
+        </style>
     </head>
     <body>  
       <div class="wrap gift_wrap">
           <div class="f_selectnumber_top">
-                <div class="f_selectnumber_toplist">
-                    <ul>
-                        <li  th:each="reg:${regexs}">
+                <div class="f_selectnumber_toplist swiper-container">
+                    <ul class="swiper-wrapper">
+                        <li  class="swiper-slide" th:each="reg:${regexs}">
                             <img src="images/giftImage/icon2.png"><br  th:text="${reg.value}" th:value="${reg.key}" />
                         </li>
                         <!--<li>-->
@@ -77,7 +81,7 @@
             });
         });
         //tab change
-            $(".f_selectnumber_toplist ul").find("li").click(function () {
+            $(".f_selectnumber_toplist ul").on("click","li",function(){
                 $(".f_selectnumber_toplist ul").find("li").removeClass("current");
                 $(this).addClass("current");
                 /** 加载 该套餐号码**/
@@ -140,6 +144,19 @@
 
 
 
-      </script>      
+      </script>
+
+      <script type="text/javascript" th:src="@{/dist/js/swiper.min.js}"></script>
+      <!-- Initialize Swiper -->
+      <script>
+          var swiper = new Swiper('.swiper-container', {
+              pagination: '.swiper-pagination',
+              slidesPerView: 5,
+              centeredSlides: true,
+              paginationClickable: true,
+              spaceBetween: 30,
+              loop: true
+          });
+      </script>
     </body>     
 </html>
