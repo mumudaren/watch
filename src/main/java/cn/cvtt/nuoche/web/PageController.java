@@ -6,11 +6,15 @@ import cn.cvtt.nuoche.entity.business.BindVo;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.wx_product;
+import cn.cvtt.nuoche.entity.gift.GiftCard;
+import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.ISystemParamInterface;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCardRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCardRepository;
 import cn.cvtt.nuoche.server.impl.NumberServiceImpl;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
@@ -50,6 +54,10 @@ public class PageController extends  BaseController{
     IBusinessNumberRecordRepository  recordRepository;
     @Autowired
     IBusinessCallRecordInterface  callRecordInterface;
+    @Autowired
+    IGiftCardRepository giftCardRepository;
+    @Autowired
+    IGiftCardRecordRepository giftCardRecordRepository;
     private static final Logger logger = LoggerFactory.getLogger(PageController.class);
      @SuppressWarnings("all")
      @RequestMapping("/getNumber")
@@ -337,9 +345,9 @@ public class PageController extends  BaseController{
     //使用说明页面
     @RequestMapping("/activity_description.html")
     public  String  activityDescription(){
-
         return  "shareGift/activity_description";
     }
+
     //延期、解冻支付成功后跳转的接口。根据号码绑定记录判断是靓号还是普通号。
     @RequestMapping("/findNumnberType.html")
     public  String  findNumnberTypeMethod(String number) throws IOException {

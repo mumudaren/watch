@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
         <meta name="Description" content="送朋友" />
@@ -21,14 +21,14 @@
            </div>
            <div class="z_giverfriend_content">
                 <p class="z_friend_personimg">
-                    <img src="images/pic.png">
+                    <img th:src="${user.headimgurl}">
                 </p>
                 <div class="z_givefriend_listcontent">
-                    <span class="z_gumi">咪咕咪咕虾送给号码卡</span>
-                    <span class="z_choicethree">可选三连号、四连号</span>
-                    <span class="z_choice_goodnumber">祝您<br>大吉大利，今晚有靓号！</span>
+                    <span class="z_gumi" th:text="${user.nickname}+'送给号码卡'">咪咕咪咕虾送给号码卡</span>
+                    <span class="z_choicethree"  th:text="${'可选择'+card.regexName}">可选三连号、四连号</span>
+                    <span class="z_choice_goodnumber">祝您<br  th:text="${message}"></span>
                     <span class="z_friend_giveimg">
-                        <img src="images/give_07.png">
+                        <img src="images/giftImage/give_07.png">
                     </span>                   
                 </div> 
                 <div class="z_choice_wxdoting">
@@ -37,7 +37,7 @@
                 </div>                             
            </div>
            <div class="z_choice_flowerimg">
-                <img src="images/give_05.png">
+                <img src="images/giftImage/give_05.png">
             </div> 
       </div>     
     </body>     

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name="gift_point")
+@Table(name="gift_card_record")
 public class GiftCardRecord {
 
     @Id

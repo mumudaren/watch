@@ -6,22 +6,11 @@ import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.SystemFeedBack;
 import cn.cvtt.nuoche.entity.business.wx_product;
-import cn.cvtt.nuoche.entity.gift.GiftCard;
-import cn.cvtt.nuoche.entity.gift.GiftCoupon;
-import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
-import cn.cvtt.nuoche.entity.gift.GiftPoint;
-import cn.cvtt.nuoche.entity.gift.GiftPointRecord;
+import cn.cvtt.nuoche.entity.gift.*;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
-import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
-import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
-import cn.cvtt.nuoche.reponsitory.IGiftCardRepository;
-import cn.cvtt.nuoche.reponsitory.IGiftCouponRecordRepository;
-import cn.cvtt.nuoche.reponsitory.IGiftCouponRepository;
-import cn.cvtt.nuoche.reponsitory.IGiftPointRecordRepository;
-import cn.cvtt.nuoche.reponsitory.IGiftPointRepository;
-import cn.cvtt.nuoche.reponsitory.ISystemFeedBack;
+import cn.cvtt.nuoche.reponsitory.*;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
 import cn.cvtt.nuoche.util.JsonUtils;
@@ -71,6 +60,8 @@ public class TestController extends  BaseController {
     IGiftPointRepository giftPointRepository;
     @Autowired
     IGiftCardRepository giftCardRepository;
+    @Autowired
+    IGiftCardRecordRepository giftCardRecordRepository;
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     @RequestMapping("/getAll")
     @ResponseBody
@@ -332,6 +323,7 @@ public class TestController extends  BaseController {
             eachGiftCouponRecord.setGiftCoupon(giftCoupon);
         }
         model.addObject("giftRecord",giftRecordList);
+        model.addObject("openid",openid);
         model.setViewName("shareGift/gift_card");
         return  model;
     }
@@ -395,6 +387,38 @@ public class TestController extends  BaseController {
         }
         boolean isHideOldDiv=true;
         return  "redirect:"+"testRegexGift?isHideOldDiv="+isHideOldDiv+"&cardId="+cardId;
+    }
+
+    //分享套餐卡页面
+    @RequestMapping("/card_give.html")
+    public  ModelAndView  cardGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,@RequestParam(value ="cardId") String cardId,@RequestParam(value ="message",defaultValue ="") String message){
+        ModelAndView  model=new ModelAndView();
+        //支付成功后将套餐卡信息保存数据库中
+        GiftCardRecord giftCardRecord=new GiftCardRecord();
+        giftCardRecord.setSenderOpenid(SenderOpenid);
+        giftCardRecord.setMessage(message);
+        giftCardRecord.setCardId(Long.parseLong(cardId));
+        giftCardRecord.setGetStatus(0);
+        giftCardRecordRepository.saveAndFlush(giftCardRecord);
+        //加载分享页面所需要的数据。
+        GiftCard card=giftCardRepository.findByIdEquals(Long.parseLong(cardId));
+        //可购买的套餐名称
+        JSONObject eachGiftArray= JSONObject.parseObject(card.getRegexId());
+        //遍历套餐，获取套餐名字
+        String regexName="";
+        for(String str:eachGiftArray.keySet()){
+            regexName=regexName+str+",";
+            logger.info("[cardGive]eachGiftRegex is:"+regexName);
+        }
+        String finalRegexName=regexName.substring(0,regexName.length()-1);
+        logger.info("[cardGive]finalRegexName is:"+finalRegexName);
+        card.setRegexName(finalRegexName);
+        model.addObject("card",card);
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
+        model.addObject("user",user);
+        model.addObject("message",message);
+        model.setViewName("shareGift/card_give");
+        return  model;
     }
 
     @RequestMapping("/OwnerSafeNumber.html")
