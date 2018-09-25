@@ -292,6 +292,7 @@ public class TestController extends  BaseController {
     @RequestMapping("/testRegexGift")
     public  ModelAndView  testRegexGiftMethod(@RequestParam(value ="isHideOldDiv",defaultValue ="false") boolean isHideOldDiv,@RequestParam(value ="cardId",defaultValue ="noId") String cardId){
         ModelAndView  model=new ModelAndView();
+        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
         logger.info("[testRegexGift]isHideOldDiv is:"+isHideOldDiv);
         if(!StringUtils.equals(cardId,"noId")){
           long cardIdSearch=Long.parseLong(cardId);
@@ -322,6 +323,15 @@ public class TestController extends  BaseController {
           model.addObject("card",card);
         }
         model.addObject("isHideOldDiv",isHideOldDiv);
+        //查找该用户所有的优惠券。
+        List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEquals(openid);
+        for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
+        {
+            Long couponId=eachGiftCouponRecord.getCouponId();
+            GiftCoupon giftCoupon=giftCouponRepository.findByIdEquals(couponId);
+            eachGiftCouponRecord.setGiftCoupon(giftCoupon);
+        }
+        model.addObject("giftRecord",giftRecordList);
         model.setViewName("shareGift/gift_card");
         return  model;
     }

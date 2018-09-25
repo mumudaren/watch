@@ -334,6 +334,12 @@ public class PageController extends  BaseController{
 
         return  "gift/wrongPage";
     }
+    //使用说明页面
+    @RequestMapping("/activity_description.html")
+    public  String  activityDescription(){
+
+        return  "shareGift/activity_description";
+    }
     //延期、解冻支付成功后跳转的接口。根据号码绑定记录判断是靓号还是普通号。
     @RequestMapping("/findNumnberType.html")
     public  String  findNumnberTypeMethod(String number) throws IOException {

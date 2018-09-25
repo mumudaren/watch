@@ -1,11 +1,7 @@
 package cn.cvtt.nuoche.entity.gift;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -23,17 +19,19 @@ public class GiftCouponRecord {
     private  Long  couponId;
     @Column(name="get_time")
     private Date getTime;
+    @Transient
+    private GiftCoupon giftCoupon;
 
     public GiftCouponRecord() {
     }
 
-    public GiftCouponRecord(Long id, String senderOpenid, String receiverOpenid, Long pointUsed,Date getTime) {
+    public GiftCouponRecord(Long id, String senderOpenid, String receiverOpenid, Long pointUsed,Date getTime,GiftCoupon giftCoupon) {
         this.id = id;
         this.senderOpenid = senderOpenid;
         this.receiverOpenid = receiverOpenid;
         this.couponId = pointUsed;
         this.getTime = getTime;
-
+        this.giftCoupon = giftCoupon;
     }
 
     public Long getId() {
@@ -74,5 +72,13 @@ public class GiftCouponRecord {
 
     public void setGetTime(Date getTime) {
         this.getTime = getTime;
+    }
+
+    public GiftCoupon getGiftCoupon() {
+        return giftCoupon;
+    }
+
+    public void setGiftCoupon(GiftCoupon giftCoupon) {
+        this.giftCoupon = giftCoupon;
     }
 }

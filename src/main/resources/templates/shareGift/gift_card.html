@@ -37,7 +37,7 @@
               <div class="z_choiceone_content">
                   <div class="z_choiceone_top">
                                 <span class="z_cardshowone"><strong th:text="${card.cardName}">大吉大利卡</strong><br>
-                                    <b class="z_taocamnumber_price">￥<i  th:text="${card.price}/10">299</i></b>
+                                    <b class="z_taocamnumber_price">￥<i  th:text="${card.price}/10">0</i></b>
                                     <b  th:text="${'号码有效期:'+card.validTimeNumber+card.validTimeUnitName}">有效期：一年</b>
                                 </span>
                       <span class="z_choiceone_img">
@@ -62,12 +62,12 @@
                 <span class="z_casharrow">></span>
             </p> 
             <p class="f_userbook">
-                <a href="">使用说明</a>
+                <a href="/activity_description.html">使用说明</a>
             </p> 
             <p class="f_write_moneyfriend">
                 <span class="z_write_moeny">￥<b>0</b></span>
                 <span class="z_write_givefriend">
-                    <a href="">送朋友</a>
+                    <a th:onclick="'javascript:pay()'">送朋友</a>
                 </span>
             </p> 
       </div>
@@ -77,51 +77,68 @@
                 <div class="tb_overflay"></div>
                   <div class="f_cashcontent">
                       <div class="f_cashclose">
-                          <span>现金券</span><img src="images/close.png">
+                          <span>现金券</span><img src="images/giftImage/close.png">
                       </div>
                       <div class="cash_list">
                           <ul>
-                              <li>
-                                  <span>￥<em>10</em></span>
-                                  <span>有效期：2019.08.22—2020.08.22</span>
+                              <li th:each="p:${giftRecord}">
+                                  <span>￥<em th:text="${p.giftCoupon.amount/100}">10</em></span>
+                                  <span th:text="${'有效期'+p.giftCoupon.createAt+'-'+p.giftCoupon.effectiveTime}">有效期：2019.08.22—2020.08.22</span>
                               </li>
-                              <li>
-                                  <span>￥<em>20</em></span>
-                                  <span>有效期：2019.08.22—2020.08.22</span>
-                              </li>
-                              <li>
-                                  <span>￥<em>30</em></span>
-                                  <span>有效期：2019.08.22—2020.08.22</span>
-                              </li>
+                              <!--<li>-->
+                                  <!--<span>￥<em>20</em></span>-->
+                                  <!--<span>有效期：2019.08.22—2020.08.22</span>-->
+                              <!--</li>-->
+                              <!--<li>-->
+                                  <!--<span>￥<em>30</em></span>-->
+                                  <!--<span>有效期：2019.08.22—2020.08.22</span>-->
+                              <!--</li>-->
                           </ul>
                       </div>  
                   </div>
         </div>
 
-      <script type="text/javascript">
+      <script th:inline="javascript">
+          $(function(){
+              var oldPrice = $(".z_taocamnumber_price i").text();
+              $(".z_write_moeny").find("b").text(oldPrice);
+          });
+          var clicktag = 0;  //微信支付标志
+          var isHide=[[${isHideOldDiv}]];
                 //点击现金券弹窗js
                 $(".wirte_casher").click(function(){
                 $(".f_cashshow").show();  
-                })
+                });
                 $(".cash_list ul li").click(function(){
                     var normalPrice = $(".z_taocamnumber_price i").text();  //默认的套餐价格   
-                    var normalPrice1 = $(".z_taocamnumber_price").text()  
+                    var normalPrice1 = $(".z_taocamnumber_price").text();
                     var selCash= $(this).find("span em").text();
                     var selCshe1 = $(this).find("span:eq(0)").text();
                     var totalPrice = normalPrice - selCash;
                     $(".z_cashselect").text("已选择：￥" + selCash);
-                    $(".f_cashshow").hide(); 
+                    $(".f_cashshow").hide();
+                    if(totalPrice<0){
+                        totalPrice=0;
+                    }
                     $(".z_write_moeny").find("b").text(totalPrice);
                     
                     var salePrice= "=" + normalPrice1 + "-" + "现金券" + selCshe1;
+
                     $(".z_price").text(salePrice);
-                })
+                });
                 $(".f_cashclose").click(function(){
                     $(".f_cashshow").hide(); 
-                })
+                });
                 $(".tb_overflay").click(function(){
                     $(".f_cashshow").hide(); 
-                })
+                });
+                function pay () {
+                    console.log("pay");
+                    if(isHide==false){
+                        alert("请选择号码卡。");
+                    }
+                    //window.location.href="/testChooseCard?cardId="+id;
+                }
       </script>
     </body>     
 </html>
