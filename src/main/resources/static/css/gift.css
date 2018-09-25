@@ -86,7 +86,7 @@ opacity: .5;
 /*gift页面样式*/
 .gift_wrap{min-height: 15rem;background-color: #f2f7fc;padding-bottom:.5rem;}
 .f_gifttop_bj{background:url(../images/giftImage/gift_02.jpg) no-repeat;width: 10rem;height:3.33rem;background-size: contain;}
-.f_gifttop img{width: 10rem;margin-top:-1px;}
+.f_gifttop img{width: 10rem;}
 .f_gifttop_bj a{display: inline-block;border-radius: .5rem;width:1.8rem;height: .6rem;line-height: .6rem;background-color:#7fe3de;color:#fff;font-size: .35rem;text-align: center;float:right;margin-right: .3rem;margin-top: .3rem;}
 .f_gift_content{background:url(../images/giftImage/gift_05.jpg) no-repeat;width: 10rem;height:3.33rem;background-size: contain;margin-top:.2rem;}
 .z_gift_text{margin-left: 3rem;padding-top: .6rem;}
@@ -219,7 +219,7 @@ opacity: .5;
 .z_givefriend_listcontent span{display: block;}
 .z_gumi{padding-top:1.8rem;color:#030303;opacity: .8;font-size:.35rem;}
 .z_choicethree{color:#030303;font-size:.5rem;}
-.z_choice_goodnumber{padding-top:1rem;color:#3481eb;font-size:.5rem;}
+.z_choice_goodnumber{padding-top:.5rem;color:#3481eb;font-size:.5rem;}
 .z_friend_giveimg img{width:6rem;}
 .z_choice_flowerimg{position: absolute;right:0;top:6rem;}
 .z_choice_flowerimg img{width:2rem;}
@@ -239,17 +239,17 @@ opacity: .5;
     background: linear-gradient(to bottom, #4caff8 , #2f89ef); /* 标准的语法 */
 }
 .z_choice_wxdoting span.z_dothing_share a{color:#fff;text-decoration:none;}
-.z_friend_erweima{margin-top:.3rem;}
-.z_saoyisao{color:#3481eb;font-size:.4rem;margin-top:.5rem;}
+.z_friend_erweima{margin-top:0;}
+.z_saoyisao{color:#3481eb;font-size:.4rem;margin-top:.1rem;}
 .longpic{margin:0 auto;padding-bottom:1rem;text-align:center;}
-.longpic span{margin:1rem auto 0;display:block;text-align: center;border-radius:.5rem;color:#3481eb;width:6rem;height:1.1rem;line-height: 1.1rem;font-size:.5rem;border:1px solid #3481eb;}
+.longpic span a{margin:1rem auto 0;display:block;text-align: center;border-radius:.5rem;color:#3481eb;width:6rem;height:1.1rem;line-height: 1.1rem;font-size:.5rem;border:1px solid #3481eb;}
 .f_qrcode_top img{width:10rem;}
 .f_recive_numbercard{background:url(../images/giftImage/numbercard_02.jpg) no-repeat;width:10rem;height:4.7rem;background-size:contain;}
-.z_recivethreefour{margin-top:.8rem;font-size:.7rem;}
-.z_reciveimg{display: flex;flex-direction: row;flex-flow: nowrap;margin-top:.8rem;}
+.z_recivethreefour{margin-top:.5rem;font-size:.7rem;}
+.z_reciveimg{display: flex;flex-direction: row;flex-flow: nowrap;margin-top:.5rem;}
 .z_reciveimg a{color:#3481eb;}
-.z_reciveimg li{width:3.5rem;color:#3481eb;font-size:.5rem;}
-.z_reciveimg li img{width: 2.2rem;}
+.z_reciveimg li{width:3.5rem;color:#3481eb;}
+.z_reciveimg li img{width: 1.5rem;}
 
 /*选择靓号样式*/
 .f_selectnumber_top{padding-top:.5rem;}
@@ -328,7 +328,7 @@ opacity: .5;
 .z_goodnumber_number a{color:#fdf036;}
 .z_goodnumber_95013{padding-top:.8rem;}
 .z_goodnumber_weixin{margin-top:3rem;font-size:.5rem;color:#3481eb;}
-.z_sharenumber{margin:.5rem auto .1rem;width:8rem;height:1rem;line-height:1rem;border-radius:.5rem;font-size:.5rem;color:#fff;background-color:#55b5f9;
+.z_sharenumber{margin:.1rem auto;width:8rem;height:1rem;line-height:1rem;border-radius:.5rem;font-size:.5rem;color:#fff;background-color:#55b5f9;
     background: -webkit-linear-gradient(top, #55b5f9 , #2f7fec); /* Safari 5.1 - 6.0 */
     background: -o-linear-gradient(bottom, #55b5f9 , #2f7fec); /* Opera 11.1 - 12.0 */
     background: -moz-linear-gradient(bottom, #55b5f9 , #2f7fec); /* Firefox 3.6 - 15 */
