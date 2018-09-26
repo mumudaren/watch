@@ -212,7 +212,7 @@ opacity: .5;
 }
 .f_givefriend_top{background:url(../images/giftImage/give_02.jpg) no-repeat;width:10rem;height:4.7rem;background-size:contain;}
 .z_giverfriend_send{color:#fdf036;text-align: center;display: block;padding-top:1.5rem;padding-left:.5rem;}
-.z_giverfriend_content{border-radius:.3rem;background-color:#fff;padding-bottom:.5rem;width:9.4rem;margin: -2rem auto 0;position: relative;}
+.z_giverfriend_content{border-radius:.3rem;background-color:#fff;padding-bottom:.5rem;width:9.4rem;margin: -1rem auto 0;position: relative;}
 .z_friend_personimg{position: absolute;top:-1rem;left:3.7rem;}
 .z_friend_personimg img{width: 2.1rem;}
 .z_givefriend_listcontent{text-align: center;margin: 0 auto;}
@@ -242,7 +242,7 @@ opacity: .5;
 .z_friend_erweima{margin-top:0;}
 .z_saoyisao{color:#3481eb;font-size:.4rem;margin-top:.1rem;}
 .longpic{margin:0 auto;padding-bottom:1rem;text-align:center;}
-.longpic span a{margin:1rem auto 0;display:block;text-align: center;border-radius:.5rem;color:#3481eb;width:6rem;height:1.1rem;line-height: 1.1rem;font-size:.5rem;border:1px solid #3481eb;}
+.longpic span a,.longpic span{margin:1rem auto 0;display:block;text-align: center;border-radius:.5rem;color:#3481eb;width:6rem;height:1.1rem;line-height: 1.1rem;font-size:.5rem;border:1px solid #3481eb;}
 .f_qrcode_top img{width:10rem;}
 .f_recive_numbercard{background:url(../images/giftImage/numbercard_02.jpg) no-repeat;width:10rem;height:4.7rem;background-size:contain;}
 .z_recivethreefour{margin-top:.5rem;font-size:.7rem;}
