@@ -23,8 +23,8 @@
           <div class="f_selectnumber_top">
                 <div class="f_selectnumber_toplist swiper-container">
                     <ul class="swiper-wrapper">
-                        <li  class="swiper-slide" th:each="reg:${regexs}">
-                            <img src="images/giftImage/icon2.png"><br  th:text="${reg.value}" th:value="${reg.key}" />
+                        <li  class="swiper-slide" th:each="reg:${regex}">
+                            <img th:src="${reg.imgUrl}"><br  th:text="${reg.value}" th:value="${reg.key}" />
                         </li>
                         <!--<li>-->
                             <!--<img src="images/giftImage/icon2.png"><br>纪念日-->
