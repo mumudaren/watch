@@ -599,6 +599,7 @@ public class OauthController extends  BaseController{
         }else if(StringUtils.equals(StringUtils.substringBefore(state,"_"),"qrcodeAfter")){
             /***==> gift扫描二维码后领取套餐卡、号码卡的页面*/
             String cardRecordId=StringUtils.substringAfterLast(state,"_");
+            logger.info("[ouath qrcodeAfter]receive pram cardRecordId is:"+cardRecordId);
             String openid=openId;
             //查询giftCardRecord
             GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(Long.parseLong(cardRecordId));
@@ -623,7 +624,6 @@ public class OauthController extends  BaseController{
                 modelAndView.addObject("openid",openid);
                 modelAndView.addObject("giftCardRecord",giftCardRecord);
                 modelAndView.setViewName("shareGift/recive_card");
-                //model.setViewName("shareGift/card_qrcode");
             }else{
                 //加载分享页面所需要的数据。
                 modelAndView.addObject("card",giftCard);
@@ -632,7 +632,6 @@ public class OauthController extends  BaseController{
                 modelAndView.addObject("user",user);
                 modelAndView.addObject("giftCardRecord",giftCardRecord);
                 modelAndView.setViewName("shareGift/recive_gift");
-                //model.setViewName("shareGift/gift_qrcode");
             }
 
         }else if(StringUtils.equals(state,"history")){

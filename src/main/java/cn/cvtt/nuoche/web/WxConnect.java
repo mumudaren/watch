@@ -299,19 +299,20 @@ public class WxConnect {
              else if(StringUtils.equals(operateType,"3")){
                 synchronized (obj) {
                     //送好友的套餐卡购买完支付成功
+                    Date now=new Date();
                     LOGGER.info("[paySuccess]operateType is buy regex card......");
                     //保存记录
                     BusinessNumberRecord  record2=new BusinessNumberRecord();
                     record2.setBusinessId(util.getBusinessKey());
                     record2.setPrtms(phone);
                     //临时95号
-                    record2.setSmbms(flag.get("uidnumber"));
+                    record2.setSmbms("010123456");
                     record2.setResult(1);
                     record2.setCallrestrict(0+"");
-                    record2.setSubts(new Date());
-                    record2.setUserPhone(customer.getPhone());
+                    record2.setSubts(now);
+                    record2.setUserPhone("010123456");
                     //有效时间
-                    Date validTime=DateUtils.addDay(new Date(),bind.getExpiretime());
+                    Date validTime=DateUtils.addDay(now,"365");
                     record2.setValidTime(validTime);
                     //临时套餐id
                     record2.setRegexId(255);
