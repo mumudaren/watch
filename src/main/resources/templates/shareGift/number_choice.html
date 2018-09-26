@@ -19,8 +19,8 @@
           <div class="f_selectnumber_top">
                 <div class="f_selectnumber_toplist">
                     <ul>
-                        <li class="current"   th:each="reg:${regexs}">
-                            <img src="images/giftImage/icon1.png"><br  th:text="${reg.value}" th:value="${reg.key}" />生日
+                        <li  th:each="reg:${regexs}">
+                            <img src="images/giftImage/icon2.png"><br  th:text="${reg.value}" th:value="${reg.key}" />
                         </li>
                         <!--<li>-->
                             <!--<img src="images/giftImage/icon2.png"><br>纪念日-->
@@ -46,46 +46,10 @@
             <ul>
                 <li>
                     <div class="z_numberlists">
-                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlists_number"></p>
                         <p class="z_numberlist_content">
-                            <span class="z_number_price">399元／年</span>
-                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
-                        </p>
-                    </div>
-                </li>
-                <li>
-                    <div class="z_numberlists">
-                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
-                        <p class="z_numberlist_content">
-                            <span class="z_number_price">399元／年</span>
-                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
-                        </p>
-                    </div>
-                </li>
-                <li>
-                    <div class="z_numberlists">
-                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
-                        <p class="z_numberlist_content">
-                            <span class="z_number_price">399元／年</span>
-                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
-                        </p>
-                    </div>
-                </li>
-                <li>
-                    <div class="z_numberlists">
-                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
-                        <p class="z_numberlist_content">
-                            <span class="z_number_price">399元／年</span>
-                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
-                        </p>
-                    </div>
-                </li>
-                <li>
-                    <div class="z_numberlists">
-                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
-                        <p class="z_numberlist_content">
-                            <span class="z_number_price">399元／年</span>
-                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
+                            <span class="z_number_price"></span>
+                            <span class="z_number_selected z_numberbuy_selected"></span>
                         </p>
                     </div>
                 </li>
@@ -96,10 +60,83 @@
 
       <script type="text/javascript">
         $(function(){
-            $(".z_number_selected").click(function(){
+            /** 加载默认套餐号码**/
+            var initRegex=$(".f_selectnumber_toplist ul li:eq(0)");
+            initRegex.addClass("current");
+            var regexId = initRegex.find("br").attr("value");
+            console.log("regexId init is:"+regexId);
+            var dataInit = {};
+            dataInit.regexId = regexId;
+            dataInit.number ='';
+            initNumber(dataInit);
+        });
+        //tab change
+            $(".f_selectnumber_toplist ul").find("li").click(function () {
+                $(".f_selectnumber_toplist ul").find("li").removeClass("current");
+                $(this).addClass("current");
+                /** 加载 该套餐号码**/
+                var regexId = $(this).find("br").attr("value");
+                console.log("regexId:"+regexId);
+                var data = {};
+                data.regexId = regexId;
+                data.number = '';
+                initNumber(data);
+                $(".z_searchnumber").val('');
+            });
+        //click search botton
+        $(".z_searchnumber_btn").click(function () {
+            //find(".z_imgkey").hasClass("z_imgkey_gray")
+            var regexSearch=$(".current").find("br").attr("value");
+            var dataSearch = {};
+            dataSearch.regexId = regexSearch;
+            dataSearch.number = $(".z_searchnumber").val();
+            console.log("dataSearch:"+dataSearch.regexId+","+dataSearch.number);
+            initNumber(dataSearch);
+        });
+
+
+            //加载号码
+            function initNumber(data) {
+                $.ajax({
+                    url: "/changeModule",
+                    type: "POST",
+                    data: data,
+                    dataType: "JSON",
+                    success:function (response) {
+                        if (response.code == 200) {
+                            var arr = response.data;
+                            var numberModule = arr[0];
+                            //原号码清空。
+                            $(".f_searchnumber_list").find("li").remove();
+                            //加载新号码。
+                            var html='';
+                            var itemNumber='';
+                            var itemPrice='';
+                            $.each(numberModule, function (index, item) {
+                                itemNumber=item.number;
+                                itemPrice=item.numberPrice;
+                                console.log("itemNumber and price:"+itemNumber+","+itemPrice+".");
+                                html +="<li>"+"<div class='z_numberlists'>" +
+                                    "<p class='z_numberlists_number' >"+itemNumber+"</p>" +
+                                    "<p class='z_numberlist_content'>" +
+                                    "<span class='z_number_price'>"+itemPrice/100+"元／年"+"</span>" +
+                                    "<span class='z_number_selected z_numberbuy_selected'>选这个号</span>" +
+                                    "</p>" +
+                                    "</div>"+"</li>";
+                            });
+                            $(".f_searchnumber_list ul").append(html);
+                        }
+                    }
+                    ,error:function (response) {
+                        console.log("response :"+response.code);
+                    }
+                })
+            }
+            //点击选这个号按钮
+            $(".z_searchnumber_btn").click(function(){
 
             });
-        })
+
       </script>      
     </body>     
 </html>

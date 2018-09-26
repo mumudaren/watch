@@ -435,6 +435,11 @@ public class TestController extends  BaseController {
     @RequestMapping("/testChooseNumberRegex")
     public  ModelAndView  testChooseNumberRegex(){
         ModelAndView  model=new ModelAndView();
+        String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
+        List<Map<String,String>> map=JsonUtils.handlerNormalJson(json,"id","regexName");
+        model.addObject("regexs",map);
+        logger.info("[testChooseNumberRegex]map is:"+map.toString());
+        //加载user
         model.setViewName("shareGift/number_choice");
         return  model;
     }
@@ -445,11 +450,7 @@ public class TestController extends  BaseController {
         ModelAndView  model=new ModelAndView();
         model.addObject("isHideOldDiv",isHideOldDiv);
         model.setViewName("shareGift/gift_number");
-        String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
-        //  String json= productInterface.findProduct(util.getBusinessKey());
-        List<Map<String,String>> map=JsonUtils.handlerNormalJson(json,"id","regexName");
-        model.addObject("regexs",map);
-        //加载user
+
 
         return  model;
     }

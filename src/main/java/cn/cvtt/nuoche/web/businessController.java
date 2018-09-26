@@ -17,6 +17,7 @@ import cn.cvtt.nuoche.util.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import feign.FeignException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,16 +250,34 @@ public class businessController extends  BaseController{
     @RequestMapping("/changeModule")
     public  Result  changeModule(String regexId,String number){
         JSONArray  arr=new JSONArray();
+        //查找号码
         if(StringUtils.isNotEmpty(number)){
-              String  str=productInterface.findSpeNumber(util.getBusinessKey(),regexId,number);
+            //查找所有号码
+            //String  str=productInterface.findSpeNumber(util.getBusinessKey(),regexId,number);
+            //查找top10
+            String  str=null;
+            try{str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number);}
+            catch (FeignException e){
+                logger.info("FeignException so try again");
+                str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number);
+            }
+              logger.info("[changeModule]number... is:"+str);
               List<Map<String,String>> map=JsonUtils.handlerNumberJson(str);
               arr.add(map);
               return  new Result(ResultMsg.OPERATESUCEESS,arr);
         }else {
-            String  str=productInterface.findSpeNumber(util.getBusinessKey(),regexId,"");
+            String  str=null;
+            try{str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"");
+            }catch (FeignException e)
+            {
+                logger.info("FeignException so try again");
+                str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"");
+            }
             List<Map<String,String>> map=JsonUtils.handlerNumberJson(str);
+            logger.info("[changeModule]json map is:"+map.toString());
             arr.add(map);
         }
+        //查找套餐
         String json= productInterface.findRegexProduct(util.getBusinessKey(),regexId);
         List<wx_product>  ls=JsonUtils.handlerRegexJson(json);
         arr.add(ls);

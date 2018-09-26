@@ -167,6 +167,7 @@ public class JsonUtils {
                     JSONObject  entity=JSONObject.parseObject(ob.toString());
                     Map<String,String>  map=new HashMap<>();
                     map.put("number",entity.getString("number"));
+                    map.put("numberPrice",entity.getString("numberPrice"));
                     ls.add(map);
                 }
         }
