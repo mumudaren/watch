@@ -52,7 +52,9 @@
                <img th:src="@{/images/giftImage/give_05.png}" >
             </div>
             <div class="longpic">
-                    <span><a th:onclick="'javascript:toCardPage('+${card.id}+')'" >选择我的靓号</a></span>
+                    <span>
+                        <a th:onclick="'javascript:toCardPage('+${card.id}+')'" style="color:#fff;border:1px solid #fff;font-size:.5rem;text-align: center;margin:1rem auto 0;border-radius:.5rem;width:6rem;height:1.1rem;line-height:1.1rem;display:block;">选择我的靓号</a>
+                    </span>
             </div>  
       </div>     
     </body>
