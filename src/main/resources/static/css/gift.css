@@ -214,7 +214,7 @@ opacity: .5;
 .z_giverfriend_send{color:#fdf036;text-align: center;display: block;padding-top:1.5rem;padding-left:.5rem;}
 .z_giverfriend_content{border-radius:.3rem;background-color:#fff;padding-bottom:.5rem;width:9.4rem;margin: -2rem auto 0;position: relative;}
 .z_friend_personimg{position: absolute;top:-1rem;left:3.7rem;}
-.z_friend_personimg img{width: 1rem;}
+.z_friend_personimg img{width: 2.1rem;}
 .z_givefriend_listcontent{text-align: center;margin: 0 auto;}
 .z_givefriend_listcontent span{display: block;}
 .z_gumi{padding-top:1.8rem;color:#030303;opacity: .8;font-size:.35rem;}
