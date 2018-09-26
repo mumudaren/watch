@@ -356,15 +356,7 @@ opacity: .5;
 .f_insertmessage textarea{border:none;font-size:.4rem;text-indent: 1em;width: 9.8rem;}
 .f_wordtext{border-top:none;}
 .f_wordtext img{width:.6rem;margin-right:.1rem;}
-.f_bindsuc_share {margin: 1rem auto .5rem;width: 9rem;}
-.f_bindsuc_share a{display:block;color: #fff;text-align:center;font-size: .6rem;padding: .25rem 0 .35rem;border-radius: .6rem;box-shadow: 5px 5px 30px #caeafe;background: #1175e4;text-decoration: none;width: 9rem;
-}
-.f_bindsuc_sharebj{background: #2f89ef;border-radius: .6rem;width: 9rem;padding: .25rem 0 .35rem;margin: 0 auto;text-align:center;font-size: .6rem;margin-top: -1.96rem;
-    background: -webkit-linear-gradient(left, #2f89ef , #54bafb); /* Safari 5.1 - 6.0 */
-      background: -o-linear-gradient(right, #2f89ef , #54bafb); /* Opera 11.1 - 12.0 */
-      background: -moz-linear-gradient(right, #2f89ef , #54bafb); /* Firefox 3.6 - 15 */
-      background: linear-gradient(to right, #2f89ef , #54bafb); /* 标准的语法 */
-    }
+
 .fast_message{display: none;}
 .fast_message_content{position: fixed;top: 50%;left: 50%;-moz-transform: translate(-50%, -50%);-ms-transform: translate(-50%, -50%);-webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);width: 10rem;z-index:10;background-color:#fff; }
 .fast_message_content ul li{border-top:2px solid #f2f7fc;padding:.5rem 0;color:#000;font-size:.45rem;}
@@ -437,7 +429,7 @@ opacity: .5;
 .f_tiyan p.z_limits3,.f_sales p.z_limits3,.f_discount p.z_limits3{font-size: .3rem;}
 .f_discount{background: url(../images/giftImage/days_05.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
 .f_sales{background: url(../images/giftImage/days_07.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
-.f_fastpay{margin-right: .7rem;width: 9.5rem;}
+
 
 
 .f_tiyan_active{background: url(../images/giftImage/tiyan.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
@@ -592,3 +584,14 @@ opacity: .5;
 .f_errorlightbox{background: #333;filter:alpha(Opacity=50);-moz-opacity:0.5;opacity: 0.5;}
 .z_errortext,.z_successtext{color:#fff;font-size:.5rem;position:absolute;z-index:200;text-align:center;width:10rem;}
 .z_errortext{color: #f00;}
+
+.f_bindsuc_share {margin: 3rem auto .5rem;width: 9rem;}
+.f_bindsuc_share a{display:block;color: #fff;text-align:center;font-size: .6rem;padding: .25rem 0 .35rem;border-radius: .6rem;box-shadow: 5px 5px 30px #caeafe;background: #1175e4;text-decoration: none;width: 9rem;
+}
+.f_bindsuc_sharebj{background: #2f89ef;border-radius: .6rem;width: 9rem;padding: .25rem 0 .35rem;margin: 0 auto;text-align:center;font-size: .6rem;margin-top: -1.96rem;
+    background: -webkit-linear-gradient(left, #2f89ef , #54bafb); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(right, #2f89ef , #54bafb); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(right, #2f89ef , #54bafb); /* Firefox 3.6 - 15 */
+    background: linear-gradient(to right, #2f89ef , #54bafb); /* 标准的语法 */
+}
+.f_fastpay{margin-right: .7rem;width: 9.5rem;}
