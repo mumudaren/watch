@@ -312,6 +312,10 @@ public class TestController extends  BaseController {
                     break;
             }
           model.addObject("card",card);
+        }else{
+            GiftCard card=new  GiftCard();
+            card.setId(0l);
+            model.addObject("card",card);
         }
         model.addObject("isHideOldDiv",isHideOldDiv);
         //查找该用户所有的优惠券。

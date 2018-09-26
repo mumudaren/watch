@@ -105,7 +105,6 @@
           });
           var clicktag = 0;  //微信支付标志
           var isHide=[[${isHideOldDiv}]];
-          var cardId=[[${card.id}]];
           var openid=[[${openid}]];
                 //点击现金券弹窗js
                 $(".wirte_casher").click(function(){
@@ -140,6 +139,11 @@
                         alert("请选择号码卡。");
                     }else{
                         var message = $(".write_message").val();
+                        var cardId=[[${card.id}]];
+                        if(message==''){
+                            console.log("message:"+message);
+                            message="大吉大利，今晚有靓号"
+                        }
                         window.location.href="/card_give.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message;
                     }
                 }
