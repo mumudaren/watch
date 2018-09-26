@@ -424,7 +424,35 @@ public class TestController extends  BaseController {
         model.setViewName("shareGift/card_give");
         return  model;
     }
+    //分享号码卡页面
+    @RequestMapping("/testNumberGift")
+    public ModelAndView  numberGiftMethod( ){
+        ModelAndView  model=new ModelAndView();
+        model.setViewName("shareGift/gift_number");
+        return  model;
+    }
+    //选中号码卡,加载号码卡套餐等数据。
+    @RequestMapping("/testChooseNumberRegex")
+    public  ModelAndView  testChooseNumberRegex(){
+        ModelAndView  model=new ModelAndView();
+        model.setViewName("shareGift/number_choice");
+        return  model;
+    }
+    //赠送号码卡、留言、选优惠券等。
+    @RequestMapping("/testNumberRegex")
+    public  ModelAndView  testNumberGiftMethod(@RequestParam(value ="isHideOldDiv",defaultValue ="false") boolean isHideOldDiv,
+                                              @RequestParam(value ="regexsId",defaultValue ="0") String regexsId) {
+        ModelAndView  model=new ModelAndView();
+        model.addObject("isHideOldDiv",isHideOldDiv);
+        model.setViewName("shareGift/gift_number");
+        String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
+        //  String json= productInterface.findProduct(util.getBusinessKey());
+        List<Map<String,String>> map=JsonUtils.handlerNormalJson(json,"id","regexName");
+        model.addObject("regexs",map);
+        //加载user
 
+        return  model;
+    }
     @RequestMapping("/OwnerSafeNumber.html")
     public ModelAndView  OwnerSafeNumber( ){
         ModelAndView  model=new ModelAndView();

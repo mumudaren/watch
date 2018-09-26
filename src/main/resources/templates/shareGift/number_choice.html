@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="Description" content="选择靓号" />
+        <title>选择靓号</title>       
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="yes" name="apple-touch-fullscreen">
+        <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
+        <meta content="telephone=no" name="format-detection">
+        <link rel="stylesheet" type="text/css" href="css/gift.css" />
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js"></script>
+        <script type="text/javascript" src="js/flexible_css.js"></script>   
+       
+    </head>
+    <body>  
+      <div class="wrap gift_wrap">
+          <div class="f_selectnumber_top">
+                <div class="f_selectnumber_toplist">
+                    <ul>
+                        <li class="current"   th:each="reg:${regexs}">
+                            <img src="images/giftImage/icon1.png"><br  th:text="${reg.value}" th:value="${reg.key}" />生日
+                        </li>
+                        <!--<li>-->
+                            <!--<img src="images/giftImage/icon2.png"><br>纪念日-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<img src="images/giftImage/icon3.png"><br>恋爱-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<img src="images/giftImage/icon4.png"><br>老板号-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<img src="images/giftImage/icon5.png"><br>连号-->
+                        <!--</li>-->
+                    </ul>
+                    <div class="f_searchinput">
+                        <input type="text" placeholder="输入您想要的号码" value="" id="" name="" class="z_searchnumber">
+                        <input type="button" value="搜索" id="search" name="search" class="z_searchnumber_btn">
+                    </div>
+                </div>
+          </div>
+
+          <div class="f_searchnumber_list">
+            <ul>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>
+                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>
+                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>
+                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>
+                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div class="z_numberlists">
+                        <p class="z_numberlists_number">95013&nbsp;&nbsp;68985</p>
+                        <p class="z_numberlist_content">
+                            <span class="z_number_price">399元／年</span>
+                            <span class="z_number_selected z_numberbuy_selected">选这个号</span>
+                        </p>
+                    </div>
+                </li>
+            </ul>
+          </div>
+      </div>
+
+
+      <script type="text/javascript">
+        $(function(){
+            $(".z_number_selected").click(function(){
+
+            });
+        })
+      </script>      
+    </body>     
+</html>
