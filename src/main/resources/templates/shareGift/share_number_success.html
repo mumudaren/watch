@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
         <meta name="Description" content="福利" />
@@ -23,17 +23,17 @@
                 <div class="z_givefriend_listcontent">
                     <span class="z_gumi"></span>
                     <span class="shareinfo_img" style="margin-top:0;">
-                        <em>￥<b>30</b></em>
-                        <em>有效期：2019.08.22—2020.08.22</em>
+                        <em>￥<b  th:text="(${coupon.amount}/10)">30</b></em>
+                        <em  th:text="'有效期：'+${coupon.effectiveTime}+'-'+${coupon.endTime}">有效期：2019.08.22—2020.08.22</em>
                     </span>           
                 </div>  
                 <div class="z_choice_wxdoting" style="margin-top:2rem;">
                     <span class="z_send_wxfriend"><a href="">关注微信公众号</a></span>
-                    <span class="z_dothing_share"><a href="">马上去使用</a></span>
+                    <span class="z_dothing_share"><a href="/testCard">马上去使用</a></span>
                 </div>                             
            </div>
            <div class="z_choice_flowerimg">
-                <img src="images/give_05.png">
+                <img src="images/giftImage/give_05.png">
             </div> 
       </div>     
     </body>     

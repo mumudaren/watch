@@ -261,8 +261,11 @@ public class TestController extends  BaseController {
             model.setViewName("gift/share_number_success");
         }else{
             logger.info("[testReceive]you have received a coupon buy the same sender before.");
-            //领取过优惠券，跳转到错误页面。
-            model.setViewName("/OwnerSafeNumber.html");
+            //领取过优惠券。
+            //优惠券领取记录表增加receiver的记录
+            GiftCoupon couponItem=giftCouponRepository.findByIdEquals(coupon);
+            model.addObject("coupon",couponItem);
+            model.setViewName("shareGift/share_number_success");
         }
         return  model;
     }
@@ -275,6 +278,7 @@ public class TestController extends  BaseController {
         model.setViewName("gift/share_number_success");
         return  model;
     }
+
     //选择两种套餐赠送页面
     @RequestMapping("/testCard")
     public  ModelAndView  testReceivePoint(){
