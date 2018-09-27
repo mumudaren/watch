@@ -100,13 +100,13 @@
         </div>
 
       <script th:inline="javascript">
+          var openid=[[${openid}]];
+          var clicktag = 0;  //微信支付标志
+          var isHide=[[${isHideOldDiv}]];
           $(function(){
               var oldPrice = $(".z_taocamnumber_price i").text();
               $(".z_write_moeny").find("b").text(oldPrice);
           });
-          var clicktag = 0;  //微信支付标志
-          var isHide=[[${isHideOldDiv}]];
-          var openid=[[${openid}]];
                 //点击现金券弹窗js
                 $(".wirte_casher").click(function(){
                 $(".f_cashshow").show();  
