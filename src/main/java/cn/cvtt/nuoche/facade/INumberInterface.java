@@ -16,6 +16,9 @@ public interface INumberInterface {
     @RequestMapping("/safe/queryNumber")
     public String query(@RequestParam("business") String business, @RequestParam("phone") String phone);
 
+    //查询未出售的号码信息
+    @RequestMapping("/safe/searchNumber")
+    public String searchNumber(@RequestParam("business") String business, @RequestParam("phone") String phone);
 
     @RequestMapping("/safe/changeRelation")
     public  String  changeRelation(@RequestParam("business") String  business,@RequestParam("uidNumber")String  uidNumber,@RequestParam("restrict") String  restrict);

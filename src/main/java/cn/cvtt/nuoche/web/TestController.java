@@ -8,6 +8,7 @@ import cn.cvtt.nuoche.entity.business.SystemFeedBack;
 import cn.cvtt.nuoche.entity.business.wx_product;
 import cn.cvtt.nuoche.entity.gift.*;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
+import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
 import cn.cvtt.nuoche.reponsitory.*;
@@ -44,6 +45,8 @@ public class TestController extends  BaseController {
     IBusinessNumberRecordRepository  recordRepository;
     @Autowired
     IRegexInterface  regexInterface;
+    @Autowired
+    INumberInterface numberInterface;
     @Autowired
     ISystemFeedBack feedBackRepository;
     @Autowired
@@ -443,11 +446,29 @@ public class TestController extends  BaseController {
         model.setViewName("shareGift/number_choice");
         return  model;
     }
+
     //赠送号码卡、留言、选优惠券等。
     @RequestMapping("/testNumberRegex")
     public  ModelAndView  testNumberGiftMethod(@RequestParam(value ="isHideOldDiv",defaultValue ="false") boolean isHideOldDiv,
-                                              @RequestParam(value ="regexsId",defaultValue ="0") String regexsId) {
+                                              @RequestParam(value ="chooseNumber",defaultValue ="0") String chooseNumber) {
         ModelAndView  model=new ModelAndView();
+        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
+        if(!StringUtils.equals(chooseNumber,"0")){
+            logger.info("[testNumberRegex]pram are:"+util.getBusinessKey()+","+chooseNumber);
+            String number=numberInterface.searchNumber(util.getBusinessKey(),chooseNumber);
+            Map<String,String> mapNumber=JsonUtils.handlerOriginalNumberJson(number);
+            model.addObject("mapNumber",mapNumber);
+            logger.info("[testNumberRegex]mapNumber is:"+mapNumber);
+            //查找该用户所有的优惠券。
+            List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEquals(openid);
+            for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
+            {
+                Long couponId=eachGiftCouponRecord.getCouponId();
+                GiftCoupon giftCoupon=giftCouponRepository.findByIdEquals(couponId);
+                eachGiftCouponRecord.setGiftCoupon(giftCoupon);
+            }
+            model.addObject("giftRecord",giftRecordList);
+        }
         model.addObject("isHideOldDiv",isHideOldDiv);
         model.setViewName("shareGift/gift_number");
 

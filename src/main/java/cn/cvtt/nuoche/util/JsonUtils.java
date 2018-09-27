@@ -174,6 +174,19 @@ public class JsonUtils {
         return  ls;
     }
 
+    public  static  Map<String,String>  handlerOriginalNumberJson(String json){
+        JSONObject  obj=JSONObject.parseObject(json);
+        int  code=obj.getIntValue("code");
+        Map<String,String>  map=new HashMap<>();
+        if(code==200){
+            JSONObject  entity=JSONObject.parseObject(obj.getString("data"));
+            map.put("number",entity.getString("number"));
+            map.put("numberPrice",entity.getString("numberPrice"));
+            map.put("regexId",entity.getString("regexId"));
+        }
+        return  map;
+    }
+
     public  static String  handlerNumberReturnRegexJson(String json){
         JSONObject  obj=JSONObject.parseObject(json);
         int  code=obj.getIntValue("code");

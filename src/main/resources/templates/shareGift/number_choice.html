@@ -44,15 +44,15 @@
 
           <div class="f_searchnumber_list">
             <ul>
-                <li>
-                    <div class="z_numberlists">
-                        <p class="z_numberlists_number"></p>
-                        <p class="z_numberlist_content">
-                            <span class="z_number_price"></span>
-                            <span class="z_number_selected z_numberbuy_selected"></span>
-                        </p>
-                    </div>
-                </li>
+                <!--<li>-->
+                    <!--<div class="z_numberlists">-->
+                        <!--<p class="z_numberlists_number"></p>-->
+                        <!--<p class="z_numberlist_content">-->
+                            <!--<span class="z_number_price"></span>-->
+                            <!--<span class="z_number_selected z_numberbuy_selected"></span>-->
+                        <!--</p>-->
+                    <!--</div>-->
+                <!--</li>-->
             </ul>
           </div>
       </div>
@@ -69,6 +69,11 @@
             dataInit.regexId = regexId;
             dataInit.number ='';
             initNumber(dataInit);
+            //点击选好了
+            $(document).on('click', '.numberClick', function() {
+                var chooseNumber =$(this).parent().parent().find(".z_numberlists_number").text();
+                window.location.href="/testNumberRegex?chooseNumber="+chooseNumber+"&isHideOldDiv=true";
+            });
         });
         //tab change
             $(".f_selectnumber_toplist ul").find("li").click(function () {
@@ -94,7 +99,6 @@
             initNumber(dataSearch);
         });
 
-
             //加载号码
             function initNumber(data) {
                 $.ajax({
@@ -115,12 +119,12 @@
                             $.each(numberModule, function (index, item) {
                                 itemNumber=item.number;
                                 itemPrice=item.numberPrice;
-                                console.log("itemNumber and price:"+itemNumber+","+itemPrice+".");
+                                // console.log("itemNumber and price:"+itemNumber+","+itemPrice+".");
                                 html +="<li>"+"<div class='z_numberlists'>" +
                                     "<p class='z_numberlists_number' >"+itemNumber+"</p>" +
                                     "<p class='z_numberlist_content'>" +
                                     "<span class='z_number_price'>"+itemPrice/100+"元／年"+"</span>" +
-                                    "<span class='z_number_selected z_numberbuy_selected'>选这个号</span>" +
+                                    "<span class='z_number_selected z_numberbuy_selected numberClick'>选这个号</span>" +
                                     "</p>" +
                                     "</div>"+"</li>";
                             });
@@ -132,10 +136,14 @@
                     }
                 })
             }
-            //点击选这个号按钮
-            $(".z_searchnumber_btn").click(function(){
 
-            });
+
+        //点击选这个号按钮
+        // $(".numberClick").click(function(){
+        //     console.log("choose number");
+        //     // var chooseNumber =$(this).parent("li").find(".z_numberlists_number").text();
+        //     // console.log("choose number :"+chooseNumber);
+        // });
 
       </script>      
     </body>     
