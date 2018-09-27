@@ -33,6 +33,8 @@ public class GiftCardRecord {
 
     @Column(name="get_status")
     private Integer getStatus;
+
+
     public GiftCardRecord() {
     }
 

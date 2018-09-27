@@ -38,7 +38,26 @@
            </div>
            <div class="z_choice_flowerimg">
                 <img src="images/giftImage/give_05.png">
-            </div> 
-      </div>     
-    </body>     
+            </div>
+      </div>
+      <div class="f_sharewrap">
+          <div class="tb_overflay"></div>
+          <div class="f_sharecontent">
+              <img src="images/share_03.png">
+          </div>
+      </div>
+    </body>
+    <script type="text/javascript">
+        $(function(){
+            $(".tb_overflay").click(function(){
+                $(".f_sharewrap").hide();
+            });
+            $(".f_sharewrap").click(function(){
+                $(this).hide();
+            })
+        });
+        $(".z_send_wxfriend").click(function(){
+            $(".f_sharewrap").show();
+        })
+    </script>
 </html>

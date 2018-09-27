@@ -46,8 +46,27 @@
            <div class="longpic">
                <span>长按图片保存到相册</span>
             </div>        
-      </div>     
+      </div>
+      <div class="f_sharewrap">
+          <div class="tb_overflay"></div>
+          <div class="f_sharecontent">
+              <img src="images/share_03.png">
+          </div>
+      </div>
     </body>
+    <script type="text/javascript">
+        $(function(){
+            $(".tb_overflay").click(function(){
+                $(".f_sharewrap").hide();
+            });
+            $(".f_sharewrap").click(function(){
+                $(this).hide();
+            })
+        });
+        $(".z_sharenumber").click(function(){
+            $(".f_sharewrap").show();
+        })
+    </script>
     <script th:inline="javascript">
         var couponId=[[${coupon.id}]];
         var openid=[[${user.openid}]];
