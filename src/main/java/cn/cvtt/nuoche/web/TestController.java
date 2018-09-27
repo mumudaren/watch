@@ -160,7 +160,7 @@ public class TestController extends  BaseController {
         model.setViewName("suggest");
         return  model;
     }
-    //转发朋友圈等
+    //每日积分菜单接口，share_number
     @RequestMapping("/testWongPage")
     public  ModelAndView  testWong(){
         ModelAndView  model=new ModelAndView();
@@ -453,26 +453,62 @@ public class TestController extends  BaseController {
                                               @RequestParam(value ="chooseNumber",defaultValue ="0") String chooseNumber) {
         ModelAndView  model=new ModelAndView();
         String openid="oIFn90393PZMsIt-kprqw0GWmVko";
+        //查找该用户所有的优惠券。
+        List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEquals(openid);
+        for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
+        {
+            Long couponId=eachGiftCouponRecord.getCouponId();
+            GiftCoupon giftCoupon=giftCouponRepository.findByIdEquals(couponId);
+            eachGiftCouponRecord.setGiftCoupon(giftCoupon);
+        }
+        model.addObject("giftRecord",giftRecordList);
         if(!StringUtils.equals(chooseNumber,"0")){
             logger.info("[testNumberRegex]pram are:"+util.getBusinessKey()+","+chooseNumber);
             String number=numberInterface.searchNumber(util.getBusinessKey(),chooseNumber);
             Map<String,String> mapNumber=JsonUtils.handlerOriginalNumberJson(number);
             model.addObject("mapNumber",mapNumber);
             logger.info("[testNumberRegex]mapNumber is:"+mapNumber);
-            //查找该用户所有的优惠券。
-            List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEquals(openid);
-            for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
-            {
-                Long couponId=eachGiftCouponRecord.getCouponId();
-                GiftCoupon giftCoupon=giftCouponRepository.findByIdEquals(couponId);
-                eachGiftCouponRecord.setGiftCoupon(giftCoupon);
-            }
-            model.addObject("giftRecord",giftRecordList);
+        }else{
+            Map<String,String> mapNumber=new HashMap<>();
+            mapNumber.put("number","");
+            mapNumber.put("numberPrice","0");
+            model.addObject("mapNumber",mapNumber);
         }
+        model.addObject("openid",openid);
         model.addObject("isHideOldDiv",isHideOldDiv);
         model.setViewName("shareGift/gift_number");
 
 
+        return  model;
+    }
+
+    //分享号码卡页面
+    @RequestMapping("/number_give.html")
+    public  ModelAndView  numberGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,@RequestParam(value ="number") String number,@RequestParam(value ="message",defaultValue ="") String message){
+        ModelAndView  model=new ModelAndView();
+        //生成号码卡规则数据
+        GiftCard giftCard=new GiftCard();
+        giftCard.setCardName("号码卡");
+        giftCard.setCardType(2);
+        giftCard.setNumber(number);
+        giftCard.setPrice(5000);
+        giftCard.setValidTimeNumber(1);
+        giftCard.setValidTimeUnit(3);
+        GiftCard Cardid=giftCardRepository.save(giftCard);
+        //支付成功后将套餐卡信息保存数据库中
+        GiftCardRecord giftCardRecord=new GiftCardRecord();
+        giftCardRecord.setSenderOpenid(SenderOpenid);
+        giftCardRecord.setMessage(message);
+        giftCardRecord.setGetStatus(0);
+        giftCardRecord.setCardId(Cardid.getId());
+        giftCardRecordRepository.saveAndFlush(giftCardRecord);
+        //加载分享页面所需要的数据。
+        GiftCard card=giftCardRepository.findByIdEquals(Cardid.getId());
+        model.addObject("card",card);
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
+        model.addObject("user",user);
+        model.addObject("message",message);
+        model.setViewName("shareGift/gift_give");
         return  model;
     }
     @RequestMapping("/OwnerSafeNumber.html")

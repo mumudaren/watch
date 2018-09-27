@@ -22,13 +22,13 @@
                 </div>
                 <img src="images/giftImage/gift_03.jpg">
                 <img src="images/giftImage/gift_04.jpg">
-            </div> 
+            </div>
             <div style="width: 10rem;margin:0 auto;position: relative;z-index:0;">
                 <div class="f_gift_content f_cardnumber_95number"  th:if="${isHideOldDiv ==false}" >
                     <p class="z_cardnumber_text">
                         <span class="z_numbercard">挑选95号码</span>
                         <span class="z_givefriend" style="color:#0ab8a9"  ><a href="/testChooseNumberRegex" >点击这里挑选靓号，送朋友</a></span>
-                    </p>               
+                    </p>
                 </div>
             </div>
           <!--choice again-->
@@ -48,24 +48,25 @@
               </div>
           </div>
           <!--message -->
-            <p class="write_text">写祝福语</p>   
+            <p class="write_text">写祝福语</p>
             <p class="write_textcontent">
-                <textarea rows="5" cols="50" placeholder="大吉大利，今晚有靓号！"></textarea>
+                <textarea  class="write_message" rows="5" cols="50" placeholder="大吉大利，今晚有靓号！"></textarea>
             </p>
           <p class="wirte_casher">
               <span class="z_cashjuan">现金券</span>
+              <span class="z_cashselect"></span>
               <span class="z_casharrow">></span>
           </p>
           <p class="f_userbook">
-                <a href="">使用说明</a>
-            </p> 
+              <a href="/activity_description.html">使用说明</a>
+            </p>
             <p class="f_write_moneyfriend">
                 <span class="z_write_moeny">￥<b>0</b></span>
                 <span class="z_price"></span>
                 <span class="z_write_givefriend">
-                    <a href="">送朋友</a>
+                   <a th:onclick="'javascript:pay()'">送朋友</a>
                 </span>
-            </p> 
+            </p>
       </div>
 
       <!--点击现金券弹窗-->
@@ -93,7 +94,13 @@
               </div>
           </div>
       </div>
-      <script type="text/javascript">
+      <script th:inline="javascript">
+              var openid = [[${openid}]];
+              var isHide=[[${isHideOldDiv}]];
+              $(function(){
+                  var oldPrice = $(".oldPrice").text();
+                  $(".z_write_moeny").find("b").text(oldPrice);
+              });
           //点击现金券弹窗js
           $(".wirte_casher").click(function(){
               $(".f_cashshow").show();
@@ -118,7 +125,22 @@
           });
           $(".tb_overflay").click(function(){
               $(".f_cashshow").hide();
-          })
+          });
+
+          function pay() {
+              console.log("pay");
+              if(isHide==false){
+                  alert("请先选择靓号。");
+              }else{
+                  var message = $(".write_message").val();
+                  var number=[[${mapNumber.number}]];
+                  if(message==''){
+                      console.log("message:"+message);
+                      message="大吉大利，今晚有靓号"
+                  }
+                  window.location.href="/number_give.html?number="+number+"&"+"openid="+openid+"&message="+message;
+              }
+          }
       </script>
     </body>     
 </html>
