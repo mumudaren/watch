@@ -194,7 +194,7 @@ public class TestController extends  BaseController {
         model.addObject("senderUser",senderUser);
         GiftCoupon coupon=giftCouponRepository.findByIdEquals(couponId);
         model.addObject("coupon",coupon);
-        model.setViewName("gift/share_number_info_content");
+        model.setViewName("shareGift/share_number_info");
         return  model;
     }
 
