@@ -178,7 +178,7 @@ public class TestController extends  BaseController {
         }else{
             model.addObject("coupon",coupon);
         }
-        model.setViewName("gift/share_number");
+        model.setViewName("shareGift/share_number");
         return  model;
     }
     //转发朋友圈后跳转页面

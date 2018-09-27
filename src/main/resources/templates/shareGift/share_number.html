@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
         <meta name="Description" content="95号送朋友" />
@@ -17,33 +17,101 @@
     <body>  
       <div class="wrap give_wrap">
            <div class="f_qrcode_top">
-               <img src="images/qrcodeimg.jpg">
+               <img src="images/giftImage/qrcodeimg.jpg">
            </div>
            <div class="z_giverfriend_content">
                 <p class="z_friend_personimg">
-                    <img src="images/pic.png">
+                    <img  th:src="${user.headimgurl}">
                 </p>
                 <div class="z_givefriend_listcontent">
-                    <span class="z_gumi">咪咕虾<br>分享给朋友</span>
-                    <span class="z_choicethree">朋友将获得30元代金券</span>
-                    <span class="z_gumi" style="padding-top:0;">你也将获得10积分</span>
+                    <span class="z_gumi" th:text="${user.nickname}">咪咕虾分享给朋友</span>
+                    <span class="z_gumi" style="padding-top:0;">分享给朋友</span>
+                    <span class="z_choicethree"  th:text="'朋友将获得'+(${coupon.amount}/10)+'元代金券'">朋友将获得30元代金券</span>
+                    <span class="z_gumi" style="padding-top:0;"  th:text="'你也将获得'+${coupon.point}+'积分'">你也将获得10积分</span>
                     <span class="z_choice_goodnumber">我的福利码</span>
                     <span class="z_friend_giveimg z_friend_erweima">
-                        <img src="images/erweima.jpg">
+                        <img src="images/giftImage/erweima.jpg">
                     </span> 
                     <span class="z_saoyisao">扫一扫，获取代金券</span>  
                     <span class="z_sharenumber">立即分享</span>   
                     <span class="z_shareproduce">
-                        <a href="">活动说明</a>
+                        <a href="/activity_description.html">活动说明</a>
                     </span>             
                 </div>                                           
            </div>
            <div class="z_choice_flowerimg">
-                <img src="images/give_05.png">
+                <img src="images/giftImage/give_05.png">
            </div> 
            <div class="longpic">
                <span>长按图片保存到相册</span>
             </div>        
       </div>     
-    </body>     
+    </body>
+    <script th:inline="javascript">
+        var couponId=[[${coupon.id}]];
+        var openid=[[${user.openid}]];
+        var url=window.location.href.split('#')[0];
+        url = url.replace(/&/g, '%26');
+        console.log("url:"+url);
+        $.ajax({
+            url: "/shareToFriend.action?url="+url,
+            type: "POST",
+            async:true,
+            cache: false,
+            dataType: "json",
+            success: function(data){
+                console.log("shareToFriend return data:"+data);
+                // getHostPath();
+                wx.config({
+                    debug:false,
+                    appId: data.appId,
+                    timestamp:data.timeStamp,
+                    nonceStr:data.nonceStr,
+                    signature:data.signature,
+                    jsApiList: ["checkJsApi",  "onMenuShareAppMessage","onMenuShareTimeline"]
+                });}
+        });
+
+        wx.ready(function () {
+            console.log("wx.ready method");
+            console.log("getHostPath:"+getHostPath()+'/testReturn?couponId='+couponId+'&senderId='+openid);
+            wx.onMenuShareAppMessage({
+                title: '转发朋友测试', // 分享标题
+                desc: '宝宝的睡眠很重要，你的睡眠也很重要', // 分享描述
+                link: getHostPath()+'/testReturn?couponId='+couponId+'&senderId='+openid,
+                imgUrl: getHostPath()+'/images/test.jpg', // 分享图标
+                success: function () {
+                    // 用户点击了分享后执行的回调函数
+                    //alert("回调");
+                }
+            });
+            wx.onMenuShareTimeline({
+                title: '转发朋友圈测试', // 分享标题
+                desc: '嘛哩嘛哩哄快快成功吧555555', // 分享描述
+                link: getHostPath()+'/testReturn?couponId='+couponId+'&senderId='+openid,
+                imgUrl: getHostPath()+'/images/test.jpg', // 分享图标
+                success: function () {
+                    // 用户点击了分享后执行的回调函数
+                    //alert("回调");
+                }
+            });
+        });
+
+        function getHostPath(){
+            //获取当前网址，如： http://localhost:8083/myproj/view/my.jsp
+            var curWwwPath=window.document.location.href;
+            //获取主机地址之后的目录，如： myproj/view/my.jsp
+            var pathName=window.document.location.pathname;
+            var pos=curWwwPath.indexOf(pathName);
+            //获取主机地址，如： http://localhost:8083
+            var localhostPath=curWwwPath.substring(0,pos);
+            //获取带"/"的项目名，如：/myproj
+            // var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+            //得到了 http://localhost:8083/myproj
+            // var realPath=localhostPaht+projectName;
+            // alert(realPath);
+            console.log('localhostPath:'+localhostPath);
+            return localhostPath;
+        }
+    </script>
 </html>
