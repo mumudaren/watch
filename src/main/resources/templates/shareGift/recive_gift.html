@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
         <meta name="Description" content="礼品卡" />
@@ -21,15 +21,15 @@
            </div>
            <div class="z_giverfriend_content">
                 <p class="z_friend_personimg">
-                    <img src="images/giftImage/pic.png">
+                    <img th:src="${user.headimgurl}">
                 </p>
                 <div class="z_givefriend_listcontent">
-                    <span class="z_gumi">旅人<br>送给你靓号</span>
-                    <span class="z_choice_goodnumber">祝您<br>大吉大利，今晚有靓号！</span>                    
-                    <span class="z_choicethree z_recivethreefour">95013333310001</span>  
+                    <span class="z_gumi"   th:text="${user.nickname}+'送给你靓号'">旅人<br>送给你靓号</span>
+                    <span class="z_choice_goodnumber">祝您<br  th:text="${message}"></span>
+                    <span class="z_choicethree z_recivethreefour"  th:text="${card.number}">95013333310001</span>
                     <ul class="z_reciveimg">
                         <li>
-                            <a href="tel:95013">
+                            <a href="tel:95013780000">
                                 <img src="images/giftImage/recivecard_01.png"><br>
                                 拨打电话
                             </a>                            
@@ -50,7 +50,12 @@
             </div>
             <div class="longpic">
                     <span>领取我的靓号</span>
-            </div>  
+            </div>
+          <!--错误提示-->
+          <div class="f_successwrap" style="display: none">
+              <div class="f_successlightbox"></div>
+              <span class="z_successtext">122222</span>
+          </div>
       </div> 
       
        <!--点击领取我的靓号弹窗-->
@@ -70,22 +75,65 @@
             </div>
         </div>
 
+      <script th:inline="javascript">
+          //var openid=[[${openid}]];
+          //var pathSource=[[${path}]];
+          var openid=[[${user.senderOpenid}]];
+          var pathSource=/;
+          $(function(){
+              $("#getcode").click(function(){
+                  $(".z_successtext").text("test");
+                  var  phone=$("input[name='phone']").val();
+                  if(!util.validPhone(phone)){
+                      util.showText("请输入正确的手机号码!",$(".z_successtext"));return;
+                  }
+                  $.ajax({
+                      url:"/sendCode",
+                      type:"POST",
+                      data:{openid:openid,phone:phone},
+                      dataType:"JSON"
+                  }).done(function(result){
+                      if(result.code!=200){
+                          util.showText(result.msg,$(".z_successtext"));
+                      }
+                  })
+              });
+          });
+
+          function validPhone(){
+              var  phone=$("input[name='phone']").val();
+              if(!util.validPhone(phone)){
+                  util.showText("请输入正确的手机号码!",$(".z_successtext"));return;
+              }
+              var  code=$("#code").val();
+              $.ajax({
+                  url:"/validPhone",
+                  data:{openid:openid,code:code,phone:phone},
+                  dataType:"JSON"
+              }).done(function(result){
+                  if(result.code==200){
+                      window.location.href="/oauth/admin/"+pathSource;
+                  }else {
+                      console.log("result is:"+result.msg);
+                      util.showText(result.msg,$(".z_successtext"));
+                  }
+              });
+          }
+      </script>
           <script type="text/javascript">
-            $(function(){    
-    
                //点击选这个号之后的弹窗
                $(".longpic").click(function(){
                  $(".selectnumber_show").show();  
-               })
+               });
     
                $(".z_selectnum_img").click(function(){
                 $(".selectnumber_show").hide(); 
-               })
+               });
                $(".tb_overflay").click(function(){
                 $(".selectnumber_show").hide();    
                })
-            })
           </script>
+
            <script type="text/javascript">  
             var wait=60;  
             function time(o) {  
