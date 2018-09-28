@@ -12,6 +12,7 @@ import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
 import cn.cvtt.nuoche.reponsitory.*;
+import cn.cvtt.nuoche.service.QrcodeService;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
 import cn.cvtt.nuoche.util.JsonUtils;
@@ -22,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +31,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import cn.cvtt.nuoche.server.WxServer;
 
+import javax.annotation.Resource;
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,6 +69,11 @@ public class TestController extends  BaseController {
     IGiftCardRepository giftCardRepository;
     @Autowired
     IGiftCardRecordRepository giftCardRecordRepository;
+    @Resource
+    private QrcodeService qrcodeService;
+    @Value("${wx.qrcode.download}")
+    private  String   qrcodeDownload;
+
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     @RequestMapping("/getAll")
     @ResponseBody
@@ -481,8 +490,6 @@ public class TestController extends  BaseController {
         model.addObject("openid",openid);
         model.addObject("isHideOldDiv",isHideOldDiv);
         model.setViewName("shareGift/gift_number");
-
-
         return  model;
     }
 
@@ -515,6 +522,36 @@ public class TestController extends  BaseController {
         model.setViewName("shareGift/gift_give");
         return  model;
     }
+    //显示二维码接口
+    @RequestMapping("/qrcode")
+    public ModelAndView  qrcode(@RequestParam("cardRecordId") Long cardRecordId){
+        ModelAndView  model=new ModelAndView();
+        //根据cardId查询qrcode，如果值为空，则未生成过二维码。
+        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(cardRecordId);
+        if(giftCardRecord.getQrcode()==null){
+            //生成二维码
+            logger.info("[qrcode]"+"create qrcode");
+            String qrcodeHref = qrcodeService.generatorQrcode(cardRecordId);
+            model.addObject("href",qrcodeHref);
+        }else{
+            //提取二维码href
+            logger.info("[qrcode]"+"find qrcode");
+            String qrcodeHref=giftCardRecord.getQrcodeUrl();
+            model.addObject("href",qrcodeHref);
+            logger.info("[qrcode]"+model.getModel().get("href"));
+        }
+        return model;
+    }
+    //扫二维码领取号码卡、套餐卡接口、通过qrcodeId查找号码卡的id。
+    @RequestMapping("/sweep")
+    public String  toCallReceivePage(String qrcodeId){
+        ModelAndView  model=new ModelAndView();
+        logger.info("[sweep]"+qrcodeId);
+        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByQrcodeEquals(qrcodeId);
+        Long cardRecordId=giftCardRecord.getId();
+        return  "redirect:"+"qrcode?cardRecordId="+cardRecordId;
+    }
+
     @RequestMapping("/OwnerSafeNumber.html")
     public ModelAndView  OwnerSafeNumber( ){
         ModelAndView  model=new ModelAndView();

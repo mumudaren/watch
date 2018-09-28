@@ -28,6 +28,12 @@ public class GiftCardRecord {
     @Column(name="message")
     private   String  message;
 
+    @Column(name="qrcode")
+    private   String  qrcode;
+
+    @Column(name="qrcode_url")
+    private   String  qrcodeUrl;
+
     @Column(name="get_time")
     private Date getTime;
 
@@ -38,7 +44,7 @@ public class GiftCardRecord {
     public GiftCardRecord() {
     }
 
-    public GiftCardRecord(Long id, Long cardId, String senderOpenid, String receiverOpenid, String message,Date getTime,Integer getStatus) {
+    public GiftCardRecord(Long id, Long cardId, String senderOpenid, String receiverOpenid, String message,Date getTime,Integer getStatus,String qrcode) {
         this.id = id;
         this.cardId = cardId;
         this.senderOpenid = senderOpenid;
@@ -46,6 +52,7 @@ public class GiftCardRecord {
         this.message = message;
         this.getTime = getTime;
         this.getStatus = getStatus;
+        this.qrcode = qrcode;
     }
 
     public Long getId() {
@@ -104,4 +111,19 @@ public class GiftCardRecord {
         this.getStatus = getStatus;
     }
 
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
+    }
+
+    public String getQrcodeUrl() {
+        return qrcodeUrl;
+    }
+
+    public void setQrcodeUrl(String qrcodeUrl) {
+        this.qrcodeUrl = qrcodeUrl;
+    }
 }
