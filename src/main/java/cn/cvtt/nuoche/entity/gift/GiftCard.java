@@ -26,7 +26,7 @@ public class GiftCard {
 
     @Column(name="number")
     private  String    number;
-
+    //1是套餐卡，2是号码卡
     @Column(name="card_type")
     private  Integer  cardType;
 

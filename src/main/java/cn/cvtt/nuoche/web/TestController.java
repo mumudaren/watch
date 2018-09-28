@@ -540,14 +540,22 @@ public class TestController extends  BaseController {
             model.addObject("href",qrcodeHref);
             logger.info("[qrcode]"+model.getModel().get("href"));
         }
+        //根据cardType的不同跳转到不同的领取页面。
+        Long cardId=giftCardRecord.getCardId();
+        GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
+        if(giftCard.getCardType()==1){
+            model.setViewName("shareGift/recive_card");
+        }else{
+            model.setViewName("shareGift/recive_gift");
+        }
         return model;
     }
     //扫二维码领取号码卡、套餐卡接口、通过qrcodeId查找号码卡的id。
     @RequestMapping("/sweep")
-    public String  toCallReceivePage(String qrcodeId){
+    public String  toCallReceivePage(String id){
         ModelAndView  model=new ModelAndView();
-        logger.info("[sweep]"+qrcodeId);
-        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByQrcodeEquals(qrcodeId);
+        logger.info("[sweep]"+id);
+        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByQrcodeEquals(id);
         Long cardRecordId=giftCardRecord.getId();
         return  "redirect:"+"qrcode?cardRecordId="+cardRecordId;
     }
