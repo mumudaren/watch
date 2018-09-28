@@ -558,9 +558,14 @@ public class TestController extends  BaseController {
             model.addObject("card",giftCard);
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
             model.addObject("user",user);
-            model.addObject("message",giftCardRecord.getMessage());
+            model.addObject("giftCardRecord",giftCardRecord);
             model.setViewName("shareGift/recive_card");
         }else{
+            //加载分享页面所需要的数据。
+            model.addObject("card",giftCard);
+            BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+            model.addObject("user",user);
+            model.addObject("giftCardRecord",giftCardRecord);
             model.setViewName("shareGift/recive_gift");
         }
         return model;
@@ -568,11 +573,17 @@ public class TestController extends  BaseController {
     //扫二维码领取号码卡、套餐卡接口、通过qrcodeId查找号码卡的id。
     @RequestMapping("/sweep")
     public String  toCallReceivePage(String id){
-        ModelAndView  model=new ModelAndView();
         logger.info("[sweep]"+id);
         GiftCardRecord giftCardRecord=giftCardRecordRepository.findByQrcodeEquals(id);
         Long cardRecordId=giftCardRecord.getId();
         return  "redirect:"+"qrcode?cardRecordId="+cardRecordId;
+    }
+    //领取号码卡、套餐卡成功的页面
+    @RequestMapping("/receiveCardSuccess")
+    public ModelAndView  receiveCardSuccess(){
+        ModelAndView  model=new ModelAndView();
+        model.setViewName("shareGift/share_number_success");
+        return  model;
     }
 
     @RequestMapping("/OwnerSafeNumber.html")

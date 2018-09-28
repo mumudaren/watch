@@ -586,3 +586,9 @@ opacity: .5;
 .tb_overflay{background-color:#2b2a2a;position:fixed;z-index:0;left:0;top:0;width:100%;height:100%;opacity:0.7;filter: alpha(opacity=70);-moz-opacity: 0.7;}
 .f_sharecontent{position: fixed;top: 30%;left: 70%;-moz-transform: translate(-30%, -50%);-ms-transform: translate(-50%, -50%);-webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);z-index:999;}
 .f_sharecontent img{width: 5rem;}
+/*验证码等错误提示*/
+.f_errorwrap,.f_successwrap{position:fixed;top:0;width:10rem;height:1.5rem;line-height:1.5rem;z-index:100;}
+.f_errorlightbox,.f_successlightbox{width:10rem;height:1.5rem;z-index:101;background:#1561a4;filter:alpha(Opacity=70);-moz-opacity:0.7;opacity: 0.7;position: absolute;top: 0px;left: 0px;}
+.f_errorlightbox{background: #333;filter:alpha(Opacity=50);-moz-opacity:0.5;opacity: 0.5;}
+.z_errortext,.z_successtext{color:#fff;font-size:.5rem;position:absolute;z-index:200;text-align:center;width:10rem;}
+.z_errortext{color: #f00;}
