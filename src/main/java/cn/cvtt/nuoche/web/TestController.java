@@ -544,6 +544,21 @@ public class TestController extends  BaseController {
         Long cardId=giftCardRecord.getCardId();
         GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
         if(giftCard.getCardType()==1){
+            //可购买的套餐名称
+            JSONObject eachGiftArray= JSONObject.parseObject(giftCard.getRegexId());
+            //遍历套餐，获取套餐名字
+            String regexName="";
+            for(String str:eachGiftArray.keySet()){
+                regexName=regexName+str+",";
+                logger.info("[qrcode]eachGiftRegex is:"+regexName);
+            }
+            String finalRegexName=regexName.substring(0,regexName.length()-1);
+            logger.info("[qrcode]finalRegexName is:"+finalRegexName);
+            giftCard.setRegexName(finalRegexName);
+            model.addObject("card",giftCard);
+            BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+            model.addObject("user",user);
+            model.addObject("message",giftCardRecord.getMessage());
             model.setViewName("shareGift/recive_card");
         }else{
             model.setViewName("shareGift/recive_gift");
