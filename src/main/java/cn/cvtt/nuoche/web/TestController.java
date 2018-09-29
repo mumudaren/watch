@@ -419,7 +419,7 @@ public class TestController extends  BaseController {
         giftCardRecord.setMessage(message);
         giftCardRecord.setCardId(Long.parseLong(cardId));
         giftCardRecord.setGetStatus(0);
-        giftCardRecordRepository.saveAndFlush(giftCardRecord);
+        GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
         //加载分享页面所需要的数据。
         GiftCard card=giftCardRepository.findByIdEquals(Long.parseLong(cardId));
         //可购买的套餐名称
@@ -434,6 +434,7 @@ public class TestController extends  BaseController {
         logger.info("[cardGive]finalRegexName is:"+finalRegexName);
         card.setRegexName(finalRegexName);
         model.addObject("card",card);
+        model.addObject("cardRecordId",cardRecordId.getId());
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
         model.addObject("user",user);
         model.addObject("message",message);
@@ -512,17 +513,18 @@ public class TestController extends  BaseController {
         giftCardRecord.setMessage(message);
         giftCardRecord.setGetStatus(0);
         giftCardRecord.setCardId(Cardid.getId());
-        giftCardRecordRepository.saveAndFlush(giftCardRecord);
+        GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
         //加载分享页面所需要的数据。
         GiftCard card=giftCardRepository.findByIdEquals(Cardid.getId());
         model.addObject("card",card);
+        model.addObject("cardRecordId",cardRecordId.getId());
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
         model.addObject("user",user);
         model.addObject("message",message);
         model.setViewName("shareGift/gift_give");
         return  model;
     }
-    //显示二维码接口
+    //扫描二维码后跳转到领取的接口
     @RequestMapping("/qrcode")
     public ModelAndView  qrcode(@RequestParam("cardRecordId") Long cardRecordId){
         ModelAndView  model=new ModelAndView();
@@ -540,7 +542,7 @@ public class TestController extends  BaseController {
             model.addObject("href",qrcodeHref);
             logger.info("[qrcode]"+model.getModel().get("href"));
         }
-        //根据cardType的不同跳转到不同的领取页面。
+        //根据cardType的不同跳转到不同的显示页面。
         Long cardId=giftCardRecord.getCardId();
         GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
         if(giftCard.getCardType()==1){
@@ -559,14 +561,16 @@ public class TestController extends  BaseController {
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
             model.addObject("user",user);
             model.addObject("giftCardRecord",giftCardRecord);
-            model.setViewName("shareGift/recive_card");
+//            model.setViewName("shareGift/recive_card");
+            model.setViewName("shareGift/card_qrcode");
         }else{
             //加载分享页面所需要的数据。
             model.addObject("card",giftCard);
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
             model.addObject("user",user);
             model.addObject("giftCardRecord",giftCardRecord);
-            model.setViewName("shareGift/recive_gift");
+            //model.setViewName("shareGift/recive_gift");
+            model.setViewName("shareGift/gift_qrcode");
         }
         return model;
     }
