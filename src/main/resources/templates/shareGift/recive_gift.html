@@ -11,7 +11,8 @@
         <link rel="stylesheet" type="text/css" href="css/gift.css" />
         <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
         <script type="text/javascript" src="js/flexible.js"></script>
-        <script type="text/javascript" src="js/flexible_css.js"></script>   
+        <script type="text/javascript" src="js/flexible_css.js"></script>
+        <script type="text/javascript" src="../js/util.js"></script>
        
     </head>
     <body>  
@@ -25,7 +26,7 @@
                 </p>
                 <div class="z_givefriend_listcontent">
                     <span class="z_gumi"   th:text="${user.nickname}+'送给你靓号'">旅人<br>送给你靓号</span>
-                    <span class="z_choice_goodnumber">祝您<br  th:text="${message}"></span>
+                    <span class="z_choice_goodnumber">祝您<br  th:text="${giftCardRecord.message}"></span>
                     <span class="z_choicethree z_recivethreefour"  th:text="${card.number}">95013333310001</span>
                     <ul class="z_reciveimg">
                         <li>
@@ -51,11 +52,6 @@
             <div class="longpic">
                     <span>领取我的靓号</span>
             </div>
-          <!--错误提示-->
-          <div class="f_successwrap" style="display: none">
-              <div class="f_successlightbox"></div>
-              <span class="z_successtext">122222</span>
-          </div>
       </div> 
       
        <!--点击领取我的靓号弹窗-->
@@ -67,10 +63,15 @@
                 </p>
                 <p class="z_getgoodnumber">领取我的靓号</p>
                 <div class="z_selectnuminput">
-                    <input type="tel" id="" name="" placeholder="手机号码">
-                    <input type="tel" id="" name="" placeholder="验证码">
+                    <input type="tel" name="phone" placeholder="手机号码">
+                    <input type="tel"  id="code" name="" placeholder="验证码">
                     <input type="button" id="getcode" name="" value="获取验证码" style="position: absolute;top:3.7rem;">
-                    <span class="z_number_get">领取</span>
+                    <span class="z_number_get" >领取</span>
+                </div>
+                <!--错误提示-->
+                <div class="f_successwrap" style="display: none">
+                    <div class="f_successlightbox"></div>
+                    <span class="z_successtext">122222</span>
                 </div>
             </div>
         </div>
@@ -78,13 +79,17 @@
       <script th:inline="javascript">
           //var openid=[[${openid}]];
           //var pathSource=[[${path}]];
-          var openid=[[${user.senderOpenid}]];
-          var pathSource=/;
+          var openid=[[${giftCardRecord.senderOpenid}]];
+          var giftCardRecordId=[[${giftCardRecord.id}]];
+          var giftCardId=[[${card.id}]];
+          var pathSource="/receiveCardSuccess?giftCardRecordId="+giftCardRecordId+"&giftCardId="+giftCardId+"&openid="+openid;
           $(function(){
               $("#getcode").click(function(){
                   $(".z_successtext").text("test");
                   var  phone=$("input[name='phone']").val();
+                  console.info("phone is :"+phone);
                   if(!util.validPhone(phone)){
+                      console.info("phone is not valid");
                       util.showText("请输入正确的手机号码!",$(".z_successtext"));return;
                   }
                   $.ajax({
@@ -99,8 +104,7 @@
                   })
               });
           });
-
-          function validPhone(){
+          $(".z_number_get").click(function(){
               var  phone=$("input[name='phone']").val();
               if(!util.validPhone(phone)){
                   util.showText("请输入正确的手机号码!",$(".z_successtext"));return;
@@ -112,13 +116,13 @@
                   dataType:"JSON"
               }).done(function(result){
                   if(result.code==200){
-                      window.location.href="/oauth/admin/"+pathSource;
+                      window.location.href=pathSource;
                   }else {
                       console.log("result is:"+result.msg);
                       util.showText(result.msg,$(".z_successtext"));
                   }
               });
-          }
+          });
       </script>
           <script type="text/javascript">
                //点击选这个号之后的弹窗

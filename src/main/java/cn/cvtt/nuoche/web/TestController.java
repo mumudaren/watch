@@ -580,9 +580,26 @@ public class TestController extends  BaseController {
     }
     //领取号码卡、套餐卡成功的页面
     @RequestMapping("/receiveCardSuccess")
-    public ModelAndView  receiveCardSuccess(){
+    public ModelAndView  receiveCardSuccess(@RequestParam("giftCardRecordId") Long giftCardRecordId,
+                                            @RequestParam("giftCardId") Long giftCardId,
+                                            @RequestParam("openid") String openid){
         ModelAndView  model=new ModelAndView();
-        model.setViewName("shareGift/share_number_success");
+        //根据95号查找号码卡record，填写receiver。
+        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(giftCardRecordId);
+        giftCardRecord.setReceiverOpenid(openid);
+        giftCardRecordRepository.saveAndFlush(giftCardRecord);
+
+        GiftCard giftCard=giftCardRepository.findByIdEquals(giftCardId);
+        //根据95号码查询有效期等。
+        BusinessNumberRecord  numberRecord=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(giftCard.getNumber(),util.getBusinessKey());
+        Date validTime=numberRecord.getValidTime();
+        Date  now=new Date();
+        //使用更改接口更改手机号。（查询是否更改成功。修改userphone和phone）
+
+        model.addObject("openid",openid);
+        model.addObject("giftCard",giftCard);
+        model.addObject("giftCardRecord",giftCardRecord);
+        model.setViewName("shareGift/recive_gift_info_success");
         return  model;
     }
 
