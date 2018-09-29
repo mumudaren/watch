@@ -55,19 +55,6 @@ public class SmsValidateUtils {
                 logger.info("[SmsValidateUtils]CloseableHttpResponse  response.getStatusLine() is :"+response.getStatusLine());
                 logger.info("[SmsValidateUtils]CloseableHttpResponse  response.getStatusLine().getStatusCode() is :"+response.getStatusLine().getStatusCode());
                 if (response.getStatusLine().getStatusCode() == 200) {
-                    // 请求和响应都成功了
-//                    HttpEntity entity = response.getEntity();// 调用getEntity()方法获取到一个HttpEntity实例
-//                    logger.info("[SmsValidateUtils]HttpEntity  entity :"+ response.getEntity());
-                    // do something useful with the response body
-                    // and ensure it is fully consumed
-//                    String responseXML = EntityUtils.toString(entity, "utf-8");// 用EntityUtils.toString()这个静态方法将HttpEntity转换成字符串,防止服务器返回的数据带有中文,所以在转换的时候将字符集指定成utf-8就可以了
-//                    DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-//                    DocumentBuilder builder = builderFactory.newDocumentBuilder();
-//                    Document document = builder.parse(new ByteArrayInputStream(responseXML.getBytes("utf-8")));
-//                    Element rootElement = document.getDocumentElement();
-//                    String retMsg = rootElement.getChildNodes().item(1).getChildNodes().item(3).getTextContent();
-//                    result = retMsg; // "操作成功"是成功标志
-//                    EntityUtils.consume(entity);
                     response.close();
                     logger.info("[SmsValidateUtils]sendMsg request success");
                     return Result.ok(result);
