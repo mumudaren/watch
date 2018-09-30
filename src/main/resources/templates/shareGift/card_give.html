@@ -12,7 +12,8 @@
         <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
         <script type="text/javascript" src="js/flexible.js"></script>
         <script type="text/javascript" src="js/flexible_css.js"></script>
-        <script type="text/javascript" src="../js/floatShare.js"></script>
+        <script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+
        
     </head>
     <body>  
@@ -47,8 +48,93 @@
               <img src="images/share_03.png">
           </div>
       </div>
+      <script th:inline="javascript">
+              var cardRecordId=[[${cardRecordId}]];
+
+              //点击按钮显示浮层，gift_give,card_give
+              $(".tb_overflay").click(function(){
+                  $(".f_sharewrap").hide();
+              });
+              $(".f_sharewrap").click(function(){
+                  $(this).hide();
+              });
+              $(".z_send_wxfriend").click(function(){
+                  $(".f_sharewrap").show();
+              });
+              $(".z_dothing_share").click(function(){
+                  window.location.href="/qrcode?cardRecordId="+cardRecordId;
+              });
+      </script>
+      <script th:inline="javascript">
+          var cardId=[[${card.id}]];
+          var openid=[[${user.openid}]];
+          var nickname=[[${user.nickname}]];
+          //转发
+          var url=window.location.href.split('#')[0];
+          url = url.replace(/&/g, '%26');
+          console.log("url:"+url);
+          $.ajax({
+              url: "/shareToFriend.action?url="+url,
+              type: "POST",
+              async:true,
+              cache: false,
+              dataType: "json",
+              success: function(data){
+                  console.log("shareToFriend return data:"+data);
+                  // getHostPath();
+                  wx.config({
+                      debug:false,
+                      appId: data.appId,
+                      timestamp:data.timeStamp,
+                      nonceStr:data.nonceStr,
+                      signature:data.signature,
+                      jsApiList: ["checkJsApi",  "onMenuShareAppMessage","onMenuShareTimeline"]
+                  });}
+          });
+
+          wx.ready(function () {
+              console.log("wx.ready method");
+              console.log("getHostPath:"+getHostPath()+'/testReturn?cardId='+cardId+'&senderId='+openid);
+              wx.onMenuShareAppMessage({
+                  title: '天啊噜，'+nickname+'送给你一个靓号，赶快领取！', // 分享标题
+                  desc: '祝您大吉大利，今晚有靓号！', // 分享描述
+                  link: getHostPath()+'/testReturn?cardId='+cardId+'&senderId='+openid,
+                  imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
+                  success: function () {
+                      // 用户点击了分享后执行的回调函数
+                      //alert("回调");
+                  }
+              });
+              wx.onMenuShareTimeline({
+                  title: '天啊噜，'+nickname+'送给你一个靓号，赶快领取！', // 分享标题
+                  desc: '祝您大吉大利，今晚有靓号！', // 分享描述
+                  link: getHostPath()+'/testReturn?cardId='+cardId+'&senderId='+openid,
+                  imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
+                  success: function () {
+                      // 用户点击了分享后执行的回调函数
+                      //alert("回调");
+                  }
+              });
+          });
+
+          function getHostPath(){
+              //获取当前网址，如： http://localhost:8083/myproj/view/my.jsp
+              var curWwwPath=window.document.location.href;
+              //获取主机地址之后的目录，如： myproj/view/my.jsp
+              var pathName=window.document.location.pathname;
+              var pos=curWwwPath.indexOf(pathName);
+              //获取主机地址，如： http://localhost:8083
+              var localhostPath=curWwwPath.substring(0,pos);
+              //获取带"/"的项目名，如：/myproj
+              // var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+              //得到了 http://localhost:8083/myproj
+              // var realPath=localhostPaht+projectName;
+              // alert(realPath);
+              console.log('localhostPath:'+localhostPath);
+              return localhostPath;
+          }
+      </script>
     </body>
-    <script th:inline="javascript">
-        var cardRecordId=[[${cardRecordId}]];
-    </script>
+
+
 </html>

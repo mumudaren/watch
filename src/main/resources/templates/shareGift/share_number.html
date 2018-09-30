@@ -67,8 +67,10 @@
         })
     </script>
     <script th:inline="javascript">
+        //转发
         var couponId=[[${coupon.id}]];
         var openid=[[${user.openid}]];
+        var price=[[${coupon.amount/10}]];
         var url=window.location.href.split('#')[0];
         url = url.replace(/&/g, '%26');
         console.log("url:"+url);
@@ -92,23 +94,26 @@
         });
 
         wx.ready(function () {
+            var nickname=[[${user.nickname}]];
+            var message="打电话用95号，省心省力，还能防止骚扰。";
+            var title='天啊噜，'+nickname+'送你'+price+'元，赶快领取！';
             console.log("wx.ready method");
             console.log("getHostPath:"+getHostPath()+'/testReturn?couponId='+couponId+'&senderId='+openid);
             wx.onMenuShareAppMessage({
-                title: '转发朋友测试', // 分享标题
-                desc: '宝宝的睡眠很重要，你的睡眠也很重要', // 分享描述
+                title: title, // 分享标题
+                desc: message, // 分享描述
                 link: getHostPath()+'/testReturn?couponId='+couponId+'&senderId='+openid,
-                imgUrl: getHostPath()+'/images/test.jpg', // 分享图标
+                imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
                 success: function () {
                     // 用户点击了分享后执行的回调函数
                     //alert("回调");
                 }
             });
             wx.onMenuShareTimeline({
-                title: '转发朋友圈测试', // 分享标题
-                desc: '嘛哩嘛哩哄快快成功吧555555', // 分享描述
+                title: title, // 分享标题
+                desc: message, // 分享描述
                 link: getHostPath()+'/testReturn?couponId='+couponId+'&senderId='+openid,
-                imgUrl: getHostPath()+'/images/test.jpg', // 分享图标
+                imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
                 success: function () {
                     // 用户点击了分享后执行的回调函数
                     //alert("回调");
