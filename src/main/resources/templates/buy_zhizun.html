@@ -24,6 +24,7 @@
     <form id="sendPhone" th:action="@{/findStatus.html}"  th:method="post">
     <p class="f_zhizuninput">
         <!--<input type="tel" placeholder="请输入需要安全号的手机号码"   name="myNumber" style="width:92%"/>-->
+
         <input type="tel"  th:value="${phone}" placeholder="请输入需要海牛助手的手机号码" style="width:92%" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
         <input style="display:none" id="phoneType" name="phoneType" value="ZhiZun" />
         <input style="display:none" id="couponRecordId" name="couponRecordId" />
@@ -42,13 +43,15 @@
             <ul>
                 <li>
                     <div class="f_zhizuntablist">
-                        <p class="f_zhizuninput">
+                        <p class="f_zhizuninput"  style="position:relative;">
                             <input type="tel" placeholder="请输入需要查找的海牛助手号" style="width:97%"  class="searchNumber" name=""/>
-                            <input type="button" value="搜索" id="search" name="search" class="z_searchnumber_btn" style="border:none;color:#4c4c4c;font-size:.5rem;background:transparent;margin-left:.2rem">
+                            <img src="../images/zoom.png" id="search" style="width:.6rem;position:absolute;right:.2rem;top:.45rem" />
+                            <!--<input type="button" value="搜索" id="search" name="search" class="z_searchnumber_btn" style="border:none;color:#4c4c4c;font-size:.5rem;background:transparent;margin-left:.2rem">-->
                         </p>
-                        <dl class="f_95013listnum">
+                        <dl class="f_95013listnum" style="overflow:hidden;">
                             <dd th:each="n:${numbers}" th:text="${n.number}">9501378110</dd>
                         </dl>
+                        <p style="color:#4c4c4c;font-size:.45rem;text-align: center;">加载更多</p>
                     </div>
                     <div class="f_dayscontent f_buysafenumber_content" style="margin-left: 0;padding: 0 .4rem;">
                         <dl id="tab1">
@@ -69,15 +72,20 @@
                             <img src="../images/weixin.png"/>微信支付
                         </p>
                     </div>
-                    <p class="wirte_casher">
-                        <span class="z_cashjuan">现金券</span>
+                    <p class="wirte_casher" style="width:9.2rem;margin-left:0;border-radius:0;padding:.4rem;margin-bottom:2rem;border-top:1px solid #aeb5c2;border-bottom:1px solid #aeb5c2;font-size:.5rem;box-shadow:none;">
+                        <span class="z_cashjuan" style="color: #6a7388;">
+                            <img src="../images/casher.png" style="width:.8rem;margin-right:.3rem;"/>现金券
+                        </span>
                         <span class="z_cashselect"></span>
                         <span class="z_casharrow">></span>
                     </p>
-                    <p class="f_bindsuc_share f_fastpay" style="margin-left: .22rem;margin-top: 1rem;">
-                        <a href="javascript:pay()">立即支付（<em>¥1</em>）</a>
-                    </p>
-                    <p class="f_bindsuc_sharebj f_fastpay" style="margin-left: .22rem;display: none" >填充背景色</p>
+                    <div style="position:fixed;bottom:0;">
+                        <p class="f_bindsuc_share f_fastpay" style="margin-left: .22rem;margin-top: 1rem;">
+                            <a href="javascript:pay()">立即支付（<em>¥1</em>）</a>
+                        </p>
+                        <p class="f_bindsuc_sharebj f_fastpay" style="margin-left: .22rem;display: none" >填充背景色</p>
+                    </div>
+
                 </li>
             </ul>
         </div>
@@ -153,7 +161,7 @@
             });
 
             // $(".searchNumber").bind("input propertychange", function () {
-            $(".z_searchnumber_btn").click(function () {
+            $("#search").click(function () {
                 var data = {};
                 var regexId = $(".f_zhizuntab ul").find(".z_actived").attr("value");
                 data.regexId = regexId;
