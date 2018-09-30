@@ -135,8 +135,8 @@ opacity: .5;
 }
 .wirte_casher{margin-left:.35rem;margin-top:.3rem;background-color:#fff;border-radius:.2rem;width:8.8rem;padding: .3rem;box-shadow:0px 5px 5px #d8e1ea;}
 .wirte_casher span.z_cashjuan{font-size:.5rem;color:#2f89ef;}
-.wirte_casher span.z_casharrow{display:inline-block;color:#6a7388;font-size:.6rem;float:right;margin-top:0rem;}
-.wirte_casher span.z_cashselect{display:inline-block;margin-left:4.2rem;}
+.wirte_casher span.z_casharrow{display:inline-block;color:#6a7388;font-size:.6rem;margin-top:0rem;}
+.wirte_casher span.z_cashselect{display:inline-block;}
 .f_userbook{margin-top:.3rem;text-align: center;}
 .f_userbook a{font-size:.5rem;color:#6a7388;}
 .f_write_moneyfriend{margin-left:.35rem;margin-top:.3rem;background-color:#fff;width:8.8rem;padding: .5rem .3rem;}

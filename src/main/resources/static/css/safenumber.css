@@ -93,8 +93,8 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .z_bindnum{margin-top: 0;}
 .f_bindsuc_share{margin: 3rem auto .5rem;width: 9rem;}
 .f_bindsuc_share a{display:block;color: #fff;text-align:center;font-size: .6rem;padding: .25rem 0 .35rem;border-radius: .6rem;box-shadow: 5px 5px 30px #caeafe;
-    background: #1175e4;
-}
+    background: #1175e4;}
+.f_bindsuc_share a:hover{text-decoration: none;}
 
 .f_bindsuc_sharebj{background: #2f89ef;border-radius: .6rem;width: 9rem;padding: .25rem 0 .35rem;margin: 0 auto;text-align:center;font-size: .6rem;margin-top: -1.96rem;text-indent: -9999;
     background: -webkit-linear-gradient(left, #2f89ef , #54bafb); /* Safari 5.1 - 6.0 */
