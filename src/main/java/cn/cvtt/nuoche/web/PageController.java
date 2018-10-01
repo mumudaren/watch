@@ -147,10 +147,12 @@ public class PageController extends  BaseController{
             JSONObject child= JSONObject.parseObject(tt.replace("[","").replace("]",""));
             logger.info("[toDetail]record child is:"+child+"\n");
             String  temp=child.getString("a");
+            logger.info("[toDetail]temp is:"+temp+"\n");
             re.put("recordNumberNotHide",temp);
             re.put("recordNumber",temp.substring(0,3)+"****"+temp.substring(7));
+            logger.info("[toDetail]nox is:"+child.getString("x")+"\n");
             re.put("nox",child.getString("x"));
-            re.put("recordTime",DateUtils.format(child.getDate("ringTime")));
+            re.put("recordTime",DateUtils.format(child.getDate("startTime")));
             SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String durationRecord="0";
             try {
@@ -194,7 +196,7 @@ public class PageController extends  BaseController{
             }
             re.put("voiceNox",child.getString("a"));
             re.put("voiceNumber",child.getString("x"));
-            re.put("recordTime",DateUtils.format(child.getDate("ringTime")));
+            re.put("recordTime",DateUtils.format(child.getDate("startTime")));
             SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String durationRecord="0";
             try {
@@ -253,8 +255,8 @@ public class PageController extends  BaseController{
                String temp=o.getString("a");
                 children.put("childNumberRecordNotHide",temp);
                children.put("childNumber",temp.substring(0,3)+"****"+temp.substring(7));
-               children.put("recordDate",DateUtils.formatString(o.getDate("ringTime"),Constant.DATETEMPLATE));
-               children.put("recordTime",DateUtils.formatTime(o.getDate("ringTime")));
+               children.put("recordDate",DateUtils.formatString(o.getDate("startTime"),Constant.DATETEMPLATE));
+               children.put("recordTime",DateUtils.formatTime(o.getDate("startTime")));
                 SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String durationRecord="0";
                 try {
@@ -301,7 +303,7 @@ public class PageController extends  BaseController{
                 String tempVoice=o.getString("a");
                 children.put("childNumber",tempVoice.substring(0,3)+"****"+tempVoice.substring(7));
                 children.put("childA",o.getString("a"));
-                children.put("recordDate",DateUtils.formatString(o.getDate("ringTime"),Constant.DATETEMPLATE)+" "+DateUtils.formatTime(o.getDate("ringTime")));
+                children.put("recordDate",DateUtils.formatString(o.getDate("startTime"),Constant.DATETEMPLATE)+" "+DateUtils.formatTime(o.getDate("startTime")));
                 /**  放入留言  start */
                 String  dbVoicePath=o.getString("voicemailFile");
                 String param=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
