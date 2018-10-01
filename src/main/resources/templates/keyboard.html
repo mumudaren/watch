@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="Description" content="拨号盘" />
-    <title>拨号盘</title>
+    <meta name="Description" content="海牛通话" />
+    <title>海牛通话</title>
     <meta content="yes" name="apple-mobile-web-app-capable">
     <meta content="yes" name="apple-touch-fullscreen">
     <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes">
@@ -39,9 +39,10 @@
 <div id="keyboard" class="wrap" style="background-color: #f2f7fc;min-height: 15rem; ">
     <div class="f_keyboardcontent">
         <p class="f_keyboard">
-            <input type="tel" id="" name="" v-model="phone"  >
+            <input type="tel" id="" name="" v-model="phone" disabled >
             <img src="images/close_03.png" @click="clear"/>
         </p>
+        <p style="margin-top:.5rem;font-size:.4rem;color:#808080;">请直接输入对方手机号码或海牛助手</p>
         <div class="f_keyboard_call">
             <ul>
                 <li v-for="(item,index) in callNumber" v-on:click="valClick(index)" v-cloak>{{item}}</li>
