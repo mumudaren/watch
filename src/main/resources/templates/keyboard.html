@@ -36,13 +36,13 @@
     <script type="text/javascript" src="js/vue.min.js"></script>
 </head>
 <body>
-<div id="keyboard" class="wrap" style="background-color: #f2f7fc;min-height: 15rem; ">
+<div id="keyboard" class="wrap" style="background-color: #f2f7fc;height:100%; ">
     <div class="f_keyboardcontent">
         <p class="f_keyboard">
             <input type="tel" id="" name="" v-model="phone" disabled >
             <img src="images/close_03.png" @click="clear"/>
         </p>
-        <p style="margin-top:.5rem;font-size:.4rem;color:#808080;">请直接输入对方手机号码或海牛助手</p>
+        <p style="margin-top:.5rem;font-size:.5rem;color:#808080;">请直接输入对方手机号码、固话号(如：134********、010********)或海牛助手号(如：95013******)</p>
         <div class="f_keyboard_call">
             <ul>
                 <li v-for="(item,index) in callNumber" v-on:click="valClick(index)" v-cloak>{{item}}</li>
