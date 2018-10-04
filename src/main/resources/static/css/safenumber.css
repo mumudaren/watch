@@ -259,7 +259,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 /*意见反馈样式*/
 .f_suggest_taocan{background: #fff;padding: .3rem;overflow: hidden;padding-bottom: .6rem;box-shadow: 5px 5px 27px #d4e5f5;}
 .f_suggest_taocan span{display: block;font-size: .5rem;color: #6a7388;}
-.f_suggest_taocan ul li{border-radius: .5rem;width: 2.2rem;color: #007eda;font-size: .36rem;background: #fff;padding:.1rem 0;text-align: center;float: left;box-shadow: 5px 5px 27px #e5edf6;margin-right: .2rem;margin-top: .5rem;}
+.f_suggest_taocan ul li{border-radius: .5rem;width: 1.72rem;color: #007eda;font-size: .36rem;background: #fff;padding:.1rem 0;text-align: center;float: left;box-shadow: 5px 5px 27px #e5edf6;margin-right: .2rem;margin-top: .5rem;}
 .f_suggest_taocan ul li:last-child{margin-right: 0;}
 .f_suggest_taocan ul li.f_suggest_active{background: #3485fb;color: #fff;}
 .f_suggest_content{margin-top: 1rem;border-top:1px solid #aeb5c2;border-bottom:1px solid #aeb5c2;background: #fff;}

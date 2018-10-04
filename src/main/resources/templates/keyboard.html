@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="Description" content="海牛通话" />
-    <title>海牛通话</title>
+    <meta name="Description" content="海牛呼唤" />
+    <title>海牛呼唤</title>
     <meta content="yes" name="apple-mobile-web-app-capable">
     <meta content="yes" name="apple-touch-fullscreen">
     <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes">
@@ -15,7 +15,7 @@
         }
         .f_keyboardcontent{padding: .5rem;}
         .f_keyboard{position: relative;}
-        .f_keyboard input{width: 8rem;height: .7rem;line-height: .7rem;padding: .3rem .5rem;background-color: #fff;border: none;font-size: .5rem;box-shadow: 5px 5px 5px #d4e5f5; }
+        .f_keyboard input{width: 9rem;height: 1.2rem;line-height: 1.2rem;padding:.5rem .5rem .5rem 1.72rem;background-color: #fff;border: none;font-size: .5rem;box-shadow: 5px 5px 5px #d4e5f5;color:#000;font-weight: normal;font-family: sans-serif;}
         .f_keyboard img{width: 1rem;position: absolute;right: .5rem;top: .38rem;}
         .f_keyboard_call{position: fixed;bottom:.5rem;}
         .f_keyboard_call ul{display: flex;display: -webkit-flex;flex-direction: row;flex-wrap: wrap;}
@@ -30,6 +30,7 @@
             background: linear-gradient(to right, #2f89ef , #54bafb); /* 标准的语法 */}
         .f_call a img{width: .8rem;margin-top: -.1rem;margin-right: .3rem;}
         .f_call a:hover{text-decoration: none;}
+        .f_number95013{position: absolute;left:.3rem;font-size: .5rem;line-height: 1.2rem;font-family: sans-serif;}
     </style>
     <script type="text/javascript" th:src="@{/js/flexible.js}"></script>
     <script type="text/javascript" src="js/flexible_css.js"></script>
@@ -39,6 +40,7 @@
 <div id="keyboard" class="wrap" style="background-color: #f2f7fc;height:100%; ">
     <div class="f_keyboardcontent">
         <p class="f_keyboard">
+            <span class="f_number95013">95013</span>
             <input type="tel" id="" name="" v-model="phone" disabled >
             <img src="images/close_03.png" @click="clear"/>
         </p>
@@ -47,8 +49,8 @@
             <ul>
                 <li v-for="(item,index) in callNumber" v-on:click="valClick(index)" v-cloak>{{item}}</li>
             </ul>
-            <p class="f_call">
-                <a :href="'tel:'+ phone">
+            <p class="f_call" v-on:click="call">
+                <a :href="'tel:'+ '95013' + phone">
                     <img src="images/tel_03.png" />拨号
                 </a>
             </p>
@@ -74,6 +76,15 @@
                     let str = this.inputVal;
                     this.inputVal= str.slice(0,str.length-1);
                     this.phone = this.inputVal.join('');
+                },
+                call: function(){
+                    let str = this.phone;
+                    let strIndex = str.substr(0,5);
+                    if(strIndex == '95013'){
+                        this.phone = str.substr(5);
+                    }else{
+                        return this.phone;
+                    }
                 }
             }
 
