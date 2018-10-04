@@ -15,7 +15,7 @@
         }
         .f_keyboardcontent{padding: .5rem;}
         .f_keyboard{position: relative;}
-        .f_keyboard input{width: 6.7rem;height:.2rem;line-height: 1.2rem;padding:.5rem .5rem .5rem 1.8rem;background-color: #fff;border: none;font-size: .5rem;box-shadow: 5px 5px 5px #d4e5f5;color:#000;font-weight: normal;font-family: sans-serif;}
+        .f_keyboard input{width: 6.7rem;height:.2rem;line-height: 1.2rem;padding:.5rem .5rem .5rem 1.72rem;background-color: #fff;border: none;font-size: .5rem;box-shadow: 5px 5px 5px #d4e5f5;color:#000;font-weight: normal;font-family: sans-serif;}
         .f_keyboard img{width: 1rem;position: absolute;right: .5rem;top: .28rem;}
         .f_keyboard_call{position: fixed;bottom:.5rem;}
         .f_keyboard_call ul{display: flex;display: -webkit-flex;flex-direction: row;flex-wrap: wrap;}
@@ -47,7 +47,7 @@
         <p style="margin-top:.5rem;font-size:.5rem;color:#808080;">请直接输入对方手机号码、固话号(如：134********、010********)或海牛助手号(如：95013******)</p>
         <div class="f_keyboard_call">
             <ul>
-                <li v-for="(item,index) in callNumber" v-on:click="valClick(index)" v-cloak>{{item}}</li>
+                <li v-for="(item,index) in callNumber" v-on:click="valClick(index)" :class="{'active': index == active}" v-cloak>{{item}}</li>
             </ul>
             <p class="f_call" v-on:click="call">
                 <a :href="'tel:'+ '95013' + phone">
@@ -63,7 +63,8 @@
         data: {
             inputVal: [95013],
             callNumber: [1,2,3,4,5,6,7,8,9,'*',0,'#'],
-            phone: ''
+            phone: '',
+            active: 0
         },
         methods:
             {
@@ -71,6 +72,7 @@
                     let numberList = this.callNumber[index];
                     let number = this.inputVal.push(numberList);
                     this.phone = this.inputVal.join('');
+                    this.active = index;
                 },
                 clear: function(){
                     let str = this.inputVal;
