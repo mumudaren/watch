@@ -23,7 +23,7 @@
                 <li class="lotter_list">ipad</li>
                 <li class="lotter_list">1000积分</li>
                 <li>
-                    <img src="images/lottery_03.png">
+                    <img src="images/giftImage/lottery_03.png">
                 </li>
                 <li class="lotter_list">200积分</li>
                 <li class="lotter_list">20元代金券</li>
@@ -59,10 +59,12 @@
                         if ($("#"+id).find("ul li.lotter_list").length>0) {
                             $lottery = $("#"+id);
                             $units = $lottery.find("ul li.lotter_list");
+                            //lottery div
                             this.obj = $lottery;
+                            //8个
                             this.count = $units.length;
                             this.prizeName = $lottery.find("ul li.lotter_list").text();
-                        };
+                        }
                     },
                     roll:function(){
                         var index = this.index;
@@ -72,7 +74,7 @@
                         index += 1;
                         if (index>count-1) {
                             index = 0;
-                        };
+                        }
                         $(lottery).find("ul li.lotter_list").eq(index).addClass("actived");
                         
                         this.index=index;
@@ -93,14 +95,16 @@
                         lottery.prize=-1;
                         lottery.times=0;
                         click=false;
+                        //显示中奖信息。
                         this.prizeName = $lottery.find("ul li.lotter_list").eq(lottery.index).text();
                         $(".f_lottery_prize").find("span em").text(this.prizeName);
                     }else{
+                        //抽奖50次以内。
                         if (lottery.times<lottery.cycle) {
                             lottery.speed -= 10;
                         }else if(lottery.times==lottery.cycle) {
                             var index = Math.random()*(lottery.count)|0;
-                            lottery.prize = index;		
+                            lottery.prize = index;
                         }else{
                             if (lottery.times > lottery.cycle+10 && ((lottery.prize==0 && lottery.index==7) || lottery.prize==lottery.index+1)) {
                                 lottery.speed += 110;
@@ -110,7 +114,7 @@
                         }
                         if (lottery.speed<40) {
                             lottery.speed=40;
-                        };
+                        }
                         lottery.timer = setTimeout(roll,lottery.speed);
                     }
                     return false;
@@ -118,15 +122,19 @@
                 
                 var click=false;
                 var clickNum = 0;    //点击次数
-                var reduceNum = 2;   //点击次数的计算                       
+                var reduceNum = 2;   //点击次数的计算
+                var clickNumber=2;
                 window.onload=function(){
+                    //初始化。
                     lottery.init('lottery');
+                    //点击抽奖。
                     $("#lottery ul li:eq(4)").click(function(){
                         clickNum++;
-                        if(clickNum<=2){
+                        if(clickNum<=clickNumber){
                             if (click) {
                                     return false;
                                 }else{
+                                    //转速变为100
                                     lottery.speed=100;
                                     roll();
                                     click=true;

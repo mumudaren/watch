@@ -607,6 +607,14 @@ public class TestController extends  BaseController {
         return  model;
     }
 
+    //抽奖
+    @RequestMapping("/lottery")
+    public  ModelAndView  lottery(){
+        ModelAndView  model=new ModelAndView();
+        model.setViewName("shareGift/lottery");
+        return  model;
+    }
+
     @RequestMapping("/OwnerSafeNumber.html")
     public ModelAndView  OwnerSafeNumber( ){
         ModelAndView  model=new ModelAndView();
