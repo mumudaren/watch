@@ -207,12 +207,12 @@ public class TestController extends  BaseController {
     }
 
     //转发朋友圈后跳转页面
-    @RequestMapping("/testReturn")
-    public  ModelAndView  testReturn(@RequestParam(value ="couponId",defaultValue ="1") Long couponId, @RequestParam(value ="senderId",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String senderId){
+    @RequestMapping("/giftReturn")
+    public  ModelAndView  giftReturn(@RequestParam(value ="couponId") Long couponId, @RequestParam(value ="senderId") String senderId){
         ModelAndView  model=new ModelAndView();
         //朋友圈转发后
         String receiverOpenid="oIFn90393PZMsIt-kprqw0GWmVko";
-        logger.info("[testReturn]couponId is:"+couponId+"senderId is:"+senderId);
+        logger.info("[giftReturn]couponId is:"+couponId+"senderId is:"+senderId);
         BusinessCustomer receiveUser= businessCusRepository.findByOpenidEquals(receiverOpenid);
         model.addObject("receiveUser",receiveUser);
         BusinessCustomer senderUser= businessCusRepository.findByOpenidEquals(senderId);
@@ -605,7 +605,7 @@ public class TestController extends  BaseController {
             GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
             Long couponId=giftCouponRecord.getCouponId();
             String senderId=giftCouponRecord.getCreatorOpenid();
-            return  "redirect:"+"testReturn?couponId="+couponId+"&senderId="+senderId;
+            return  "redirect:"+"giftReturn?couponId="+couponId+"&senderId="+senderId;
         }else return null;
 
     }

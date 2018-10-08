@@ -94,11 +94,11 @@
 
           wx.ready(function () {
               console.log("wx.ready method");
-              console.log("getHostPath:"+getHostPath()+'/testReturn?cardId='+cardId+'&senderId='+openid);
+              console.log("getHostPath:"+getHostPath()+'/giftReturn?cardId='+cardId+'&senderId='+openid);
               wx.onMenuShareAppMessage({
                   title: '天啊噜，'+nickname+'送给你一个靓号，赶快领取！', // 分享标题
                   desc: '祝您大吉大利，今晚有靓号！', // 分享描述
-                  link: getHostPath()+'/testReturn?cardId='+cardId+'&senderId='+openid,
+                  link: getHostPath()+'/giftReturn?cardId='+cardId+'&senderId='+openid,
                   imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
                   success: function () {
                       // 用户点击了分享后执行的回调函数
@@ -108,7 +108,7 @@
               wx.onMenuShareTimeline({
                   title: '天啊噜，'+nickname+'送给你一个靓号，赶快领取！', // 分享标题
                   desc: '祝您大吉大利，今晚有靓号！', // 分享描述
-                  link: getHostPath()+'/testReturn?cardId='+cardId+'&senderId='+openid,
+                  link: getHostPath()+'/giftReturn?cardId='+cardId+'&senderId='+openid,
                   imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
                   success: function () {
                       // 用户点击了分享后执行的回调函数
