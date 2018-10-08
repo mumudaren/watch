@@ -1,11 +1,7 @@
 package cn.cvtt.nuoche.entity.gift;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -37,14 +33,20 @@ public class GiftCardRecord {
     @Column(name="get_time")
     private Date getTime;
 
+    @Column(name="buy_time")
+    private Date buyTime;
+
     @Column(name="get_status")
     private Integer getStatus;
+
+    @Transient
+    private GiftCard giftCard;
 
 
     public GiftCardRecord() {
     }
 
-    public GiftCardRecord(Long id, Long cardId, String senderOpenid, String receiverOpenid, String message,Date getTime,Integer getStatus,String qrcode) {
+    public GiftCardRecord(Long id, Long cardId, String senderOpenid, String receiverOpenid, String message,Date getTime,Integer getStatus,String qrcode,Date buyTime) {
         this.id = id;
         this.cardId = cardId;
         this.senderOpenid = senderOpenid;
@@ -53,6 +55,7 @@ public class GiftCardRecord {
         this.getTime = getTime;
         this.getStatus = getStatus;
         this.qrcode = qrcode;
+        this.buyTime = buyTime;
     }
 
     public Long getId() {
@@ -125,5 +128,21 @@ public class GiftCardRecord {
 
     public void setQrcodeUrl(String qrcodeUrl) {
         this.qrcodeUrl = qrcodeUrl;
+    }
+
+    public GiftCard getGiftCard() {
+        return giftCard;
+    }
+
+    public void setGiftCard(GiftCard giftCard) {
+        this.giftCard = giftCard;
+    }
+
+    public Date getBuyTime() {
+        return buyTime;
+    }
+
+    public void setBuyTime(Date buyTime) {
+        this.buyTime = buyTime;
     }
 }

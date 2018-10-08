@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
         <meta name="Description" content="微信送礼" />
@@ -28,108 +28,123 @@
                       <dl>
                           <dd>
                               <ul>
-                                          <li>
-                                              <div class="z_tablist">
-                                                  <p class="z_tablist_title">
-                                                      95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>
-                                                  </p>
-                                                  <p class="z_tablist_price">399元／年<span class="z_tabsmalltitle z_tabdatetime">2018年08月23日购买的</span></p>
-                                                  <p class="z_tablist_content">
-                                                      <img src="images/giftimg_03.png">
-                                                      <span class="z_tablist_text">大喇叭<br>2018年09月23日 16:25:08 领取</span>
-                                                  </p>
-                                              </div>
-                                          </li>
-                                          <li>
-                                              <div class="z_tablist">
-                                                  <p class="z_tablist_title">
-                                                      大吉大利卡&nbsp;
-                                                      <span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>
-                                                      <span class="z_tablist_nouse">未领取</span>
-                                                  </p>
-                                                  <p class="z_tablist_price">399元／年<span class="z_tabsmalltitle z_tabdatetime">能选择三连号、四连号</span></p>
-                                                  <p class="z_tablist_content">
-                                                      <span class="z_tanlist_notusedate">2018年08月23日购买的<br><em>朋友未领取</em></span>
-                                                      <span class="z_tablist_notusesendbtn">
-                                                          <a href="">送给朋友</a>
-                                                          <a href="">生成礼品卡</a>
+                                  <li   th:if="${myGiftNumberCardRecordList}" th:each="numberCard:${myGiftNumberCardRecordList}">
+                                      <div class="z_tablist">
+                                          <p class="z_tablist_title"  >
+                                              <strong th:text="${numberCard.cardName}">95013&nbsp;68985&nbsp;</strong>
+                                              <span class="z_tabsmalltitle" th:text="${numberCard.cardMessage}">祝福语：大吉大利，今晚有靓号</span>
+                                          </p>
+                                          <p class="z_tablist_price" >
+                                              <strong th:text="${numberCard.price/10+'元/年'}">399元／年</strong>
+
+                                          </p>
+                                          <p class="z_tablist_content">
+                                              <span class="z_tanlist_notusedate"><strong th:text="${numberCard.buyTime+'购买的'}">2018年08月23日购买的</strong>
+                                                  <br><em>朋友未领取</em></span>
+                                              <span class="z_tablist_notusesendbtn">
+                                                         <a  th:onclick="'javascript:toFriend()'">送给朋友</a>
+                                                          <a class="z_dothing_share">生成礼品卡</a>
                                                       </span>
-                                                  </p>
-                                              </div>
-                                          </li>
-                                          <li>
+                                          </p>
+                                      </div>
+                                  </li>
+                                  <li  th:if="${myGiftRegexCardRecordList}" th:each="card:${myGiftRegexCardRecordList}">
+                                      <div class="z_tablist">
+                                          <p class="z_tablist_title">
+                                              <strong th:text="${card.cardName}">大吉大利卡&nbsp;</strong>
+                                              <span class="z_tabsmalltitle" th:text="${'祝福语：'+card.cardMessage}">祝福语：大吉大利，今晚有靓号</span>
+                                              <span class="z_tablist_nouse">未领取</span>
+                                          </p>
+                                          <p class="z_tablist_price"><strong th:text="${card.price/10+'元/年'}">399元／年</strong>
+                                              <span class="z_tabsmalltitle z_tabdatetime" th:text="${'能选择'+card.finalRegexName}">能选择三连号、四连号</span></p>
+                                          <p class="z_tablist_content">
+                                              <span class="z_tanlist_notusedate">
+                                                  <strong th:text="${card.buyTime}">2018年08月23日</strong>购买的<br><em>朋友未领取</em></span>
+                                              <span class="z_tablist_notusesendbtn">
+                                                          <a  th:onclick="'javascript:toFriend()'">送给朋友</a>
+                                                             <a class="z_dothing_share">生成礼品卡</a>
+                                                      </span>
+                                          </p>
+                                      </div>
+                                  </li>
+                                          <li  th:if="${cardHave}" th:each="cardItem:${cardHave}">
                                               <div class="z_tablist">
                                                   <p class="z_tablist_title">
-                                                      95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>
+                                                      <strong th:text="${cardItem.cardName}">95013&nbsp;68985&nbsp;</strong>
+                                                      <span class="z_tabsmalltitle" th:text="${'祝福语：'+cardItem.cardMessage}">祝福语：大吉大利，今晚有靓号</span>
                                                   </p>
-                                                  <p class="z_tablist_price">399元／年<span class="z_tabsmalltitle z_tabdatetime">2018年08月23日购买的</span></p>
+                                                  <p class="z_tablist_price"><strong th:text="${cardItem.price/10+'元/年'}">399元／年</strong>
+                                                      <span class="z_tabsmalltitle z_tabdatetime"><strong th:text="${cardItem.buyTime}">2018年08月23日</strong>购买的</span></p>
                                                   <p class="z_tablist_content">
-                                                      <img src="images/giftimg_03.png">
-                                                      <span class="z_tablist_text">大喇叭<br>2018年09月23日 16:25:08 领取</span>
+                                                      <img th:src="${cardItem.receiverImg}">
+                                                      <span class="z_tablist_text"><strong  th:text="${cardItem.receiverNickname}">大喇叭</strong><br><strong th:text="${cardItem.getTime}">2018年09月23日 16:25:08</strong> 领取</span>
                                                   </p>
                                               </div>
                                           </li>
-                                          <li>
-                                              <div class="z_tablist">
-                                                  <p class="z_tablist_title">
-                                                      95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>
-                                                  </p>
-                                                  <p class="z_tablist_price">399元／年<span class="z_tabsmalltitle z_tabdatetime">2018年08月23日购买的</span></p>
-                                                  <p class="z_tablist_content">
-                                                      <img src="images/giftimg_03.png">
-                                                      <span class="z_tablist_text">大喇叭<br>2018年09月23日 16:25:08 领取</span>
-                                                  </p>
-                                              </div>
-                                          </li>
+                                          <!--<li>-->
+                                              <!--<div class="z_tablist">-->
+                                                  <!--<p class="z_tablist_title">-->
+                                                      <!--95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>-->
+                                                  <!--</p>-->
+                                                  <!--<p class="z_tablist_price">399元／年<span class="z_tabsmalltitle z_tabdatetime">2018年08月23日购买的</span></p>-->
+                                                  <!--<p class="z_tablist_content">-->
+                                                      <!--<img src="images/giftImage/giftimg_03.png">-->
+                                                      <!--<span class="z_tablist_text">大喇叭<br>2018年09月23日 16:25:08 领取</span>-->
+                                                  <!--</p>-->
+                                              <!--</div>-->
+                                          <!--</li>-->
                               </ul>
                           </dd>
                           <dd  style="display:none;">
                               <ul>
-                                  <li>
+                                  <li   th:if="${cardReceive}" th:each="receive:${cardReceive}">
                                       <div class="z_tablist">
                                           <p class="z_tablist_title">
-                                              95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>
+                                              <strong th:text="${receive.cardName}">95013&nbsp;68985&nbsp;</strong>
+                                              <span class="z_tabsmalltitle"  th:text="${'祝福语：'+receive.cardMessage}">祝福语：大吉大利，今晚有靓号</span>
                                           </p>                        
                                           <p class="z_tablist_content">
-                                              <img src="images/gift4_03.png">
-                                              <span class="z_tablist_text">丽莎<br>2018年09月23日 16:25:08 送给我的</span>
+                                              <img th:src="${receive.receiverImg}">
+                                              <span class="z_tablist_text"><strong  th:text="${receive.receiverNickname}">大喇叭</strong>
+                                                  <br><strong th:text="${receive.getTime}">2018年09月23日 16:25:08</strong> 送给我的</span>
+                                              <span class="z_tablist_selectnumber" th:if="${receive.cardNumber}">已选号码：<em th:text="${receive.cardNumber}">95013780000</em></span>
                                           </p>
                                       </div>
                                   </li>
-                                  <li>
-                                      <div class="z_tablist">
-                                          <p class="z_tablist_title">
-                                              95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>
-                                          </p>                        
-                                          <p class="z_tablist_content">
-                                              <img src="images/gift4_03.png">
-                                              <span class="z_tablist_text">丽莎<br>2018年09月23日 16:25:08 送给我的</span>
-                                              <span class="z_tablist_selectnumber">已选号码：<em>95013780000</em></span>
-                                          </p>
-                                      </div>
-                                  </li>
-                                  <li>
-                                      <div class="z_tablist">
-                                          <p class="z_tablist_title">
-                                              95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>
-                                          </p>                        
-                                          <p class="z_tablist_content">
-                                              <img src="images/gift4_03.png">
-                                              <span class="z_tablist_text">丽莎<br>2018年09月23日 16:25:08 送给我的</span>
-                                          </p>
-                                      </div>
-                                  </li>
-                                  <li>
-                                      <div class="z_tablist">
-                                          <p class="z_tablist_title">
-                                              95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>
-                                          </p>                        
-                                          <p class="z_tablist_content">
-                                              <img src="images/gift4_03.png">
-                                              <span class="z_tablist_text">丽莎<br>2018年09月23日 16:25:08 送给我的</span>
-                                          </p>
-                                      </div>
-                                  </li>
+                                  <!--<li>-->
+                                      <!--<div class="z_tablist">-->
+                                          <!--<p class="z_tablist_title">-->
+                                              <!--95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>-->
+                                          <!--</p>                        -->
+                                          <!--<p class="z_tablist_content">-->
+                                              <!--<img src="images/giftImage/gift4_03.png">-->
+                                              <!--<span class="z_tablist_text">丽莎<br>2018年09月23日 16:25:08 送给我的</span>-->
+                                              <!--<span class="z_tablist_selectnumber">已选号码：<em>95013780000</em></span>-->
+                                          <!--</p>-->
+                                      <!--</div>-->
+                                  <!--</li>-->
+                                  <!--<li>-->
+                                      <!--<div class="z_tablist">-->
+                                          <!--<p class="z_tablist_title">-->
+                                              <!--95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>-->
+                                          <!--</p>                        -->
+                                          <!--<p class="z_tablist_content">-->
+                                              <!--<img src="images/giftImage/gift4_03.png">-->
+                                              <!--<span class="z_tablist_text">丽莎<br>2018年09月23日 16:25:08 送给我的</span>-->
+                                          <!--</p>-->
+                                      <!--</div>-->
+                                  <!--</li>-->
+                                  <!--<li>-->
+                                      <!--<div class="z_tablist">-->
+                                          <!--<p class="z_tablist_title">-->
+                                              <!--95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>-->
+                                          <!--</p>                        -->
+                                          <!--<p class="z_tablist_content">-->
+                                              <!--<img src="images/giftImage/gift4_03.png">-->
+                                              <!--<span class="z_tablist_text">丽莎<br>2018年09月23日 16:25:08 送给我的</span>-->
+                                          <!--</p>-->
+                                      <!--</div>-->
+                                  <!--</li>-->
                                  
                               </ul>
                           </dd>                
@@ -149,7 +164,23 @@
                     $(".f_tabcontent dl dd").eq(index).siblings().hide();
                     
                 })
-            })
+            });
+
+            function toFriend () {
+                console.log("toFriend this:"+ $(this).text());
+                console.log("toFriend this:"+ $(this).text());
+                console.log("toFriend this:"+ $(this).text());
+//                var message = $(".write_message").val();
+//                var cardId = [[${card.id}]];
+//                if (message == '') {
+//                    console.log("message:" + message);
+//                    message = "大吉大利，今晚有靓号"
+//                }
+//                window.location.href = "/card_give.html?cardId=" + cardId + "&" + "openid=" + openid + "&message=" + message;
+            }
+            $(".z_dothing_share").click(function(){
+                window.location.href="/qrcode?cardRecordId="+cardRecordId;
+            });
       </script>
     </body>     
 </html>

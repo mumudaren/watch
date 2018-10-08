@@ -19,6 +19,7 @@ import cn.cvtt.nuoche.util.JsonUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +34,8 @@ import cn.cvtt.nuoche.server.WxServer;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static cn.cvtt.nuoche.util.WechatSignGenerator.jsapiSign;
 
@@ -452,6 +450,7 @@ public class TestController extends  BaseController {
     @RequestMapping("/testChooseNumberRegex")
     public  ModelAndView  testChooseNumberRegex(){
         ModelAndView  model=new ModelAndView();
+        //String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
         String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
         List<Map<String,String>> map=JsonUtils.handlerNormalJson(json,"id","regexName");
         model.addObject("regexs",map);
@@ -604,6 +603,157 @@ public class TestController extends  BaseController {
         model.addObject("giftCard",giftCard);
         model.addObject("giftCardRecord",giftCardRecord);
         model.setViewName("shareGift/recive_gift_info_success");
+        return  model;
+    }
+    //历史记录
+    @RequestMapping("/my_gift_give.html")
+    public ModelAndView  giftRecord(@RequestParam("openid") String openid){
+        ModelAndView  model=new ModelAndView();
+        //测试数据
+        openid="oIFn90393PZMsIt-kprqw0GWmVko";
+        //根据openId查询记录
+        //自己未领取
+        List<GiftCardRecord> giftCardRecordList =giftCardRecordRepository.findByGetStatusEqualsAndSenderOpenidEqualsOrderByGetTimeDesc(0,openid);
+        logger.info("[giftRecord]GiftCardRecord size is:"+giftCardRecordList.size());
+        List<Map<String,Object>> RegexCard=new ArrayList<>();
+        List<Map<String,Object>> NumberCard=new ArrayList<>();
+        if(giftCardRecordList.size()>0){
+            for(GiftCardRecord giftCardRecord :giftCardRecordList)
+            {
+                Long cardId=giftCardRecord.getCardId();
+                GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
+                if(giftCard.getCardType()==2){
+                    //号码卡
+                    Map<String,Object>map2=new HashedMap();
+                    map2.put("cardName",giftCard.getNumber());
+                    map2.put("cardMessage",giftCardRecord.getMessage());
+                    map2.put("price",giftCard.getPrice());
+                    SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                    map2.put("buyTime",buyTime);
+                    NumberCard.add(map2);
+                }else if(giftCard.getCardType()==1){
+                    //套餐卡
+                    Map<String,Object>map1=new HashedMap();
+                    map1.put("cardName",giftCard.getCardName());
+                    map1.put("cardMessage",giftCardRecord.getMessage());
+                    map1.put("price",giftCard.getPrice());
+                    //可购买的套餐名称
+                    JSONObject eachGiftArray= JSONObject.parseObject(giftCard.getRegexId());
+                    //遍历套餐，获取套餐名字
+                    String regexName="";
+                    for(String str:eachGiftArray.keySet()){
+                        regexName=regexName+str+",";
+                    }
+                    String finalRegexName=regexName.substring(0,regexName.length()-1);
+                    logger.info("[my_gift_give]finalRegexName is:"+finalRegexName);
+                    map1.put("finalRegexName",finalRegexName);
+                    SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                    map1.put("buyTime",buyTime);
+                    RegexCard.add(map1);
+                }
+                model.addObject("myGiftRegexCardRecordList",RegexCard);
+                model.addObject("myGiftNumberCardRecordList",NumberCard);
+            }
+        }
+        //自己已领取
+        List<GiftCardRecord> giftCardRecordList2 =giftCardRecordRepository.findByGetStatusEqualsAndSenderOpenidEqualsOrderByGetTimeDesc(1,openid);
+        List<Map<String,Object>> cardHave=new ArrayList<>();
+        if(giftCardRecordList2.size()>0) {
+            for(GiftCardRecord giftCardRecord :giftCardRecordList2)
+            {
+                logger.info("receiver openid:"+giftCardRecord.getReceiverOpenid());
+                BusinessCustomer receiver= businessCusRepository.findByOpenidEquals(giftCardRecord.getReceiverOpenid());
+                Long cardId=giftCardRecord.getCardId();
+                GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
+                if(giftCard.getCardType()==2){
+                    //号码卡
+                    Map<String,Object>haveMap1=new HashedMap();
+                    haveMap1.put("cardName",giftCard.getNumber());
+                    haveMap1.put("cardMessage",giftCardRecord.getMessage());
+                    haveMap1.put("price",giftCard.getPrice());
+                    SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                    haveMap1.put("buyTime",buyTime);
+                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                    String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
+                    haveMap1.put("getTime",getTime);
+                    haveMap1.put("receiverImg",receiver.getHeadimgurl());
+                    haveMap1.put("receiverNickname",receiver.getNickname());
+                    cardHave.add(haveMap1);
+                }else if(giftCard.getCardType()==1){
+                    //套餐卡
+                    Map<String,Object>haveMap2=new HashedMap();
+                    haveMap2.put("cardName",giftCard.getCardName());
+                    haveMap2.put("cardMessage",giftCardRecord.getMessage());
+                    haveMap2.put("price",giftCard.getPrice());
+                    SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                    haveMap2.put("buyTime",buyTime);
+                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                    String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
+                    haveMap2.put("getTime",getTime);
+                   logger.info("receiver size is:"+receiver.toString());
+                    haveMap2.put("receiverNickname",receiver.getNickname());
+                    haveMap2.put("receiverImg",receiver.getHeadimgurl());
+                    cardHave.add(haveMap2);
+                }
+                model.addObject("cardHave",cardHave);
+            }
+        }
+        //他人
+        List<GiftCardRecord> giftCardOtherRecordList =giftCardRecordRepository.findByGetStatusEqualsAndReceiverOpenidEqualsOrderByGetTimeDesc(1,openid);
+        List<Map<String,Object>> cardReceive=new ArrayList<>();
+        if(giftCardOtherRecordList.size()>0) {
+            for(GiftCardRecord giftCardRecord :giftCardOtherRecordList)
+            {
+                logger.info("receiver openid:"+giftCardRecord.getReceiverOpenid());
+                BusinessCustomer sender= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+                Long cardId=giftCardRecord.getCardId();
+                GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
+                if(giftCard.getCardType()==0){
+                    //号码卡
+                    Map<String,Object>receiveMap1=new HashedMap();
+                    receiveMap1.put("cardName",giftCard.getNumber());
+                    receiveMap1.put("cardNumber",giftCard.getNumber());
+                    receiveMap1.put("cardMessage",giftCardRecord.getMessage());
+                    receiveMap1.put("price",giftCard.getPrice());
+                    SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    try{
+                        String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                        receiveMap1.put("buyTime",buyTime);
+                    }catch(Exception e){}
+                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                    String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
+                    receiveMap1.put("getTime",getTime);
+                    receiveMap1.put("receiverImg",sender.getHeadimgurl());
+                    receiveMap1.put("receiverNickname",sender.getNickname());
+                    cardReceive.add(receiveMap1);
+                }else if(giftCard.getCardType()==1){
+                    //套餐卡
+                    Map<String,Object>receiveMap2=new HashedMap();
+                    receiveMap2.put("cardName",giftCard.getCardName());
+                    receiveMap2.put("cardNumber",giftCard.getNumber());
+                    receiveMap2.put("cardMessage",giftCardRecord.getMessage());
+                    receiveMap2.put("price",giftCard.getPrice());
+                    SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    try{
+                        String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                        receiveMap2.put("buyTime",buyTime);
+                    }catch(Exception e){}
+                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                    String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
+                    receiveMap2.put("getTime",getTime);
+                    logger.info("receiver size is:"+sender.toString());
+                    receiveMap2.put("receiverNickname",sender.getNickname());
+                    receiveMap2.put("receiverImg",sender.getHeadimgurl());
+                    cardReceive.add(receiveMap2);
+                }
+                model.addObject("cardReceive",cardReceive);
+            }
+        }
+        model.setViewName("shareGift/my_gift_give");
         return  model;
     }
 
