@@ -7,10 +7,15 @@ import cn.cvtt.nuoche.entity.WeixinOauth2Token;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.wx_product;
+import cn.cvtt.nuoche.entity.gift.GiftCoupon;
+import cn.cvtt.nuoche.entity.gift.GiftCouponQrcode;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponQrcodeRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponRepository;
+import cn.cvtt.nuoche.service.QrcodeService;
 import cn.cvtt.nuoche.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -48,6 +53,12 @@ public class OauthController extends  BaseController{
     IBusinessCusRepository  businessCusRepository;
     @Autowired
     IRegexInterface  regexInterface;
+    @Autowired
+    IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
+    @Autowired
+    IGiftCouponRepository giftCouponRepository;
+    @Resource
+    private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(OauthController.class);
     /**
      * 获取网页授权用户信息
@@ -445,7 +456,87 @@ public class OauthController extends  BaseController{
         return "redirect:" + requestUrl;
     }
 
+    /**
+     * gift需要基本授权的请求(需要验证是否存在手机号。)
+     * @param code
+     * @param state
+     * @return
+     */
+    @SuppressWarnings("all")
+    @RequestMapping("/oauth/gift")
+    public ModelAndView ouathGift(@RequestParam String code, @RequestParam String state,RedirectAttributes attr) {
+        ModelAndView modelAndView = new ModelAndView();
+        // 获取网页授权access_token
+        WeixinOauth2Token weixinOauth2Token = WxUtils.getOauth2AccessToken(code);
+        String openId = weixinOauth2Token.getOpenId();
+        logger.info("[ouathGift]receive pram openid is:"+openId+"\n");
+        // 判断如果openid为空，则引导用户重新授权
+        if (StringUtils.isBlank(openId)) {
+            logger.info("[ouathGift]openid is empty,error code is:", code);
+            modelAndView.setViewName("redirect:/oauth/gift/" + state);
+            return modelAndView;
+        }
+        /***==> 先判断当前用户是否绑定手机号,如果没有则跳转绑定页面*/
+        BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openId);
+        if(customer==null||StringUtils.isEmpty(customer.getPhone())){
+            modelAndView.setViewName("validate_tel");
+            modelAndView.addObject("openid",openId);
+            return  modelAndView;
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put("openid", openId);
+        //分享代金券页面
+        if(StringUtils.equals(state,"giftShareNumber")){
+            BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openId);
+            modelAndView.addObject("user",userInfo);
+            GiftCoupon coupon=giftCouponRepository.findByIsAbleEquals(1);
+            if(coupon==null){
+                GiftCoupon couponNew=new GiftCoupon();
+                couponNew.setAmount(0);
+                couponNew.setPoint(0);
+                couponNew.setId(0L);
+                modelAndView.addObject("coupon",couponNew);
+            }else{
+                modelAndView.addObject("coupon",coupon);
+            }
+            //生成二维码
+            GiftCouponQrcode giftCouponQrcode=giftCouponQrcodeRepository.findByCouponIdEquals(coupon.getId());
+            if(giftCouponQrcode==null){
+                logger.info("[create qrcode]"+"create qrcode");
+                GiftCouponQrcode giftCouponQrcodeNew=new GiftCouponQrcode();
+                giftCouponQrcodeNew.setCouponId(coupon.getId());
+                giftCouponQrcodeNew.setCreateTime(new Date());
+                giftCouponQrcodeNew.setCreatorOpenid(openId);
+                GiftCouponQrcode giftCouponQrcodeFinal=giftCouponQrcodeRepository.saveAndFlush(giftCouponQrcodeNew) ;
+                String qrcodeHref = qrcodeService.generatorQrcode(giftCouponQrcodeFinal.getId(),"coupon");
+                modelAndView.addObject("href",qrcodeHref);
+            }else{
+                String qrcodeHref =giftCouponQrcode.getQrcodeUrl();
+                modelAndView.addObject("href",qrcodeHref);
+            }
+            modelAndView.setViewName("shareGift/share_number");
+        }
 
+        return modelAndView;
+    }
+
+
+    /**
+     * gift需要基本授权的请求
+     * @param path
+     * @return
+     */
+    @RequestMapping("/oauth/gift/{path}")
+    public String redirectGift(@PathVariable String path) {
+        logger.info("[redirectOther]util.getUrl"+util.getUrl());
+        String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
+        requestUrl = requestUrl.replace("APPID", Constant.APP_ID)
+                .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/other"))
+                .replace("SCOPE", "snsapi_base")
+                .replace("STATE", path);
+        logger.info("[redirectGift]requestUrl:::"+requestUrl);
+        return "redirect:" + requestUrl;
+    }
 
 
 
