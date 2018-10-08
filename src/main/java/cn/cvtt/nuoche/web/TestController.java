@@ -185,6 +185,7 @@ public class TestController extends  BaseController {
         }else{
             model.addObject("coupon",coupon);
         }
+
         model.setViewName("shareGift/share_number");
         return  model;
     }
@@ -532,7 +533,7 @@ public class TestController extends  BaseController {
         if(giftCardRecord.getQrcode()==null){
             //生成二维码
             logger.info("[qrcode]"+"create qrcode");
-            String qrcodeHref = qrcodeService.generatorQrcode(cardRecordId);
+            String qrcodeHref = qrcodeService.generatorQrcode(cardRecordId,"card");
             model.addObject("href",qrcodeHref);
         }else{
             //提取二维码href

@@ -13,7 +13,7 @@ public interface QrcodeService {
      * @param cardRecordId 支付用户
      * @return 返回二维码地址
      */
-    String generatorQrcode(Long cardRecordId);
+    String generatorQrcode(Long cardRecordId,String type);
 
 
 

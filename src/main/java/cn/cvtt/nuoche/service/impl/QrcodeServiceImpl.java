@@ -53,11 +53,11 @@ public class QrcodeServiceImpl implements QrcodeService {
     }
 
     @Override
-    public String generatorQrcode(Long cardId) {
+    public String generatorQrcode(Long cardId,String type) {
         try {
             //根据senderOpenid查找record。
             GiftCardRecord qrcode =giftCardRecordRepository.findByIdEquals(cardId);
-            String qrcodeId = QRCodeUtil.encode(UUID.randomUUID().toString(), Constant.APP_SECRET,
+            String qrcodeId = QRCodeUtil.encode(UUID.randomUUID().toString(),type, Constant.APP_SECRET,
                     QRCODE_PATH.substring(QRCODE_PATH.indexOf(":") + 1), WX_QRCODE_URL, LOGO_PATH, "");
             qrcode.setQrcode(qrcodeId);
             qrcode.setQrcodeUrl(QRCODE_DOWNLOAD+qrcodeId+".jpg");

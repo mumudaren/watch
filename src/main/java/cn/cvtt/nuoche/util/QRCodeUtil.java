@@ -254,13 +254,13 @@ public class QRCodeUtil {
      * @return
      * @throws Exception
      */
-    public static String encode(String plaintext, String secret,
+    public static String encode(String plaintext,String type, String secret,
                               String destPath, String url, String logoPath, String pressText) throws Exception {
         Map<String, String> map = new HashMap<>();
         map.put("plaintext", plaintext);
         // 使用明文+秘钥生成唯一uuid
         String id = ApiSignUtils.signTopRequest(map, secret, "MD5");
-        BufferedImage image = QRCodeUtil.createImage(url + "?id=" + id, logoPath,
+        BufferedImage image = QRCodeUtil.createImage(url + "?id=" + id+"_"+type, logoPath,
                 true, pressText);
         mkdirs(destPath);
         String file = id + ".jpg";
