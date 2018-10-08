@@ -219,13 +219,17 @@ public class TestController extends  BaseController {
         model.addObject("senderUser",senderUser);
         GiftCoupon coupon=giftCouponRepository.findByIdEquals(couponId);
         model.addObject("coupon",coupon);
+        model.addObject("openid",receiverOpenid);
         model.setViewName("shareGift/share_number_info");
         return  model;
     }
 
-    //领取优惠券
-    @RequestMapping("/couponReceive")
-    public  ModelAndView  testReceive(@RequestParam(value = "coupon",defaultValue ="1" ) Long coupon, @RequestParam(value = "senderUser",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String senderUser,@RequestParam(value = "receiveUser",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String receiveUser){
+
+    //领取优惠券测试页面
+    @RequestMapping("/couponReceiveTest")
+    public ModelAndView testReceiveTest(@RequestParam(value = "coupon" ,defaultValue = "1") Long coupon,
+                                    @RequestParam(value = "senderUser",defaultValue="oIFn90393PZMsIt-kprqw0GWmVko") String senderUser,
+                                    @RequestParam(value = "receiveUser",defaultValue="oIFn90393PZMsIt-kprqw0GWmVko") String receiveUser){
 
         ModelAndView  model=new ModelAndView();
         //如未领取过同一用户发送的优惠券，优惠券领取表增加一条记录
@@ -269,7 +273,7 @@ public class TestController extends  BaseController {
                 userPointSearch.setPointTotal(oldUserPoint+couponItem.getPoint());
                 giftPointRepository.saveAndFlush(userPointSearch);
             }
-             //积分表修改sender的积分
+            //积分表修改sender的积分
             GiftPoint senderPointSearch=giftPointRepository.findByOpenidEquals(senderUser);
             if(senderPointSearch==null) {
                 //该sender从未得到过积分。
@@ -294,14 +298,55 @@ public class TestController extends  BaseController {
         }
         return  model;
     }
+
     //当日分享给好友或朋友圈后领取积分奖励
     @RequestMapping("/testReceivePoint")
-    public  ModelAndView  testReceivePoint(@RequestParam("coupon") Long coupon, @RequestParam("senderUser") String senderUser,@RequestParam("receiveUser") String receiveUser){
-        ModelAndView  model=new ModelAndView();
-        //如当天未分享过，则该用户增加一次积分。
+    public  void  testReceivePoint(@RequestParam(value = "couponId" ,defaultValue = "1") Long couponId,
+                                   @RequestParam(value = "openid" ,defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
+        //如当天未分享过，则该用户增加一次积分。（查询积分变更表中是否存在resource=2的当天的记录。）
+        Date today=new Date();
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(today);
+        // 将分钟、秒、毫秒域清零
+        cal1.set(Calendar.HOUR, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        Date todayReset = cal1.getTime();
+        cal1.setTime(DateUtils.addDay(today,"1"));
+        // 将分钟、秒、毫秒域清零
+        cal1.set(Calendar.HOUR, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        Date todayPlusReset = cal1.getTime();
+        logger.info("testReceivePoint date are:"+todayReset+","+todayPlusReset);
 
-        model.setViewName("gift/share_number_success");
-        return  model;
+        GiftPointRecord couponRecord=giftPointRecordRepository.findByResourceEqualsAndUpdateTimeGreaterThanEqualAndUpdateTimeLessThan(2,todayReset,todayPlusReset);
+        if(couponRecord==null) {
+            GiftCoupon couponItem = giftCouponRepository.findByIdEquals(couponId);
+            //积分变更表增加sender的记录
+            GiftPointRecord pointSenderRecord = new GiftPointRecord();
+            pointSenderRecord.setChangePoint(couponItem.getPoint());
+            pointSenderRecord.setOpenid(openid);
+            pointSenderRecord.setResource(2);
+            pointSenderRecord.setUpdateTime(new Date());
+            giftPointRecordRepository.saveAndFlush(pointSenderRecord);
+            //积分表修改sender的积分
+            GiftPoint senderPointSearch = giftPointRepository.findByOpenidEquals(openid);
+            if (senderPointSearch == null) {
+                //从未得到过积分。
+                GiftPoint senderPoint = new GiftPoint();
+                senderPoint.setOpenid(openid);
+                senderPoint.setPointTotal(couponItem.getPoint());
+                senderPoint.setPointUsed(0);
+                giftPointRepository.saveAndFlush(senderPoint);
+            } else {
+                int oldSenderPoint = senderPointSearch.getPointTotal();
+                senderPointSearch.setPointTotal(oldSenderPoint + couponItem.getPoint());
+                giftPointRepository.saveAndFlush(senderPointSearch);
+            }
+        }else{
+            logger.info("you have share before.");
+        }
     }
 
     //选择两种套餐赠送页面

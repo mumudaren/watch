@@ -107,6 +107,20 @@
                 success: function () {
                     // 用户点击了分享后执行的回调函数
                     //alert("回调");
+                    var data = {};
+                    data.couponId = couponId;
+                    data.openid = openid;
+                    $.ajax({
+                        url: "/receivePoint",
+                        type: "POST",
+                        data: data,
+                        async: true,
+                        cache: false,
+                        dataType: "json",
+                        success: function () {
+                            alert("成功分享。");
+                        }
+                    })
                 }
             });
             wx.onMenuShareTimeline({
@@ -117,6 +131,20 @@
                 success: function () {
                     // 用户点击了分享后执行的回调函数
                     //alert("回调");
+                    var data = {};
+                    data.couponId = couponId;
+                    data.openid = openid;
+                    $.ajax({
+                        url: "/receivePoint",
+                        type: "POST",
+                        data: data,
+                        async: true,
+                        cache: false,
+                        dataType: "json",
+                        success: function () {
+                            alert("成功分享。");
+                        }
+                    })
                 }
             });
         });

@@ -5,8 +5,7 @@ import cn.cvtt.nuoche.common.aop.LogManager;
 import cn.cvtt.nuoche.common.result.Result;
 import cn.cvtt.nuoche.common.result.ResultMsg;
 import cn.cvtt.nuoche.entity.business.*;
-import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
-import cn.cvtt.nuoche.entity.gift.GiftCouponQrcode;
+import cn.cvtt.nuoche.entity.gift.*;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
@@ -25,14 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static cn.cvtt.nuoche.util.WechatSignGenerator.jsapiSign;
 
@@ -63,6 +59,14 @@ public class businessController extends  BaseController{
     IGiftCardRecordRepository giftCardRecordRepository;
     @Autowired
     IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
+    @Autowired
+    IGiftCouponRecordRepository giftCouponRecordRepository;
+    @Autowired
+    IGiftPointRecordRepository giftPointRecordRepository;
+    @Autowired
+    IGiftPointRepository giftPointRepository;
+    @Autowired
+    IGiftCouponRepository giftCouponRepository;
     private static final Logger logger = LoggerFactory.getLogger(businessController.class);
 
 
@@ -400,6 +404,129 @@ public class businessController extends  BaseController{
             return  "redirect:"+"/oauth/gift/giftReturn?couponId="+couponId+"&senderId="+senderId;
         }else return null;
 
+    }
+    //领取优惠券
+    @RequestMapping("/couponReceive")
+    public ModelAndView testReceive(@RequestParam(value = "coupon" ) Long coupon,
+                                    @RequestParam(value = "senderUser") String senderUser,
+                                    @RequestParam(value = "receiveUser") String receiveUser){
+
+        ModelAndView  model=new ModelAndView();
+        //如未领取过同一用户发送的优惠券，优惠券领取表增加一条记录
+        GiftCouponRecord couponRecord=giftCouponRecordRepository.findGiftCouponRecordBySenderOpenidEqualsAndReceiverOpenidEquals(senderUser,receiveUser);
+        if(couponRecord==null){
+            //优惠券领取记录表增加receiver的记录
+            GiftCouponRecord couponRecordNew=new GiftCouponRecord();
+            couponRecordNew.setSenderOpenid(senderUser);
+            couponRecordNew.setReceiverOpenid(receiveUser);
+            couponRecordNew.setGetTime(new Date());
+            couponRecordNew.setCouponId(coupon);
+            giftCouponRecordRepository.saveAndFlush(couponRecordNew);
+            GiftCoupon couponItem=giftCouponRepository.findByIdEquals(coupon);
+            model.addObject("coupon",couponItem);
+            //积分变更表增加receiver的记录
+            GiftPointRecord pointRecord= new GiftPointRecord();
+            pointRecord.setChangePoint(couponItem.getPoint());
+            pointRecord.setOpenid(receiveUser);
+            pointRecord.setResource(1);
+            pointRecord.setUpdateTime(new Date());
+            giftPointRecordRepository.saveAndFlush(pointRecord);
+            //积分变更表增加sender的记录
+            GiftPointRecord pointSenderRecord= new GiftPointRecord();
+            pointSenderRecord.setChangePoint(couponItem.getPoint());
+            pointSenderRecord.setOpenid(senderUser);
+            pointSenderRecord.setResource(1);
+            pointSenderRecord.setUpdateTime(new Date());
+            giftPointRecordRepository.saveAndFlush(pointSenderRecord);
+            //积分表修改receiver的积分
+            GiftPoint userPointSearch=giftPointRepository.findByOpenidEquals(receiveUser);
+            if(userPointSearch==null) {
+                //从未得到过积分。
+                GiftPoint userPoint = new GiftPoint();
+                userPoint.setOpenid(receiveUser);
+                userPoint.setPointTotal(couponItem.getPoint());
+                userPoint.setPointUsed(0);
+                giftPointRepository.saveAndFlush(userPoint);
+            }else{
+                //曾有积分，则增加本次分享所得积分。
+                int oldUserPoint=userPointSearch.getPointTotal();
+                userPointSearch.setPointTotal(oldUserPoint+couponItem.getPoint());
+                giftPointRepository.saveAndFlush(userPointSearch);
+            }
+            //积分表修改sender的积分
+            GiftPoint senderPointSearch=giftPointRepository.findByOpenidEquals(senderUser);
+            if(senderPointSearch==null) {
+                //该sender从未得到过积分。
+                GiftPoint senderPoint = new GiftPoint();
+                senderPoint.setOpenid(senderUser);
+                senderPoint.setPointTotal(couponItem.getPoint());
+                senderPoint.setPointUsed(0);
+                giftPointRepository.saveAndFlush(senderPoint);
+            }else{
+                int oldSenderPoint=senderPointSearch.getPointTotal();
+                senderPointSearch.setPointTotal(oldSenderPoint+couponItem.getPoint());
+                giftPointRepository.saveAndFlush(senderPointSearch);
+            }
+            model.setViewName("shareGift/share_number_success");
+        }else{
+            logger.info("[couponReceive]you have received a coupon buy the same sender before.");
+            //领取过优惠券。
+            //优惠券领取记录表增加receiver的记录
+            GiftCoupon couponItem=giftCouponRepository.findByIdEquals(coupon);
+            model.addObject("coupon",couponItem);
+            model.setViewName("shareGift/share_number_success");
+        }
+        return  model;
+    }
+
+    //当日分享给好友或朋友圈后领取积分奖励
+    @RequestMapping("/receivePoint")
+    public  void  receivePoint(@RequestParam(value = "couponId") Long couponId,
+                                   @RequestParam(value = "openid") String openid){
+        //如当天未分享过，则该用户增加一次积分。（查询积分变更表中是否存在resource=2的当天的记录。）
+        Date today=new Date();
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(today);
+        // 将分钟、秒、毫秒域清零
+        cal1.set(Calendar.HOUR, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        Date todayReset = cal1.getTime();
+        cal1.setTime(DateUtils.addDay(today,"1"));
+        // 将分钟、秒、毫秒域清零
+        cal1.set(Calendar.HOUR, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        Date todayPlusReset = cal1.getTime();
+        logger.info("testReceivePoint date are:"+todayReset+","+todayPlusReset);
+
+        GiftPointRecord couponRecord=giftPointRecordRepository.findByResourceEqualsAndUpdateTimeGreaterThanEqualAndUpdateTimeLessThan(2,todayReset,todayPlusReset);
+        if(couponRecord==null) {
+            GiftCoupon couponItem = giftCouponRepository.findByIdEquals(couponId);
+            //积分变更表增加sender的记录
+            GiftPointRecord pointSenderRecord = new GiftPointRecord();
+            pointSenderRecord.setChangePoint(couponItem.getPoint());
+            pointSenderRecord.setOpenid(openid);
+            pointSenderRecord.setResource(2);
+            pointSenderRecord.setUpdateTime(new Date());
+            giftPointRecordRepository.saveAndFlush(pointSenderRecord);
+            //积分表修改sender的积分
+            GiftPoint senderPointSearch = giftPointRepository.findByOpenidEquals(openid);
+            if (senderPointSearch == null) {
+                //从未得到过积分。
+                GiftPoint senderPoint = new GiftPoint();
+                senderPoint.setOpenid(openid);
+                senderPoint.setPointTotal(couponItem.getPoint());
+                senderPoint.setPointUsed(0);
+                giftPointRepository.saveAndFlush(senderPoint);
+            } else {
+                int oldSenderPoint = senderPointSearch.getPointTotal();
+                senderPointSearch.setPointTotal(oldSenderPoint + couponItem.getPoint());
+                giftPointRepository.saveAndFlush(senderPointSearch);
+            }
+        }else{
+            logger.info("you have share before.");
+        }
     }
 
 
