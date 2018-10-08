@@ -455,9 +455,24 @@ public class OauthController extends  BaseController{
                 .replace("STATE", path);
         return "redirect:" + requestUrl;
     }
-
     /**
-     * gift需要基本授权的请求(需要验证是否存在手机号。)
+     * gift页面需要基本授权的请求
+     * @param path
+     * @return
+     */
+    @RequestMapping("/oauth/gift/{path}")
+    public String redirectGift(@PathVariable String path) {
+        logger.info("[redirectOther]util.getUrl"+util.getUrl());
+        String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
+        requestUrl = requestUrl.replace("APPID", Constant.APP_ID)
+                .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/other"))
+                .replace("SCOPE", "snsapi_base")
+                .replace("STATE", path);
+        logger.info("[redirectGift]requestUrl:::"+requestUrl);
+        return "redirect:" + requestUrl;
+    }
+    /**
+     * gift页面需要基本授权的请求(需要验证是否存在手机号。)
      * @param code
      * @param state
      * @return
@@ -483,9 +498,7 @@ public class OauthController extends  BaseController{
             modelAndView.addObject("openid",openId);
             return  modelAndView;
         }
-        Map<String, String> map = new HashMap<>();
-        map.put("openid", openId);
-        //分享代金券页面
+        /***==> 分享代金券页面*/
         if(StringUtils.equals(state,"giftShareNumber")){
             BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openId);
             modelAndView.addObject("user",userInfo);
@@ -515,28 +528,25 @@ public class OauthController extends  BaseController{
                 modelAndView.addObject("href",qrcodeHref);
             }
             modelAndView.setViewName("shareGift/share_number");
+        }else if(StringUtils.equals(StringUtils.substringBefore(state,"?"),"giftReturn")){
+            /***==> 转发朋友圈后点击（扫描优惠券二维码)跳转的页面*/
+           Long couponId=Long.parseLong(StringUtils.substringBetween(state,"couponId=","&senderId="));
+           String senderId=StringUtils.substringAfter(state,"senderId=");
+           String receiverOpenid=openId;
+            BusinessCustomer receiveUser= businessCusRepository.findByOpenidEquals(receiverOpenid);
+            modelAndView.addObject("receiveUser",receiveUser);
+            BusinessCustomer senderUser= businessCusRepository.findByOpenidEquals(senderId);
+            modelAndView.addObject("senderUser",senderUser);
+            GiftCoupon coupon=giftCouponRepository.findByIdEquals(couponId);
+            modelAndView.addObject("coupon",coupon);
+            modelAndView.setViewName("shareGift/share_number_info");
         }
 
         return modelAndView;
     }
 
 
-    /**
-     * gift需要基本授权的请求
-     * @param path
-     * @return
-     */
-    @RequestMapping("/oauth/gift/{path}")
-    public String redirectGift(@PathVariable String path) {
-        logger.info("[redirectOther]util.getUrl"+util.getUrl());
-        String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
-        requestUrl = requestUrl.replace("APPID", Constant.APP_ID)
-                .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/other"))
-                .replace("SCOPE", "snsapi_base")
-                .replace("STATE", path);
-        logger.info("[redirectGift]requestUrl:::"+requestUrl);
-        return "redirect:" + requestUrl;
-    }
+
 
 
 

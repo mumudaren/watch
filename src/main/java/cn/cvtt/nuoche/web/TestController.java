@@ -591,9 +591,9 @@ public class TestController extends  BaseController {
         }
         return model;
     }
-    //扫二维码领取号码卡、套餐卡接口、通过qrcodeId查找号码卡的id。
-    @RequestMapping("/sweep")
-    public String  toCallReceivePage(String id){
+    //gift模块扫二维码领取号码卡、套餐卡接口、通过qrcodeId查找号码卡的id。
+    @RequestMapping("/testSweep")
+    public String  toTestCallReceivePage(String id){
         logger.info("[sweep]"+id);
         String type=StringUtils.substringAfter(id,"_");
         String realId=StringUtils.substringBefore(id,"_");

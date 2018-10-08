@@ -5,14 +5,13 @@ import cn.cvtt.nuoche.common.aop.LogManager;
 import cn.cvtt.nuoche.common.result.Result;
 import cn.cvtt.nuoche.common.result.ResultMsg;
 import cn.cvtt.nuoche.entity.business.*;
+import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
+import cn.cvtt.nuoche.entity.gift.GiftCouponQrcode;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.ISystemParamInterface;
-import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
-import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
-import cn.cvtt.nuoche.reponsitory.IBusinessPayRepository;
-import cn.cvtt.nuoche.reponsitory.ISystemFeedBack;
+import cn.cvtt.nuoche.reponsitory.*;
 import cn.cvtt.nuoche.util.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -60,6 +59,10 @@ public class businessController extends  BaseController{
     INumberInterface   numberInterface;
     @Autowired
     IBusinessNumberRecordRepository recordRepository;
+    @Autowired
+    IGiftCardRecordRepository giftCardRecordRepository;
+    @Autowired
+    IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
     private static final Logger logger = LoggerFactory.getLogger(businessController.class);
 
 
@@ -380,6 +383,24 @@ public class businessController extends  BaseController{
     }
 
 
+    //gift模块扫二维码领取号码卡、套餐卡接口、通过qrcodeId查找号码卡的id。
+    @RequestMapping("/sweep")
+    public String  toCallReceivePage(String id){
+        logger.info("[sweep]"+id);
+        String type=StringUtils.substringAfter(id,"_");
+        String realId=StringUtils.substringBefore(id,"_");
+        if(StringUtils.equals(type,"card") ){
+            GiftCardRecord giftCardRecord = giftCardRecordRepository.findByQrcodeEquals(realId);
+            Long cardRecordId=giftCardRecord.getId();
+            return  "redirect:"+"qrcode?cardRecordId="+cardRecordId;
+        }else if(StringUtils.equals(type,"coupon")){
+            GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
+            Long couponId=giftCouponRecord.getCouponId();
+            String senderId=giftCouponRecord.getCreatorOpenid();
+            return  "redirect:"+"/oauth/gift/giftReturn?couponId="+couponId+"&senderId="+senderId;
+        }else return null;
+
+    }
 
 
     public static void main(String[] args) {
