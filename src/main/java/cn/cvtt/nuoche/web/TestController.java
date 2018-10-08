@@ -169,7 +169,7 @@ public class TestController extends  BaseController {
         model.setViewName("suggest");
         return  model;
     }
-    //每日积分菜单接口，share_number
+    //每日积分菜单接口，giftShareNumber
     @RequestMapping("/testWongPage")
     public  ModelAndView  testWong(){
         ModelAndView  model=new ModelAndView();
@@ -205,6 +205,7 @@ public class TestController extends  BaseController {
         model.setViewName("shareGift/share_number");
         return  model;
     }
+
     //转发朋友圈后跳转页面
     @RequestMapping("/testReturn")
     public  ModelAndView  testReturn(@RequestParam(value ="couponId",defaultValue ="1") Long couponId, @RequestParam(value ="senderId",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String senderId){
