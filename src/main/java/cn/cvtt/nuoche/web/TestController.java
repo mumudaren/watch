@@ -654,6 +654,7 @@ public class TestController extends  BaseController {
             model.setViewName("shareGift/recive_card");
            // model.setViewName("shareGift/card_qrcode");
         }else{
+
             //加载分享页面所需要的数据。
             model.addObject("card",giftCard);
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
