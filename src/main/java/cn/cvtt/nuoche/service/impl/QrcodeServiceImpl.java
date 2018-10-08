@@ -2,10 +2,15 @@ package cn.cvtt.nuoche.service.impl;
 
 import cn.cvtt.nuoche.common.Constant;
 import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
+import cn.cvtt.nuoche.entity.gift.GiftCouponQrcode;
+import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
 import cn.cvtt.nuoche.reponsitory.IGiftCardRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponQrcodeRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponRecordRepository;
 import cn.cvtt.nuoche.service.QrcodeService;
 
 import cn.cvtt.nuoche.util.QRCodeUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,11 +41,15 @@ public class QrcodeServiceImpl implements QrcodeService {
     @Autowired
     IGiftCardRecordRepository giftCardRecordRepository;
 
+    @Autowired
+    IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
+
 
     @Override
     public void save(GiftCardRecord q) {
         qrcodeDao.save(q);
     }
+
 
     @Override
     public void update(GiftCardRecord q) {
@@ -55,14 +64,24 @@ public class QrcodeServiceImpl implements QrcodeService {
     @Override
     public String generatorQrcode(Long cardId,String type) {
         try {
-            //根据senderOpenid查找record。
-            GiftCardRecord qrcode =giftCardRecordRepository.findByIdEquals(cardId);
-            String qrcodeId = QRCodeUtil.encode(UUID.randomUUID().toString(),type, Constant.APP_SECRET,
-                    QRCODE_PATH.substring(QRCODE_PATH.indexOf(":") + 1), WX_QRCODE_URL, LOGO_PATH, "");
-            qrcode.setQrcode(qrcodeId);
-            qrcode.setQrcodeUrl(QRCODE_DOWNLOAD+qrcodeId+".jpg");
-            // 存入数据库
-            save(qrcode);
+            String qrcodeId =null;
+            if(StringUtils.equals(type,"card")) {
+                //根据senderOpenid查找record。
+                GiftCardRecord qrcode = giftCardRecordRepository.findByIdEquals(cardId);
+                qrcodeId=QRCodeUtil.encode(UUID.randomUUID().toString(), type, Constant.APP_SECRET,
+                        QRCODE_PATH.substring(QRCODE_PATH.indexOf(":") + 1), WX_QRCODE_URL, LOGO_PATH, "");
+                qrcode.setQrcode(qrcodeId);
+                qrcode.setQrcodeUrl(QRCODE_DOWNLOAD + qrcodeId + ".jpg");
+                // 存入数据库
+                save(qrcode);
+            }else{
+                GiftCouponQrcode qrcode = giftCouponQrcodeRepository.findByIdEquals(cardId);
+                qrcodeId = QRCodeUtil.encode(UUID.randomUUID().toString(), type, Constant.APP_SECRET,
+                        QRCODE_PATH.substring(QRCODE_PATH.indexOf(":") + 1), WX_QRCODE_URL, LOGO_PATH, "");
+                qrcode.setQrcode(qrcodeId);
+                qrcode.setQrcodeUrl(QRCODE_DOWNLOAD + qrcodeId + ".jpg");
+                giftCouponQrcodeRepository.saveAndFlush(qrcode);
+            }
             // 返回二维码下载地址
             return QRCODE_DOWNLOAD + qrcodeId + ".jpg";
         } catch (Exception e) {

@@ -67,6 +67,8 @@ public class TestController extends  BaseController {
     IGiftCardRepository giftCardRepository;
     @Autowired
     IGiftCardRecordRepository giftCardRecordRepository;
+    @Autowired
+    IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
     @Resource
     private QrcodeService qrcodeService;
     @Value("${wx.qrcode.download}")
@@ -185,7 +187,21 @@ public class TestController extends  BaseController {
         }else{
             model.addObject("coupon",coupon);
         }
-
+        //生成二维码
+        GiftCouponQrcode giftCouponQrcode=giftCouponQrcodeRepository.findByCouponIdEquals(coupon.getId());
+        if(giftCouponQrcode==null){
+            logger.info("[create qrcode]"+"create qrcode");
+            GiftCouponQrcode giftCouponQrcodeNew=new GiftCouponQrcode();
+            giftCouponQrcodeNew.setCouponId(coupon.getId());
+            giftCouponQrcodeNew.setCreateTime(new Date());
+            giftCouponQrcodeNew.setCreatorOpenid(openid);
+            GiftCouponQrcode giftCouponQrcodeFinal=giftCouponQrcodeRepository.saveAndFlush(giftCouponQrcodeNew) ;
+            String qrcodeHref = qrcodeService.generatorQrcode(giftCouponQrcodeFinal.getId(),"coupon");
+            model.addObject("href",qrcodeHref);
+        }else{
+            String qrcodeHref =giftCouponQrcode.getQrcodeUrl();
+            model.addObject("href",qrcodeHref);
+        }
         model.setViewName("shareGift/share_number");
         return  model;
     }
@@ -207,7 +223,7 @@ public class TestController extends  BaseController {
     }
 
     //领取优惠券
-    @RequestMapping("/testReceive")
+    @RequestMapping("/couponReceive")
     public  ModelAndView  testReceive(@RequestParam(value = "coupon",defaultValue ="1" ) Long coupon, @RequestParam(value = "senderUser",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String senderUser,@RequestParam(value = "receiveUser",defaultValue ="oIFn90393PZMsIt-kprqw0GWmVko") String receiveUser){
 
         ModelAndView  model=new ModelAndView();
@@ -266,9 +282,9 @@ public class TestController extends  BaseController {
                 senderPointSearch.setPointTotal(oldSenderPoint+couponItem.getPoint());
                 giftPointRepository.saveAndFlush(senderPointSearch);
             }
-            model.setViewName("gift/share_number_success");
+            model.setViewName("shareGift/share_number_success");
         }else{
-            logger.info("[testReceive]you have received a coupon buy the same sender before.");
+            logger.info("[couponReceive]you have received a coupon buy the same sender before.");
             //领取过优惠券。
             //优惠券领取记录表增加receiver的记录
             GiftCoupon couponItem=giftCouponRepository.findByIdEquals(coupon);
@@ -578,9 +594,19 @@ public class TestController extends  BaseController {
     @RequestMapping("/sweep")
     public String  toCallReceivePage(String id){
         logger.info("[sweep]"+id);
-        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByQrcodeEquals(id);
-        Long cardRecordId=giftCardRecord.getId();
-        return  "redirect:"+"qrcode?cardRecordId="+cardRecordId;
+        String type=StringUtils.substringAfter(id,"_");
+        String realId=StringUtils.substringBefore(id,"_");
+        if(StringUtils.equals(type,"card") ){
+            GiftCardRecord giftCardRecord = giftCardRecordRepository.findByQrcodeEquals(realId);
+            Long cardRecordId=giftCardRecord.getId();
+            return  "redirect:"+"qrcode?cardRecordId="+cardRecordId;
+        }else if(StringUtils.equals(type,"coupon")){
+            GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
+            Long couponId=giftCouponRecord.getCouponId();
+            String senderId=giftCouponRecord.getCreatorOpenid();
+            return  "redirect:"+"testReturn?couponId="+couponId+"&senderId="+senderId;
+        }else return null;
+
     }
     //领取号码卡、套餐卡成功的页面
     @RequestMapping("/receiveCardSuccess")
