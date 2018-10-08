@@ -47,5 +47,13 @@
                <span>长按图片保存到相册</span>
             </div>        
       </div>     
-    </body>     
+    </body>
+    <script th:inline="javascript">
+        var openid='oIFn90393PZMsIt-kprqw0GWmVko';
+        var sender=[[${senderUser.openid}]];
+        var coupon=[[${coupon.id}]];
+        $(".z_sharenumber").click(function(){
+            window.location.href="/couponReceive?coupon="+coupon+"&senderUser="+sender+"&receiveUser="+openid;
+        })
+        </script>
 </html>
