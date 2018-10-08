@@ -517,12 +517,13 @@ public class TestController extends  BaseController {
     }
     //选中号码卡,加载号码卡套餐等数据。
     @RequestMapping("/testChooseNumberRegex")
-    public  ModelAndView  testChooseNumberRegex(){
+    public  ModelAndView  testChooseNumberRegex(@RequestParam("openid") String openid){
         ModelAndView  model=new ModelAndView();
         //String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
         String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
         List<Map<String,String>> map=JsonUtils.handlerNormalJson(json,"id","regexName");
         model.addObject("regexs",map);
+        model.addObject("openid",openid);
         logger.info("[testChooseNumberRegex]map is:"+map.toString());
         //加载user
         model.setViewName("shareGift/number_choice");

@@ -27,7 +27,7 @@
                 <div class="f_gift_content f_cardnumber_95number"  th:if="${isHideOldDiv ==false}" >
                     <p class="z_cardnumber_text">
                         <span class="z_numbercard">挑选95号码</span>
-                        <span class="z_givefriend" style="color:#0ab8a9"  ><a href="/testChooseNumberRegex" >点击这里挑选靓号，送朋友</a></span>
+                        <span class="z_givefriend" style="color:#0ab8a9"  ><a>点击这里挑选靓号，送朋友</a></span>
                     </p>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                                <em><i class="oldPrice" style="font-style:normal;" th:text="${mapNumber.numberPrice}/100">299</i>元／年</em>
                                &nbsp;<b>有效期一年</b>
                            </span>
-                           <span class="z_giftshow_select" ><a href="/testChooseNumberRegex" >重新选择</a></span>
+                           <span class="z_giftshow_select" ><a >重新选择</a></span>
                   </div>
               </div>
           </div>
@@ -101,6 +101,15 @@
                   var oldPrice = $(".oldPrice").text();
                   $(".z_write_moeny").find("b").text(oldPrice);
               });
+              //送朋友
+              $(".z_givefriend").click(function(){
+                  window.location.href="/testChooseNumberRegex?openid="+openid
+              });
+              //送朋友重新选择
+              $(".z_giftshow_select").click(function(){
+                  window.location.href="/testChooseNumberRegex?openid="+openid
+              });
+
           //点击现金券弹窗js
           $(".wirte_casher").click(function(){
               $(".f_cashshow").show();

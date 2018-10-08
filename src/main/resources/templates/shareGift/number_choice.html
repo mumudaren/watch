@@ -60,6 +60,7 @@
 
       <script type="text/javascript">
         $(function(){
+            var openid = [[${openid}]];
             /** 加载默认套餐号码**/
             var initRegex=$(".f_selectnumber_toplist ul li:eq(0)");
             initRegex.addClass("current");
@@ -72,7 +73,7 @@
             //点击选好了
             $(document).on('click', '.numberClick', function() {
                 var chooseNumber =$(this).parent().parent().find(".z_numberlists_number").text();
-                window.location.href="/testNumberRegex?chooseNumber="+chooseNumber+"&isHideOldDiv=true";
+                window.location.href="/testNumberRegex?chooseNumber="+chooseNumber+"&isHideOldDiv=true"+"&openid="+openid;
             });
         });
         //tab change
@@ -138,12 +139,6 @@
             }
 
 
-        //点击选这个号按钮
-        // $(".numberClick").click(function(){
-        //     console.log("choose number");
-        //     // var chooseNumber =$(this).parent("li").find(".z_numberlists_number").text();
-        //     // console.log("choose number :"+chooseNumber);
-        // });
 
       </script>      
     </body>     
