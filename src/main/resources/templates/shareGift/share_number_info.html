@@ -49,7 +49,7 @@
       </div>     
     </body>
     <script th:inline="javascript">
-        var openid='oIFn90393PZMsIt-kprqw0GWmVko';
+        var openid=[[${openid}]];
         var sender=[[${senderUser.openid}]];
         var coupon=[[${coupon.id}]];
         $(".z_sharenumber").click(function(){

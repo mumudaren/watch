@@ -539,6 +539,7 @@ public class OauthController extends  BaseController{
             modelAndView.addObject("senderUser",senderUser);
             GiftCoupon coupon=giftCouponRepository.findByIdEquals(couponId);
             modelAndView.addObject("coupon",coupon);
+            modelAndView.addObject("openid",openId);
             modelAndView.setViewName("shareGift/share_number_info");
         }
 
