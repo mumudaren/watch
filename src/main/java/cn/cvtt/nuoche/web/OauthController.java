@@ -7,16 +7,17 @@ import cn.cvtt.nuoche.entity.WeixinOauth2Token;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.wx_product;
+import cn.cvtt.nuoche.entity.gift.GiftCard;
+import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
 import cn.cvtt.nuoche.entity.gift.GiftCoupon;
 import cn.cvtt.nuoche.entity.gift.GiftCouponQrcode;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
-import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
-import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
-import cn.cvtt.nuoche.reponsitory.IGiftCouponQrcodeRepository;
-import cn.cvtt.nuoche.reponsitory.IGiftCouponRepository;
+import cn.cvtt.nuoche.reponsitory.*;
 import cn.cvtt.nuoche.service.QrcodeService;
 import cn.cvtt.nuoche.util.*;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +30,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @decription OauthController
@@ -57,6 +56,10 @@ public class OauthController extends  BaseController{
     IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
     @Autowired
     IGiftCouponRepository giftCouponRepository;
+    @Autowired
+    IGiftCardRepository giftCardRepository;
+    @Autowired
+    IGiftCardRecordRepository giftCardRecordRepository;
     @Resource
     private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(OauthController.class);
@@ -541,6 +544,151 @@ public class OauthController extends  BaseController{
             modelAndView.addObject("coupon",coupon);
             modelAndView.addObject("openid",openId);
             modelAndView.setViewName("shareGift/share_number_info");
+        }else if(StringUtils.equals(state,"history")){
+            /***==> 套餐卡等历史记录*/
+            //根据openId查询记录
+            //自己未领取
+            List<GiftCardRecord> giftCardRecordList =giftCardRecordRepository.findByGetStatusEqualsAndSenderOpenidEqualsOrderByGetTimeDesc(0,openId);
+            logger.info("[giftRecord]GiftCardRecord size is:"+giftCardRecordList.size());
+            List<Map<String,Object>> RegexCard=new ArrayList<>();
+            List<Map<String,Object>> NumberCard=new ArrayList<>();
+            if(giftCardRecordList.size()>0){
+                for(GiftCardRecord giftCardRecord :giftCardRecordList)
+                {
+                    Long cardId=giftCardRecord.getCardId();
+                    GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
+                    if(giftCard.getCardType()==2){
+                        //号码卡
+                        Map<String,Object>map2=new HashedMap();
+                        map2.put("cardName",giftCard.getNumber());
+                        map2.put("cardMessage",giftCardRecord.getMessage());
+                        map2.put("price",giftCard.getPrice());
+                        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                        map2.put("buyTime",buyTime);
+                        NumberCard.add(map2);
+                    }else if(giftCard.getCardType()==1){
+                        //套餐卡
+                        Map<String,Object>map1=new HashedMap();
+                        map1.put("cardName",giftCard.getCardName());
+                        map1.put("cardMessage",giftCardRecord.getMessage());
+                        map1.put("price",giftCard.getPrice());
+                        //可购买的套餐名称
+                        JSONObject eachGiftArray= JSONObject.parseObject(giftCard.getRegexId());
+                        //遍历套餐，获取套餐名字
+                        String regexName="";
+                        for(String str:eachGiftArray.keySet()){
+                            regexName=regexName+str+",";
+                        }
+                        String finalRegexName=regexName.substring(0,regexName.length()-1);
+                        logger.info("[my_gift_give]finalRegexName is:"+finalRegexName);
+                        map1.put("finalRegexName",finalRegexName);
+                        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                        map1.put("buyTime",buyTime);
+                        RegexCard.add(map1);
+                    }
+                    modelAndView.addObject("myGiftRegexCardRecordList",RegexCard);
+                    modelAndView.addObject("myGiftNumberCardRecordList",NumberCard);
+                }
+            }
+            //自己已领取
+            List<GiftCardRecord> giftCardRecordList2 =giftCardRecordRepository.findByGetStatusEqualsAndSenderOpenidEqualsOrderByGetTimeDesc(1,openId);
+            List<Map<String,Object>> cardHave=new ArrayList<>();
+            if(giftCardRecordList2.size()>0) {
+                for(GiftCardRecord giftCardRecord :giftCardRecordList2)
+                {
+                    logger.info("receiver openid:"+giftCardRecord.getReceiverOpenid());
+                    BusinessCustomer receiver= businessCusRepository.findByOpenidEquals(giftCardRecord.getReceiverOpenid());
+                    Long cardId=giftCardRecord.getCardId();
+                    GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
+                    if(giftCard.getCardType()==2){
+                        //号码卡
+                        Map<String,Object>haveMap1=new HashedMap();
+                        haveMap1.put("cardName",giftCard.getNumber());
+                        haveMap1.put("cardMessage",giftCardRecord.getMessage());
+                        haveMap1.put("price",giftCard.getPrice());
+                        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                        haveMap1.put("buyTime",buyTime);
+                        SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                        String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
+                        haveMap1.put("getTime",getTime);
+                        haveMap1.put("receiverImg",receiver.getHeadimgurl());
+                        haveMap1.put("receiverNickname",receiver.getNickname());
+                        cardHave.add(haveMap1);
+                    }else if(giftCard.getCardType()==1){
+                        //套餐卡
+                        Map<String,Object>haveMap2=new HashedMap();
+                        haveMap2.put("cardName",giftCard.getCardName());
+                        haveMap2.put("cardMessage",giftCardRecord.getMessage());
+                        haveMap2.put("price",giftCard.getPrice());
+                        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                        haveMap2.put("buyTime",buyTime);
+                        SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                        String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
+                        haveMap2.put("getTime",getTime);
+                        logger.info("receiver size is:"+receiver.toString());
+                        haveMap2.put("receiverNickname",receiver.getNickname());
+                        haveMap2.put("receiverImg",receiver.getHeadimgurl());
+                        cardHave.add(haveMap2);
+                    }
+                    modelAndView.addObject("cardHave",cardHave);
+                }
+            }
+            //他人
+            List<GiftCardRecord> giftCardOtherRecordList =giftCardRecordRepository.findByGetStatusEqualsAndReceiverOpenidEqualsOrderByGetTimeDesc(1,openId);
+            List<Map<String,Object>> cardReceive=new ArrayList<>();
+            if(giftCardOtherRecordList.size()>0) {
+                for(GiftCardRecord giftCardRecord :giftCardOtherRecordList)
+                {
+                    logger.info("receiver openid:"+giftCardRecord.getReceiverOpenid());
+                    BusinessCustomer sender= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+                    Long cardId=giftCardRecord.getCardId();
+                    GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
+                    if(giftCard.getCardType()==0){
+                        //号码卡
+                        Map<String,Object>receiveMap1=new HashedMap();
+                        receiveMap1.put("cardName",giftCard.getNumber());
+                        receiveMap1.put("cardNumber",giftCard.getNumber());
+                        receiveMap1.put("cardMessage",giftCardRecord.getMessage());
+                        receiveMap1.put("price",giftCard.getPrice());
+                        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        try{
+                            String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                            receiveMap1.put("buyTime",buyTime);
+                        }catch(Exception e){}
+                        SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                        String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
+                        receiveMap1.put("getTime",getTime);
+                        receiveMap1.put("receiverImg",sender.getHeadimgurl());
+                        receiveMap1.put("receiverNickname",sender.getNickname());
+                        cardReceive.add(receiveMap1);
+                    }else if(giftCard.getCardType()==1){
+                        //套餐卡
+                        Map<String,Object>receiveMap2=new HashedMap();
+                        receiveMap2.put("cardName",giftCard.getCardName());
+                        receiveMap2.put("cardNumber",giftCard.getNumber());
+                        receiveMap2.put("cardMessage",giftCardRecord.getMessage());
+                        receiveMap2.put("price",giftCard.getPrice());
+                        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        try{
+                            String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
+                            receiveMap2.put("buyTime",buyTime);
+                        }catch(Exception e){}
+                        SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                        String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
+                        receiveMap2.put("getTime",getTime);
+                        logger.info("receiver size is:"+sender.toString());
+                        receiveMap2.put("receiverNickname",sender.getNickname());
+                        receiveMap2.put("receiverImg",sender.getHeadimgurl());
+                        cardReceive.add(receiveMap2);
+                    }
+                    modelAndView.addObject("cardReceive",cardReceive);
+                }
+            }
+            modelAndView.setViewName("shareGift/my_gift_give");
         }
 
         return modelAndView;
