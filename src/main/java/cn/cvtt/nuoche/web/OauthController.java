@@ -689,6 +689,9 @@ public class OauthController extends  BaseController{
                 }
             }
             modelAndView.setViewName("shareGift/my_gift_give");
+        }else if(StringUtils.equals(state,"giftCard")){
+            modelAndView.addObject("openid",openId);
+            modelAndView.setViewName("shareGift/gift");
         }
 
         return modelAndView;

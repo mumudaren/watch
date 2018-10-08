@@ -353,14 +353,16 @@ public class TestController extends  BaseController {
     @RequestMapping("/testCard")
     public  ModelAndView  testReceivePoint(){
         ModelAndView  model=new ModelAndView();
+        model.addObject("openid","oIFn90393PZMsIt-kprqw0GWmVko");
         model.setViewName("shareGift/gift");
         return  model;
     }
     //套餐卡页面
     @RequestMapping("/testRegexGift")
-    public  ModelAndView  testRegexGiftMethod(@RequestParam(value ="isHideOldDiv",defaultValue ="false") boolean isHideOldDiv,@RequestParam(value ="cardId",defaultValue ="noId") String cardId){
+    public  ModelAndView  testRegexGiftMethod(@RequestParam(value ="isHideOldDiv",defaultValue ="false") boolean isHideOldDiv,
+                                              @RequestParam(value ="cardId",defaultValue ="noId") String cardId,
+                                              @RequestParam(value ="openid") String openid){
         ModelAndView  model=new ModelAndView();
-        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
         logger.info("[testRegexGift]isHideOldDiv is:"+isHideOldDiv);
         if(!StringUtils.equals(cardId,"noId")){
           long cardIdSearch=Long.parseLong(cardId);
@@ -410,7 +412,7 @@ public class TestController extends  BaseController {
     }
     //送套餐卡选套餐
     @RequestMapping("/testChooseRegex")
-    public  ModelAndView  testChooseRegex(){
+    public  ModelAndView  testChooseRegex(@RequestParam(value ="openid") String openid){
         ModelAndView  model=new ModelAndView();
 //送套餐卡的规则数据
 //        JSONObject obj=new JSONObject();
@@ -456,23 +458,27 @@ public class TestController extends  BaseController {
         }
         //遍历套餐id,查询套餐名字。
         model.addObject("giftCardList",giftCardList);
+        model.addObject("openid",openid);
         model.setViewName("shareGift/card_choice");
         return  model;
     }
 
     //选中套餐卡
     @RequestMapping("/testChooseCard")
-    public  String  testChooseCard(@RequestParam("cardId") String cardId){
+    public  String  testChooseCard(@RequestParam("cardId") String cardId,
+                                   @RequestParam("openid") String openid){
         if(cardId!=null){
             logger.info("[testChooseCard]testChooseCard is:"+cardId);
         }
         boolean isHideOldDiv=true;
-        return  "redirect:"+"testRegexGift?isHideOldDiv="+isHideOldDiv+"&cardId="+cardId;
+        return  "redirect:"+"testRegexGift?isHideOldDiv="+isHideOldDiv+"&cardId="+cardId+"&openid="+openid;
     }
 
     //分享套餐卡页面
     @RequestMapping("/card_give.html")
-    public  ModelAndView  cardGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,@RequestParam(value ="cardId") String cardId,@RequestParam(value ="message",defaultValue ="") String message){
+    public  ModelAndView  cardGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
+                                   @RequestParam(value ="cardId") String cardId,
+                                   @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
         //支付成功后将套餐卡信息保存数据库中
         GiftCardRecord giftCardRecord=new GiftCardRecord();
@@ -526,9 +532,10 @@ public class TestController extends  BaseController {
     //赠送号码卡、留言、选优惠券等。
     @RequestMapping("/testNumberRegex")
     public  ModelAndView  testNumberGiftMethod(@RequestParam(value ="isHideOldDiv",defaultValue ="false") boolean isHideOldDiv,
-                                              @RequestParam(value ="chooseNumber",defaultValue ="0") String chooseNumber) {
+                                              @RequestParam(value ="chooseNumber",defaultValue ="0") String chooseNumber,
+                                               @RequestParam(value ="openid") String openid) {
         ModelAndView  model=new ModelAndView();
-        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
+         //openid="oIFn90393PZMsIt-kprqw0GWmVko";
         //查找该用户所有的优惠券。
         List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEquals(openid);
         for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
@@ -558,7 +565,9 @@ public class TestController extends  BaseController {
 
     //分享号码卡页面
     @RequestMapping("/number_give.html")
-    public  ModelAndView  numberGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,@RequestParam(value ="number") String number,@RequestParam(value ="message",defaultValue ="") String message){
+    public  ModelAndView  numberGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
+                                     @RequestParam(value ="number") String number,
+                                     @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
         //生成号码卡规则数据
         GiftCard giftCard=new GiftCard();

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
         <meta name="Description" content="买靓号送朋友" />
@@ -10,7 +10,8 @@
         <meta content="telephone=no" name="format-detection">
         <link rel="stylesheet" type="text/css" href="css/gift.css" />
         <script type="text/javascript" src="js/flexible.js"></script>
-        <script type="text/javascript" src="js/flexible_css.js"></script>   
+        <script type="text/javascript" src="js/flexible_css.js"></script>
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
        
     </head>
     <body>  
@@ -22,18 +23,31 @@
                 <img src="images/giftImage/gift_03.jpg">
                 <img src="images/giftImage/gift_04.jpg">
             </div>
-            <div class="f_gift_content"  onclick="window.location.href='/testRegexGift'">
+            <div class="f_gift_content regexCard" >
                 <p class="z_gift_text">
                     <span>送朋友号码卡，号码朋友自己选择</span>
                     <span>把号码卡分享给朋友，朋友选择心意的号码即可使用</span>
                 </p>               
             </div>
-            <div class="f_gift_content f_gift_number"   onclick="window.location.href='/testNumberRegex'">
+            <div class="f_gift_content f_gift_number">
                     <p class="z_gift_text">
                         <span>特定95号，送朋友</span>
                         <span>生日号、连号、豹子号，各种靓号等你来选 </span>
                     </p>               
             </div>
       </div>
-    </body>     
+    </body>
+       <script th:inline="javascript">
+           $(function(){
+                 var openid=[[${openid}]];
+                 $(".regexCard").click(function(){
+                     console.log("regexCard");
+                     window.location.href='/testRegexGift?openid='+openid
+                 });
+                 $(".f_gift_number").click(function(){
+                     console.log("f_gift_number");
+                     window.location.href='/testNumberRegex?openid='+openid
+                 })
+           })
+        </script>
 </html>

@@ -36,64 +36,14 @@
                             </div>
                         </div>
                     </li>
-                    <!--<li class="z_choice_two">-->
-                        <!--<div class="z_choiceone_content">-->
-                            <!--<div class="z_choiceone_top">-->
-                                <!--<span class="z_choiceone_title z_choicetwo_title"><i>大吉大利卡2</i><br><em>可选择生日号、三连号</em></span>-->
-                                <!--<span class="z_choiceone_img z_choicetwo_price">-->
-                                    <!--&lt;!&ndash; <img src="images/cardimg_06.png"> &ndash;&gt;-->
-                                    <!--￥<i>399</i>-->
-                                <!--</span>-->
-                            <!--</div>-->
-                            <!--<div class="z_choiceone_bottom">-->
-                                <!--<span class="z_choiceone_requiretime">号码有效期：一年</span>-->
-                                <!--<span class="z_choiceone_activedcard">-->
-                                     <!--<a href="javascript:void(0);">选这个卡</a>-->
-                                <!--</span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</li>-->
-                    <!--<li class="z_choice_three">-->
-                        <!--<div class="z_choiceone_content">-->
-                            <!--<div class="z_choiceone_top">-->
-                                <!--<span class="z_choiceone_title z_choicethree_title"><i>大吉大利卡3</i><br><em>可选择生日号、三连号</em></span>-->
-                                <!--<span class="z_choiceone_img z_choicethree_price">-->
-                                    <!--&lt;!&ndash; <img src="images/cardimg_08.png"> &ndash;&gt;-->
-                                    <!--￥<i>499</i>-->
-                                <!--</span>-->
-                            <!--</div>-->
-                            <!--<div class="z_choiceone_bottom">-->
-                                <!--<span class="z_choiceone_requiretime">号码有效期：一年</span>-->
-                                <!--<span class="z_choiceone_activedcard">-->
-                                        <!--<a href="javascript:void(0);">选这个卡</a>-->
-                                <!--</span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</li>-->
-                    <!--<li class="z_choice_four">-->
-                        <!--<div class="z_choiceone_content">-->
-                            <!--<div class="z_choiceone_top">-->
-                                <!--<span class="z_choiceone_title z_choicefour_title"><i>大吉大利卡4</i><br><em>可选择生日号、三连号</em></span>-->
-                                <!--<span class="z_choiceone_img z_choicefour_price">-->
-                                    <!--&lt;!&ndash; <img src="images/cardimg_10.png"> &ndash;&gt;-->
-                                    <!--￥<i>599</i>-->
-                                <!--</span>-->
-                            <!--</div>-->
-                            <!--<div class="z_choiceone_bottom">-->
-                                <!--<span class="z_choiceone_requiretime">号码有效期：一年</span>-->
-                                <!--<span class="z_choiceone_activedcard">-->
-                                        <!--<a href="javascript:void(0);">选这个卡</a>-->
-                                <!--</span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</li>-->
                 </ul>
          </div>
       </div>
       <script th:inline="javascript">
+          var openid=[[${openid}]];
           function toCardPage (id) {
               console.log("toCardPage");
-              window.location.href="/testChooseCard?cardId="+id;
+              window.location.href="/testChooseCard?cardId="+id+"&openid="+openid;
           }
       </script>
     </body>     

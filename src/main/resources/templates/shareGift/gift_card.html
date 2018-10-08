@@ -28,7 +28,8 @@
                 <div class="f_gift_content f_cardnumber">
                     <p class="z_cardnumber_text">
                         <span class="z_numbercard">挑选号码卡</span>
-                        <span class="z_givefriend"><a href="/testChooseRegex">点击这里挑选，送朋友</a></span>
+                        <!--<span class="z_givefriend"><a href="/testChooseRegex">点击这里挑选，送朋友</a></span>-->
+                        <span class="z_givefriend toFriend"><a >点击这里挑选，送朋友</a></span>
                     </p>               
                 </div>
             </div>
@@ -47,7 +48,7 @@
                   <div class="z_choiceone_bottom">
                       <span class="z_choiceone_requiretime" th:text="${'可选择'+card.regexName}">可选择生日号、三连号</span>
                       <span class="z_choiceone_activedcard">
-                                    <a href="/testChooseRegex">重新选择</a>
+                                    <a >重新选择</a>
                                 </span>
                   </div>
               </div>
@@ -107,6 +108,16 @@
               var oldPrice = $(".z_taocamnumber_price i").text();
               $(".z_write_moeny").find("b").text(oldPrice);
           });
+          //挑选，送朋友
+          $(".toFriend").click(function(){
+              console.log("toFriend");
+              window.location.href='/testChooseRegex?openid='+openid
+          });
+          $(".z_choiceone_activedcard").click(function(){
+              console.log("z_choiceone_activedcard");
+              window.location.href='/testChooseRegex?openid='+openid
+          });
+
                 //点击现金券弹窗js
                 $(".wirte_casher").click(function(){
                 $(".f_cashshow").show();  
