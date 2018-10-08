@@ -596,7 +596,25 @@ public class TestController extends  BaseController {
         model.setViewName("shareGift/gift_give");
         return  model;
     }
-    //扫描二维码后跳转到领取的接口
+    //gift模块扫二维码领取号码卡、套餐卡接口、通过qrcodeId查找号码卡的id。
+    @RequestMapping("/sweep")
+    public String  toCallReceivePage(String id){
+        logger.info("[sweep]"+id);
+        String type=StringUtils.substringAfter(id,"_");
+        String realId=StringUtils.substringBefore(id,"_");
+        if(StringUtils.equals(type,"card") ){
+            GiftCardRecord giftCardRecord = giftCardRecordRepository.findByQrcodeEquals(realId);
+            Long cardRecordId=giftCardRecord.getId();
+            return  "redirect:"+"qrcode?cardRecordId="+cardRecordId;
+        }else if(StringUtils.equals(type,"coupon")){
+            GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
+            Long couponId=giftCouponRecord.getCouponId();
+            String senderId=giftCouponRecord.getCreatorOpenid();
+            return  "redirect:"+"oauth/gift/giftReturn?couponId="+couponId+"&senderId="+senderId;
+        }else return null;
+
+    }
+    //gift模块扫描二维码后跳转到领取的接口
     @RequestMapping("/qrcode")
     public ModelAndView  qrcode(@RequestParam("cardRecordId") Long cardRecordId){
         ModelAndView  model=new ModelAndView();
@@ -633,16 +651,16 @@ public class TestController extends  BaseController {
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
             model.addObject("user",user);
             model.addObject("giftCardRecord",giftCardRecord);
-//            model.setViewName("shareGift/recive_card");
-            model.setViewName("shareGift/card_qrcode");
+            model.setViewName("shareGift/recive_card");
+           // model.setViewName("shareGift/card_qrcode");
         }else{
             //加载分享页面所需要的数据。
             model.addObject("card",giftCard);
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
             model.addObject("user",user);
             model.addObject("giftCardRecord",giftCardRecord);
-            //model.setViewName("shareGift/recive_gift");
-            model.setViewName("shareGift/gift_qrcode");
+            model.setViewName("shareGift/recive_gift");
+           // model.setViewName("shareGift/gift_qrcode");
         }
         return model;
     }

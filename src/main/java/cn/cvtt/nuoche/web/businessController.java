@@ -11,6 +11,7 @@ import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.ISystemParamInterface;
 import cn.cvtt.nuoche.reponsitory.*;
+import cn.cvtt.nuoche.service.QrcodeService;
 import cn.cvtt.nuoche.util.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -67,6 +69,10 @@ public class businessController extends  BaseController{
     IGiftPointRepository giftPointRepository;
     @Autowired
     IGiftCouponRepository giftCouponRepository;
+    @Autowired
+    IGiftCardRepository giftCardRepository;
+    @Resource
+    private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(businessController.class);
 
 
@@ -387,24 +393,7 @@ public class businessController extends  BaseController{
     }
 
 
-    //gift模块扫二维码领取号码卡、套餐卡接口、通过qrcodeId查找号码卡的id。
-    @RequestMapping("/sweep")
-    public String  toCallReceivePage(String id){
-        logger.info("[sweep]"+id);
-        String type=StringUtils.substringAfter(id,"_");
-        String realId=StringUtils.substringBefore(id,"_");
-        if(StringUtils.equals(type,"card") ){
-            GiftCardRecord giftCardRecord = giftCardRecordRepository.findByQrcodeEquals(realId);
-            Long cardRecordId=giftCardRecord.getId();
-            return  "redirect:"+"qrcode?cardRecordId="+cardRecordId;
-        }else if(StringUtils.equals(type,"coupon")){
-            GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
-            Long couponId=giftCouponRecord.getCouponId();
-            String senderId=giftCouponRecord.getCreatorOpenid();
-            return  "redirect:"+"/oauth/gift/giftReturn?couponId="+couponId+"&senderId="+senderId;
-        }else return null;
 
-    }
     //领取优惠券
     @RequestMapping("/couponReceive")
     public ModelAndView testReceive(@RequestParam(value = "coupon" ) Long coupon,
