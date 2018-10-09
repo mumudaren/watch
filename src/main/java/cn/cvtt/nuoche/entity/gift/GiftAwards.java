@@ -24,8 +24,8 @@ public class GiftAwards {
     @Column(name="probability")
     private  Integer  probability;
     //图片位置索引
-    @Column(name="index")
-    private  Integer  index;
+    @Column(name="indexOrder")
+    private  Integer  indexOrder;
     //库存
     @Column(name="stock")
     private  Integer  stock;
@@ -40,7 +40,7 @@ public class GiftAwards {
         this.imgurl = imgurl;
         this.giftName = giftName;
         this.probability = probability;
-        this.index = index;
+        this.indexOrder = indexOrder;
         this.stock = stock;
     }
 
@@ -84,12 +84,12 @@ public class GiftAwards {
         this.probability = probability;
     }
 
-    public Integer getIndex() {
-        return index;
+    public Integer getIndexOrder() {
+        return indexOrder;
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    public void setIndexOrder(Integer indexOrder) {
+        this.indexOrder = indexOrder;
     }
 
     public Integer getStock() {

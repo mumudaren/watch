@@ -468,7 +468,7 @@ public class OauthController extends  BaseController{
         logger.info("[redirectOther]util.getUrl"+util.getUrl());
         String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
         requestUrl = requestUrl.replace("APPID", Constant.APP_ID)
-                .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/other"))
+                .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/gift"))
                 .replace("SCOPE", "snsapi_base")
                 .replace("STATE", path);
         logger.info("[redirectGift]requestUrl:::"+requestUrl);
