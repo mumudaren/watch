@@ -9,9 +9,9 @@
         <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"/>
         <meta content="telephone=no" name="format-detection"/>
         <link rel="stylesheet" type="text/css" href="css/safenumber.css" />
-        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-        <script type="text/javascript" src="js/safenumber.js"></script>
-        <script type="text/javascript" src="js/flexible.js"></script>
+       <script type="text/javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/safenumber.js}" th:async="yes"  th:inline="javascript"></script>
+        <script type="text/javascript" th:src="@{/js/flexible.js}"></script>
         <script type="text/javascript" src="js/flexible_css.js"></script>
         <script type="text/javascript" th:src="@{/js/util.js}"></script>
         <script type="text/javascript" th:src="@{/js/wexinPay.js}"></script>
