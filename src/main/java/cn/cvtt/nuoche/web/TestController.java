@@ -605,7 +605,7 @@ public class TestController extends  BaseController {
         if(StringUtils.equals(type,"card") ){
             GiftCardRecord giftCardRecord = giftCardRecordRepository.findByQrcodeEquals(realId);
             Long cardRecordId=giftCardRecord.getId();
-            return  "redirect:"+"qrcode?cardRecordId="+cardRecordId;
+            return  "redirect:"+"qrcodeAfter?cardRecordId="+cardRecordId;
         }else if(StringUtils.equals(type,"coupon")){
             GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
             Long couponId=giftCouponRecord.getCouponId();
@@ -614,7 +614,57 @@ public class TestController extends  BaseController {
         }else return null;
 
     }
-    //gift模块扫描二维码后跳转到领取的接口
+    //gift扫描二维码后领取页面
+    @RequestMapping("/qrcodeAfter")
+    public ModelAndView  qrcodeAfter(@RequestParam("cardRecordId") Long cardRecordId){
+        ModelAndView  model=new ModelAndView();
+        //根据cardId查询qrcode，如果值为空，则未生成过二维码。
+        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(cardRecordId);
+        if(giftCardRecord.getQrcode()==null){
+            //生成二维码
+            logger.info("[qrcode]"+"create qrcode");
+            String qrcodeHref = qrcodeService.generatorQrcode(cardRecordId,"card");
+            model.addObject("href",qrcodeHref);
+        }else{
+            //提取二维码href
+            logger.info("[qrcode]"+"find qrcode");
+            String qrcodeHref=giftCardRecord.getQrcodeUrl();
+            model.addObject("href",qrcodeHref);
+            logger.info("[qrcode]"+model.getModel().get("href"));
+        }
+        //根据cardType的不同跳转到不同的显示页面。
+        Long cardId=giftCardRecord.getCardId();
+        GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
+        if(giftCard.getCardType()==1){
+            //可购买的套餐名称
+            JSONObject eachGiftArray= JSONObject.parseObject(giftCard.getRegexId());
+            //遍历套餐，获取套餐名字
+            String regexName="";
+            for(String str:eachGiftArray.keySet()){
+                regexName=regexName+str+",";
+                logger.info("[qrcode]eachGiftRegex is:"+regexName);
+            }
+            String finalRegexName=regexName.substring(0,regexName.length()-1);
+            logger.info("[qrcode]finalRegexName is:"+finalRegexName);
+            giftCard.setRegexName(finalRegexName);
+            model.addObject("card",giftCard);
+            BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+            model.addObject("user",user);
+            model.addObject("giftCardRecord",giftCardRecord);
+            model.setViewName("shareGift/recive_card");
+            //model.setViewName("shareGift/card_qrcode");
+        }else{
+            //加载分享页面所需要的数据。
+            model.addObject("card",giftCard);
+            BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+            model.addObject("user",user);
+            model.addObject("giftCardRecord",giftCardRecord);
+            model.setViewName("shareGift/recive_gift");
+            //model.setViewName("shareGift/gift_qrcode");
+        }
+        return model;
+    }
+    //页面点击生成礼品卡接口。生成相应的二维码。
     @RequestMapping("/qrcode")
     public ModelAndView  qrcode(@RequestParam("cardRecordId") Long cardRecordId){
         ModelAndView  model=new ModelAndView();
@@ -651,17 +701,18 @@ public class TestController extends  BaseController {
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
             model.addObject("user",user);
             model.addObject("giftCardRecord",giftCardRecord);
-            model.setViewName("shareGift/recive_card");
-           // model.setViewName("shareGift/card_qrcode");
+           // model.setViewName("shareGift/recive_card");
+           model.setViewName("shareGift/card_qrcode");
         }else{
+
 
             //加载分享页面所需要的数据。
             model.addObject("card",giftCard);
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
             model.addObject("user",user);
             model.addObject("giftCardRecord",giftCardRecord);
-            model.setViewName("shareGift/recive_gift");
-           // model.setViewName("shareGift/gift_qrcode");
+           // model.setViewName("shareGift/recive_gift");
+           model.setViewName("shareGift/gift_qrcode");
         }
         return model;
     }
@@ -861,8 +912,17 @@ public class TestController extends  BaseController {
 
     //抽奖
     @RequestMapping("/lottery")
-    public  ModelAndView  lottery(){
+    public  ModelAndView  lottery( @RequestParam(value = "openid",defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
         ModelAndView  model=new ModelAndView();
+        model.addObject("openid",openid);
+        GiftPoint userPointSearch=giftPointRepository.findByOpenidEquals(openid);
+        //计算可抽奖次数
+        double oldPoint=userPointSearch.getPointTotal();
+        double a=10;
+        double times = oldPoint/a;
+        int clickNumber=(int)Math.floor(times);
+        model.addObject("clickNumber",clickNumber);
+        model.addObject("index",4);
         model.setViewName("shareGift/lottery");
         return  model;
     }
@@ -898,7 +958,6 @@ public class TestController extends  BaseController {
         model.setViewName("my_safenumber");
         return model;
     }
-
 
 
 
