@@ -8,7 +8,7 @@
         <meta content="yes" name="apple-touch-fullscreen">
         <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
         <meta content="telephone=no" name="format-detection">
-        <link rel="stylesheet" type="text/css" href="css/gift.css?v=0" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/gift.css}" />
        <script type="text/javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/flexible.js}"></script>
         <script type="text/javascript" th:src="@{/js/flexible_css.js}"></script>
@@ -18,7 +18,7 @@
     <body>  
       <div class="wrap give_wrap">
            <div class="f_qrcode_top">
-               <img src="images/giftImage/qrcodeimg.jpg">
+               <img  th:src="@{/images/giftImage/qrcodeimg.jpg}" >
            </div>
            <div class="z_giverfriend_content">
                 <p class="z_friend_personimg">
@@ -41,7 +41,7 @@
                 </div>                                           
            </div>
            <div class="z_choice_flowerimg">
-                <img src="images/giftImage/give_05.png">
+                <img th:src="@{/images/giftImage/give_05.png}" >
            </div> 
            <div class="longpic">
                <span>长按图片保存到相册</span>
@@ -50,7 +50,7 @@
       <div class="f_sharewrap">
           <div class="tb_overflay"></div>
           <div class="f_sharecontent">
-              <img src="images/share_03.png">
+              <img th:src="@{/images/share_03.png}" >
           </div>
       </div>
     </body>
@@ -102,7 +102,7 @@
             wx.onMenuShareAppMessage({
                 title: title, // 分享标题
                 desc: message, // 分享描述
-                link: getHostPath()+'/oauth/gift/giftReturn?couponId='+couponId+'&senderId='+openid,
+                link: getHostPath()+'/oauth/gift/giftReturn/'+couponId+'/'+openid,
                 imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
                 success: function () {
                     // 用户点击了分享后执行的回调函数
@@ -126,7 +126,7 @@
             wx.onMenuShareTimeline({
                 title: title, // 分享标题
                 desc: message, // 分享描述
-                link: getHostPath()+'/oauth/gift/giftReturn?couponId='+couponId+'&senderId='+openid,
+                link: getHostPath()+'/oauth/gift/giftReturn/'+couponId+'/'+openid,
                 imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
                 success: function () {
                     // 用户点击了分享后执行的回调函数
