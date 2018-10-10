@@ -397,11 +397,11 @@ public class NumberServiceImpl implements NumberService {
         map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
         map.put("field", param.getField() == null ? "" : param.getField());
         map.put("value", param.getValue() == null ? "" : param.getValue());
-        map.put("unitID", args.get("SAFENUMBER_APP_UNITID") );
-        map.put("appkey", args.get("SAFENUMBER_APP_KEY"));
+        map.put("unitID", args.get("SAFENUMBER_APP_UNITID_ZZ") );
+        map.put("appkey", args.get("SAFENUMBER_APP_KEY_ZZ"));
         map.put("msgtype", "change_Relation");
         map.put("ts", DateUtils.format(new Date()));
-        map.put("sid", ApiSignUtils.signTopRequest(map, args.get("SAFENUMBER_APP_SECRET"), "MD5"));
+        map.put("sid", ApiSignUtils.signTopRequest(map, args.get("SAFENUMBER_APP_SECRET_ZZ"), "MD5"));
         StringBuilder sb = new StringBuilder(url + "?");
         for (Map.Entry<String, String> e : map.entrySet()) {
             sb.append(e.getKey() + "=" + e.getValue()).append("&");
