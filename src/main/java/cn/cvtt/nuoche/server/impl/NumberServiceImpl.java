@@ -379,5 +379,44 @@ public class NumberServiceImpl implements NumberService {
 //        logger.info(" calltype>>>>>>>>>>>>>>>>>>>>>>>>:"+bindVo.getCallrestrict());
 //        return bind(bindVo);
 //    }
+    //更改接口
+
+    @Override
+    public Result changeBindNew(BindVo param) throws IOException {
+        System.out.println("changeBindNew changeBind method bindVo item is:"+param.toString());
+        // 请求服务接口
+        String url = args.get("SAFENUMBER_APP_DOMAIN") + "/safenumberservicessm/api/manage/queryRelation";
+
+        // 服务接口请求参数
+        Map<String, String> map = new HashMap<>();
+        map.put("ver", "2.0");
+        map.put("opmodule", "nuonuo");
+        map.put("opuser", "nuonuo");
+        map.put("msgid", "1");
+        map.put("service", "SafeNumber");
+        map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
+        map.put("field", param.getField() == null ? "" : param.getField());
+        map.put("value", param.getValue() == null ? "" : param.getValue());
+        map.put("unitID", args.get("SAFENUMBER_APP_UNITID") );
+        map.put("appkey", args.get("SAFENUMBER_APP_KEY"));
+        map.put("msgtype", "change_Relation");
+        map.put("ts", DateUtils.format(new Date()));
+        map.put("sid", ApiSignUtils.signTopRequest(map, args.get("SAFENUMBER_APP_SECRET"), "MD5"));
+        StringBuilder sb = new StringBuilder(url + "?");
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            sb.append(e.getKey() + "=" + e.getValue()).append("&");
+        }
+        logger.info("请求绑定接口:{}", sb);
+        String result = HttpClientUtil.doGet(url, map);
+        logger.info("changeRelation:{}", result);
+        System.out.println("changeRelation:"+result.toString());
+        if(result.equals("504")) {
+            return Result.error("http服务连接失败");
+        }
+        if (result.contains("error")) {
+            return Result.error("绑定失败");
+        }
+        return Result.ok(result);
+    }
 
 }

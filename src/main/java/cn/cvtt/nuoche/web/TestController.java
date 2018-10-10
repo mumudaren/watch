@@ -2,6 +2,7 @@ package cn.cvtt.nuoche.web;
 
 import cn.cvtt.nuoche.common.result.Result;
 import cn.cvtt.nuoche.common.result.ResultMsg;
+import cn.cvtt.nuoche.entity.business.BindVo;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.SystemFeedBack;
@@ -12,6 +13,7 @@ import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
 import cn.cvtt.nuoche.reponsitory.*;
+import cn.cvtt.nuoche.server.impl.NumberServiceImpl;
 import cn.cvtt.nuoche.service.QrcodeService;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
@@ -69,6 +71,7 @@ public class TestController extends  BaseController {
     IGiftCardRecordRepository giftCardRecordRepository;
     @Autowired
     IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
+    @Autowired  private NumberServiceImpl numberService;
     @Resource
     private QrcodeService qrcodeService;
     @Value("${wx.qrcode.download}")
@@ -603,6 +606,7 @@ public class TestController extends  BaseController {
         String type=StringUtils.substringAfter(id,"_");
         String realId=StringUtils.substringBefore(id,"_");
         if(StringUtils.equals(type,"card") ){
+            //根据二维码找到相应的记录。
             GiftCardRecord giftCardRecord = giftCardRecordRepository.findByQrcodeEquals(realId);
             Long cardRecordId=giftCardRecord.getId();
             return  "redirect:"+"qrcodeAfter?cardRecordId="+cardRecordId;
@@ -610,7 +614,8 @@ public class TestController extends  BaseController {
             GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
             Long couponId=giftCouponRecord.getCouponId();
             String senderId=giftCouponRecord.getCreatorOpenid();
-            return  "redirect:"+"oauth/gift/giftReturn?couponId="+couponId+"&senderId="+senderId;
+            return  "redirect:"+"/oauth/gift/giftReturn/"+couponId+"/"+senderId;
+            //return  "redirect:"+"oauth/gift/giftReturn?couponId="+couponId+"&senderId="+senderId;
         }else return null;
 
     }
@@ -657,6 +662,7 @@ public class TestController extends  BaseController {
             //加载分享页面所需要的数据。
             model.addObject("card",giftCard);
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+            //senderUser
             model.addObject("user",user);
             model.addObject("giftCardRecord",giftCardRecord);
             model.setViewName("shareGift/recive_gift");
@@ -746,12 +752,44 @@ public class TestController extends  BaseController {
         giftCardRecordRepository.saveAndFlush(giftCardRecord);
 
         GiftCard giftCard=giftCardRepository.findByIdEquals(giftCardId);
-        //根据95号码查询有效期等。
-        BusinessNumberRecord  numberRecord=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(giftCard.getNumber(),util.getBusinessKey());
-        Date validTime=numberRecord.getValidTime();
-        Date  now=new Date();
-        //使用更改接口更改手机号。（查询是否更改成功。修改userphone和phone）
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
+        //查询本地record数据
+        BusinessNumberRecord record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(giftCard.getNumber(),util.getBusinessKey());
+        if(record==null){
+            model.setViewName("wrongPage");
+            return  model;
+        }else{
+            record.setPrtms(userInfo.getPhone());
+            record.setUserPhone(userInfo.getPhone());
+        }
+        //使用更改接口更改手机号。
+        BindVo bindVo = new BindVo();
+        logger.info("NewPhone:>>>>>>>>"+giftCard.getNumber());
+        bindVo.setUidnumber(giftCard.getNumber());
+        bindVo.setField("regphone");
+        bindVo.setValue(userInfo.getPhone());
+        try {
+            Result result = numberService.changeBindNew(bindVo);
+            logger.info("msg======"+result.getMsg());
+            if (200 != result.getCode()) {
+                model.setViewName("wrongPage");
+                return  model;
+            }
+            JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+            logger.info("jobj======"+jobj.toJSONString());
+            JSONObject res = jobj.getJSONObject("change_Relation_response");
+            if (null == res) {
+                model.setViewName("wrongPage");
+                return  model;
 
+            }else{
+                logger.info("change result is :"+res.toJSONString());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+        //本地数据库修改userphone和phone更改成功后跳转。
         model.addObject("openid",openid);
         model.addObject("giftCard",giftCard);
         model.addObject("giftCardRecord",giftCardRecord);

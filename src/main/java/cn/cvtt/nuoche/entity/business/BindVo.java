@@ -18,6 +18,8 @@ public class BindVo implements Serializable {
     private String expiretime;
     private String uidtype;
     private String callrestrict;
+    private String value;
+    private String field;
 
     public String getRegphone() {
         return regphone;
@@ -57,6 +59,26 @@ public class BindVo implements Serializable {
 
     public void setUidnumber(String uidnumber) {
         this.uidnumber = uidnumber;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
     }
 
     public String getCallrestrict() {

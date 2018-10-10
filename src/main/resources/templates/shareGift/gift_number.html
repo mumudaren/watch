@@ -125,7 +125,7 @@
               var totalPrice = normalPrice - selCash;
               $(".z_cashselect").text("已选择：￥" + selCash);
               $(".f_cashshow").hide();
-              if(totalPrice<0){
+              if(totalPrice<=0){
                   totalPrice=0.01;
               }
               $(".z_write_moeny").find("b").text(totalPrice);
@@ -144,6 +144,7 @@
               if(isHide==false){
                   alert("请先选择靓号。");
               }else{
+
                   justPay();
               }
           }
@@ -165,7 +166,7 @@
                           alert("当前套餐中没有可以绑定的号码!");
                           return;
                       }
-                      var val = $(".z_write_moeny").find("b").text()*100;
+                      var val = "￥"+$(".z_write_moeny").find("b").text();
                       console.log("val"+val);
                       var days = 365;
                       var pay = {};

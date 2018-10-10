@@ -37,4 +37,6 @@ public interface NumberService {
    Result queryRelation(BindVo param)  throws IOException;
     //查询接口
     Result queryNormalRelation(BindVo param)  throws IOException;
+    //更改接口
+    Result changeBindNew(BindVo bindVo) throws IOException;
 }
