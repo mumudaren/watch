@@ -153,8 +153,10 @@ public class businessController extends  BaseController{
         Map<String,String>  map=JsonUtils.handlerJson(json);
         String  str=map.get("NUMBER_BIND_LIMIT");
         if(StringUtils.isNotEmpty(str)){
+            logger.info("[createOrder method]:NUMBER_BIND_LIMIT is:"+str+"\n");
             BusinessCustomer  bcs=businessCusRepository.findByOpenidEquals(openid);
             String countJson=callRecordInterface.CountBindNumber(util.getBusinessKey(),bcs.getPhone());
+            logger.info("[createOrder method]:countJson is:"+countJson+"\n");
             JSONObject  childObj=JSONObject.parseObject(countJson);
             if(childObj.getIntValue("code")==200){
                 int  size=JSONObject.parseObject(childObj.getString("data")).getIntValue("size");
@@ -214,6 +216,76 @@ public class businessController extends  BaseController{
         payRepository.save(pay);
         pojo.setData(obj);
         logger.info("[createOrder method]just payRepository.save(pay),fianlly return pojo Result is:"+pojo.toString()+"\n");
+        return   pojo;
+    }
+
+    /**
+     * 创建订单支付
+     * @param   openid  微信支付ID
+     * @param    totalFee  金额  分单位
+     * @param    phone   绑定的手机号码
+     * @param    extend  1 延期  0 表示新购买 2 解冻
+     *
+     *
+     * **/
+    @SuppressWarnings("all")
+    @RequestMapping("/createGiftOrder")
+    @ResponseBody
+    @LogManager(description = "createGiftOrder")
+    public Result createGiftOrder(@RequestParam("openid") String openid, @RequestParam("totalFee") String totalFee,@RequestParam("phone") String  phone,@RequestParam("uidNumber")  String uidNumber, @RequestParam("extend") String extend,@RequestParam("days") String days,HttpServletRequest request){
+        logger.info("you are in createGiftOrder method: "+"\n");
+        /** 查看该用户绑定是否超过后台配置的最大绑定次数,超过则不让绑定*/
+        String  json=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
+        logger.info("[createGiftOrder method]:received RequestParam extend is:"+extend+"\n");
+        Map<String,String>  map=JsonUtils.handlerJson(json);
+        String  str=map.get("NUMBER_BIND_LIMIT");
+        if(StringUtils.isNotEmpty(str)){
+            logger.info("[createGiftOrder method]:NUMBER_BIND_LIMIT is:"+str+"\n");
+            BusinessCustomer  bcs=businessCusRepository.findByOpenidEquals(openid);
+            String countJson=callRecordInterface.CountBindNumber(util.getBusinessKey(),bcs.getPhone());
+            logger.info("[createGiftOrder method]:countJson is:"+countJson+"\n");
+            JSONObject  childObj=JSONObject.parseObject(countJson);
+            if(childObj.getIntValue("code")==200){
+                int  size=JSONObject.parseObject(childObj.getString("data")).getIntValue("size");
+                if(size>Integer.parseInt(str)){
+                    return  new Result(ResultMsg.MORETHANBINDNUMBER);
+                }
+            }
+        }
+        /**  判断结束 **/
+        String  bill_ip=  WechatSignGenerator.getIpAddr(request);
+        totalFee=totalFee.substring(1);
+        double  Fee=Double.parseDouble(totalFee)*100;
+        Result  pojo=new Result();
+        logger.info("[createGiftOrder method],request totalFee is: "+totalFee+"\n");
+        String  response="";
+        String  noId= UUID.randomUUID().toString().replace("-","");
+        try {
+            response= WechatSignGenerator.sign(openid,new DecimalFormat("#").format(Fee),bill_ip,util.getBusiness(),noId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.info("[createGiftOrder method]:WechatSignGenerator's response is:"+response+"\n");
+        /** 根据生成的订单信息返回wexin支付的对象  */
+        JSONObject obj= WechatSignGenerator.getPayRequest(response);
+        logger.info("[createGiftOrder method] WechatSignGenerator's json response is:"+obj+"\n");
+        if(!(Boolean)obj.get("status")){
+            pojo.setCode(500);
+            pojo.error(obj.get("msg").toString());
+            return pojo;
+        }
+        pojo.setCode(200);
+        businessPayNotify  pay=new businessPayNotify();
+        pay.setOpenid(openid);
+        pay.setPhone(phone);
+        pay.setCreateTime(new Date());
+        pay.setOutTradeNo(noId);
+        pay.setOperateType(extend);
+        pay.setDays(days);
+        pay.setUidNumber(uidNumber);
+        payRepository.save(pay);
+        pojo.setData(obj);
+        logger.info("[createGiftOrder method]just payRepository.save(pay),fianlly return pojo Result is:"+pojo.toString()+"\n");
         return   pojo;
     }
 

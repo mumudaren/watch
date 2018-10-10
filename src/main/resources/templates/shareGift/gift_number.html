@@ -12,6 +12,8 @@
        <script type="text/javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/flexible.js}"></script>
        <script type="text/javascript" th:src="@{/js/flexible_css.js}"></script>
+        <script type="text/javascript" th:src="@{/js/util.js}"></script>
+        <script type="text/javascript" th:src="@{/js/wexinPay.js}"></script>
        
     </head>
     <body>  
@@ -97,6 +99,7 @@
       <script th:inline="javascript">
               var openid = [[${openid}]];
               var isHide=[[${isHideOldDiv}]];
+              var clicktag = 0;  //微信支付标志
               $(function(){
                   var oldPrice = $(".oldPrice").text();
                   $(".z_write_moeny").find("b").text(oldPrice);
@@ -123,7 +126,7 @@
               $(".z_cashselect").text("已选择：￥" + selCash);
               $(".f_cashshow").hide();
               if(totalPrice<0){
-                  totalPrice=0;
+                  totalPrice=0.01;
               }
               $(".z_write_moeny").find("b").text(totalPrice);
               var salePrice= "=￥" + normalPrice + "-" + "现金券" + selCshe1;
@@ -141,15 +144,79 @@
               if(isHide==false){
                   alert("请先选择靓号。");
               }else{
-                  var message = $(".write_message").val();
-                  var number=[[${mapNumber.number}]];
-                  if(message==''){
-                      console.log("message:"+message);
-                      message="大吉大利，今晚有靓号"
-                  }
-                  window.location.href="/number_give.html?number="+number+"&"+"openid="+openid+"&message="+message;
+                  justPay();
               }
           }
+              //支付
+              function justPay(){
+                  if (clicktag == 0) {  //判断标志
+                      clicktag = 1;   //进行标志，防止多次点击
+                      setTimeout(function () {
+                          clicktag = 0
+                      }, 4000);
+                      var phone = "15043211581";
+                      var uidNumber =[[${mapNumber.number}]];
+                      if (!util.validPhone(phone)) {
+                          //util.showText("不是有效的手机号码!",$(".z_successtext"));
+                          alert("不是有效的手机号码!");
+                          return;
+                      }
+                      if (uidNumber == "" || uidNumber == null) {
+                          alert("当前套餐中没有可以绑定的号码!");
+                          return;
+                      }
+                      var val = $(".z_write_moeny").find("b").text()*100;
+                      console.log("val"+val);
+                      var days = 365;
+                      var pay = {};
+                      pay.openid = openid;
+                      pay.totalFee = val;
+                      pay.phone = phone;
+                      pay.extend = 0;
+                      pay.days = days;
+                      pay.uidNumber = uidNumber;
+                      var json = payGiftUtil.payGiftOrder(pay);
+                      if (json.code != 200) {
+                          alert(json.msg);
+                          return;
+                      } else {
+                          json = json.data;
+                      }
+                      if (typeof WeixinJSBridge == "undefined") {
+                          if (document.addEventListener) {
+                              document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
+                          } else if (document.attachEvent) {
+                              document.attachEvent('WeixinJSBridgeReady', onBridgeReady(json));
+                              document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
+                          }
+                      } else {
+                          onBridgeReady(json)
+                      }
+                  }
+              }
+              /** 微信支付  start **/
+              function onBridgeReady(json){
+                  WeixinJSBridge.invoke(
+                      'getBrandWCPayRequest',json,
+                      function(res){
+                          if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                              //window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
+                              var message = $(".write_message").val();
+                              var number=[[${mapNumber.number}]];
+                              if(message==''){
+                                  console.log("message:"+message);
+                                  message="大吉大利，今晚有靓号"
+                              }
+                              window.location.href="/number_give.html?number="+number+"&"+"openid="+openid+"&message="+message;
+                          }else {
+                              //console.log(res.err_msg);
+                              //alert("res.err_msg is:"+res.err_msg);
+                              //window.location.href="/oauth/regex/buy_zhizun.html?"+Math.random()*10;
+                          }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                      }
+                  );
+              }
       </script>
+
     </body>     
 </html>

@@ -425,4 +425,71 @@ public class PageController extends  BaseController{
         }
 
     }
+
+    //gift判断延期、购买、解冻等是否成功。
+    @RequestMapping("/findGiftStatus.html")
+    public  String  findGiftStatusMethod(@RequestParam("myNumber") String number,@RequestParam("phoneType") String type) throws IOException {
+        BindVo bind=new BindVo();
+        bind.setUidnumber(number);
+        Result result=null;
+        if(StringUtils.equals(type,"normal")){
+            logger.info("[findStatusMethod]number's type is normal");
+            result=numberService.queryNormalRelation(bind);
+        }else{
+            logger.info("[findStatusMethod]number's type is ZhiZun");
+            result=numberService.queryRelation(bind);
+        }
+
+        logger.info("[findStatusMethod]numberService result is:"+result.toString());
+        if(result.getCode()==200) {
+            JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+            JSONObject res = jobj.getJSONObject("query_Relation_response");
+            JSONArray items = JSONArray.parseArray(res.getJSONArray("items").toString());
+            //遍历items
+            JSONObject buyTime = null;
+            if (items.size() > 0) {
+                for (int i = 0; i < items.size(); i++) {
+                    // 遍历 jsonarray 数组，把每一个对象转成 json 对象
+                    JSONObject job = items.getJSONObject(i);
+                    if (!StringUtils.isEmpty(job.get("subts").toString())) {
+                        Date dateRecent=job.getDate("subts");
+                        Date dateTemp=new Date(0);
+                        if(dateRecent.getTime()>dateTemp.getTime()){
+                            dateTemp=dateRecent;
+                            buyTime = job;
+                            logger.info("[findStatusMethod]foreach buyTime is:" + buyTime.get("subts"));
+                        }
+                    }
+                }
+            }else{
+                return "wrongPage";
+            }
+            //JSONObject buyTime=job.getJSONObject("subts");
+            logger.info("[findStatusMethod]final buyTime is:" + buyTime.getDate("subts"));
+            //查询该号码的buyTime是空。绑定不成功。
+            if (StringUtils.isEmpty(buyTime.getDate("subts").toString())) {
+                logger.info("[findStatusMethod]bind or bindZhiZun fail:");
+                return "wrongPage";
+            }
+            //订购时间小于今天（考虑调用绑定接口，秒的误差），说明今天没有订购记录，延期、解冻、绑定等均不成功。
+            Date butDate = buyTime.getDate("subts");
+            Date nowTime = new Date();
+            Calendar cal1 = Calendar.getInstance();
+            cal1.setTime(nowTime);
+            // 将分钟、秒、毫秒域清零
+            cal1.set(Calendar.SECOND, 0);
+            cal1.set(Calendar.MILLISECOND, 0);
+            Date nowReset = cal1.getTime();
+            logger.info("[findStatusMethod]nowReset SECOND  is:" + nowReset);
+            //购买时间小于当前时间，说明接口调用失败。
+            if (butDate.getTime() < nowTime.getTime()) {
+                return "wrongPage";
+            }
+            return "redirect:/oauth/admin/OwnerSafeNumber";
+        }else {
+            logger.info("[findStatusMethod]buy operation fail,will return wrongPage");
+            return "wrongPage";
+        }
+
+    }
 }

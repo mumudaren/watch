@@ -19,7 +19,24 @@ var  payUtil={
         return result;
     }
 
-}
+};
+var  payGiftUtil={
+    payGiftOrder:function(pay){
+        console.log("payUtil");
+        var  result={};
+        $.ajax({
+            url:"/createGiftOrder",
+            type:"POST",
+            dataType:"JSON",
+            data:pay,
+            async:false,
+        }).done(function(json){
+            result=json;
+        });
+        return result;
+    }
+
+};
 /**
  * @param
  *    openid    转账用户
