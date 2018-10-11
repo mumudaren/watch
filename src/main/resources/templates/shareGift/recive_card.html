@@ -49,8 +49,16 @@
                 <img src="images/giftImage/give_05.png">
             </div>
             <div class="longpic">
-                    <span>选择我的靓号</span>
+                    <span ><a th:onclick="'javascript:toCardPage('+${card.id}+')'" >选择我的靓号</a></span>
             </div>  
       </div>     
-    </body>     
+    </body>
+    <script th:inline="javascript">
+        var openid=[[${openid}]];
+        var giftCardRecord=[[${giftCardRecord.id}]];
+        function toCardPage (id) {
+            console.log("toCardPage");
+            window.location.href="/chooseRegexCard?cardId="+id+"&openid="+openid+"&giftCardRecordId="+giftCardRecord;
+        }
+    </script>
 </html>

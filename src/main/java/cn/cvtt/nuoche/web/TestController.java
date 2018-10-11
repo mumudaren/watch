@@ -36,6 +36,7 @@ import cn.cvtt.nuoche.server.WxServer;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -515,6 +516,36 @@ public class TestController extends  BaseController {
         return  model;
     }
 
+    //扫描二维码,领取套餐卡页面，加载套餐等数据。
+    @RequestMapping("/chooseRegexCard")
+    public  ModelAndView  chooseRegexCard(@RequestParam("cardId") String cardId,
+                                          @RequestParam("giftCardRecordId") String giftCardRecordId,
+                                          @RequestParam(value = "openid",defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
+        ModelAndView  model=new ModelAndView();
+        //根据card_id获取套餐名字和id
+        GiftCard giftCard=giftCardRepository.findByIdEquals(Long.parseLong(cardId));
+        //可购买的套餐
+        JSONObject eachGiftArray= JSONObject.parseObject(giftCard.getRegexId());
+        List<Map<String,Object>> regexs=new ArrayList<>();
+        //遍历套餐，获取套餐名字和值
+        for(String name:eachGiftArray.keySet()){
+            Map<String,Object> regex=new HashedMap();
+            String value=name;
+            Object key=eachGiftArray.get(name);
+            regex.put("value",value);
+            regex.put("key",key);
+            logger.info("[testChooseNumberRegex]map is:"+regex);
+            regexs.add(regex);
+        }
+        model.addObject("regexs",regexs);
+        model.addObject("cardId",cardId);
+        model.addObject("giftCardRecordId",giftCardRecordId);
+        model.addObject("openid",openid);
+        //加载user
+        model.setViewName("shareGift/choice_number");
+        return  model;
+    }
+
     //赠送号码卡、留言、选优惠券等。
     @RequestMapping("/testNumberRegex")
     public  ModelAndView  testNumberGiftMethod(@RequestParam(value ="isHideOldDiv",defaultValue ="false") boolean isHideOldDiv,
@@ -604,7 +635,8 @@ public class TestController extends  BaseController {
     }
     //gift扫描二维码后领取页面
     @RequestMapping("/qrcodeAfter")
-    public ModelAndView  qrcodeAfter(@RequestParam("cardRecordId") Long cardRecordId){
+    public ModelAndView  qrcodeAfter(@RequestParam("cardRecordId") Long cardRecordId,
+                                     @RequestParam(value = "openid",defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
         ModelAndView  model=new ModelAndView();
         //根据cardId查询qrcode，如果值为空，则未生成过二维码。
         GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(cardRecordId);
@@ -638,6 +670,7 @@ public class TestController extends  BaseController {
             model.addObject("card",giftCard);
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
             model.addObject("user",user);
+            model.addObject("openid",openid);
             model.addObject("giftCardRecord",giftCardRecord);
             model.setViewName("shareGift/recive_card");
             //model.setViewName("shareGift/card_qrcode");
@@ -727,50 +760,110 @@ public class TestController extends  BaseController {
     @RequestMapping("/receiveCardSuccess")
     public ModelAndView  receiveCardSuccess(@RequestParam("giftCardRecordId") Long giftCardRecordId,
                                             @RequestParam("giftCardId") Long giftCardId,
+                                            @RequestParam(value = "number" ,defaultValue = "") String number,
                                             @RequestParam("openid") String openid){
         ModelAndView  model=new ModelAndView();
-        //根据95号查找号码卡record，填写receiver。
-        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(giftCardRecordId);
+        //根据giftCardRecordId查找号码卡record，填写receiver。
+        GiftCardRecord giftCardRecord = giftCardRecordRepository.findByIdEquals(giftCardRecordId);
         giftCardRecord.setReceiverOpenid(openid);
+        //保存receiver
         giftCardRecordRepository.saveAndFlush(giftCardRecord);
-
+        //查找giftCard
         GiftCard giftCard=giftCardRepository.findByIdEquals(giftCardId);
+        //查找receiver user信息
         BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
-        //查询本地record数据
-        BusinessNumberRecord record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(giftCard.getNumber(),util.getBusinessKey());
-        if(record==null){
-            model.setViewName("wrongPage");
-            return  model;
-        }else{
-            record.setPrtms(userInfo.getPhone());
-            record.setUserPhone(userInfo.getPhone());
-        }
-        //使用更改接口更改手机号。
-        BindVo bindVo = new BindVo();
-        logger.info("NewPhone:>>>>>>>>"+giftCard.getNumber());
-        bindVo.setUidnumber(giftCard.getNumber());
-        bindVo.setField("regphone");
-        bindVo.setValue(userInfo.getPhone());
-        try {
-            Result result = numberService.changeBindNew(bindVo);
-            logger.info("msg======"+result.getMsg());
-            if (200 != result.getCode()) {
+        //根据套餐卡和号码卡领取情况不同选择绑定或者修改绑定。
+        if(!StringUtils.isEmpty(number)){
+            //套餐卡选号后，使用绑定接口绑定手机号。
+            //查询本地record数据
+            String oldNumber=giftCard.getNumber();
+            BusinessNumberRecord record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(oldNumber,util.getBusinessKey());
+            if(record==null){
                 model.setViewName("wrongPage");
                 return  model;
-            }
-            JSONObject jobj = JSONObject.parseObject(result.getData().toString());
-            logger.info("jobj======"+jobj.toJSONString());
-            JSONObject res = jobj.getJSONObject("change_Relation_response");
-            if (null == res) {
-                model.setViewName("wrongPage");
-                return  model;
-
             }else{
-                logger.info("change result is :"+res.toJSONString());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+                //绑定靓号参数
+                BindVo bindVo = new BindVo();
+                logger.info("[receiveCardSuccess]bind phone:>>>>>>>>"+userInfo.getPhone());
+                bindVo.setUidnumber(number);
+                bindVo.setRegphone(userInfo.getPhone());
+                //待更新真实时间
+                bindVo.setExpiretime("365");
+                //使用真实的95号调用绑定接口
+                try {
+                    Result result = numberService.bindZhiZun(bindVo);
+                    logger.info("[receiveCardSuccess]bind result======" + result.getMsg());
+                    if (200 != result.getCode()) {
+                        model.setViewName("wrongPage");
+                        return model;
+                    } else {
+                        //绑定成功
+                        //删除号码池中的号码。
+                        String  jsonReturn=productInterface.deleteSpeNumber(util.getBusinessKey(),number);
+                        //获得真实的号码所属套餐ID
+                        String regexId=JsonUtils.handlerNumberReturnRegexJson(jsonReturn);
+                        //跟新真实的号码所属套餐ID
+                        record.setRegexId(Integer.parseInt(regexId));
+                        JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                        logger.info("[receiveCardSuccess]jobj======" + jobj.toJSONString());
+                        JSONObject res = jobj.getJSONObject("binding_Relation_response");
+                        if (null == res) {
+                            model.setViewName("wrongPage");
+                            return model;
 
+                        } else {
+                            logger.info("[receiveCardSuccess]change result is :" + res.toJSONString());
+                        }
+                    }
+                }//绑定靓号结束
+                catch (IOException e) {
+                    model.setViewName("wrongPage");
+                    return model;
+                }
+                //修改record信息并更新数据库
+                record.setPrtms(userInfo.getPhone());
+                record.setUserPhone(userInfo.getPhone());
+                //BusinessNumberRecord 更新真实的95号
+                record.setSmbms(number);
+                recordRepository.saveAndFlush(record);
+            }
+            //giftCard 更新真实的95号
+            giftCard.setNumber(number);
+            giftCardRepository.saveAndFlush(giftCard);
+        }else{
+                //number不为空，号码卡选号后付款成功后。
+                //查询本地record数据
+                BusinessNumberRecord record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(giftCard.getNumber(),util.getBusinessKey());
+                if(record==null){
+                    model.setViewName("wrongPage");
+                    return  model;
+                }
+                BindVo bindVo2 = new BindVo();
+                logger.info("NewPhone:>>>>>>>>"+giftCard.getNumber());
+                bindVo2.setUidnumber(giftCard.getNumber());
+                bindVo2.setField("regphone");
+                bindVo2.setValue(userInfo.getPhone());
+                try {
+                    Result result = numberService.changeBindNew(bindVo2);
+                    logger.info("msg======"+result.getMsg());
+                    if (200 != result.getCode()) {
+                        model.setViewName("wrongPage");
+                        return  model;
+                    }
+                    JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                    logger.info("jobj======"+jobj.toJSONString());
+                    JSONObject res = jobj.getJSONObject("change_Relation_response");
+                    if (null == res) {
+                        model.setViewName("wrongPage");
+                        return  model;
+
+                    }else{
+                        logger.info("change result is :"+res.toJSONString());
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+
+                }
         }
         //本地数据库修改userphone和phone更改成功后跳转。
         model.addObject("openid",openid);

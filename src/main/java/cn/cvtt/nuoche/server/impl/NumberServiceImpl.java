@@ -385,7 +385,7 @@ public class NumberServiceImpl implements NumberService {
     public Result changeBindNew(BindVo param) throws IOException {
         System.out.println("changeBindNew changeBind method bindVo item is:"+param.toString());
         // 请求服务接口
-        String url = args.get("SAFENUMBER_APP_DOMAIN") + "/safenumberservicessm/api/manage/queryRelation";
+        String url = args.get("SAFENUMBER_APP_DOMAIN") + "/safenumberservicessm/api/manage/changeRelation";
 
         // 服务接口请求参数
         Map<String, String> map = new HashMap<>();
