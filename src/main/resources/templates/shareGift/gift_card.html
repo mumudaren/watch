@@ -130,11 +130,12 @@
                     var normalPrice1 = $(".z_taocamnumber_price").text();
                     var selCash= $(this).find("span em").text();
                     var selCshe1 = $(this).find("span:eq(0)").text();
-                    var totalPrice = normalPrice - selCash;
+                    console.log("normalPrice - selCash"+normalPrice+","+selCash);
+                    var totalPrice = (normalPrice - selCash).toFixed(2);
                     $(".z_cashselect").text("已选择：￥" + selCash);
                     $(".f_cashshow").hide();
                     if(totalPrice<0){
-                        totalPrice=0;
+                        totalPrice=0.01;
                     }
                     $(".z_write_moeny").find("b").text(totalPrice);
                     
