@@ -569,7 +569,7 @@ public class OauthController extends  BaseController{
             //根据openId查询记录
             //自己未领取
             List<GiftCardRecord> giftCardRecordList =giftCardRecordRepository.findByGetStatusEqualsAndSenderOpenidEqualsOrderByGetTimeDesc(0,openId);
-            logger.info("[giftRecord]GiftCardRecord size is:"+giftCardRecordList.size());
+            logger.info("[ouathGift]GiftCardRecord size is:"+giftCardRecordList.size());
             List<Map<String,Object>> RegexCard=new ArrayList<>();
             List<Map<String,Object>> NumberCard=new ArrayList<>();
             if(giftCardRecordList.size()>0){
@@ -601,7 +601,7 @@ public class OauthController extends  BaseController{
                             regexName=regexName+str+",";
                         }
                         String finalRegexName=regexName.substring(0,regexName.length()-1);
-                        logger.info("[my_gift_give]finalRegexName is:"+finalRegexName);
+                        logger.info("[ouathGift]finalRegexName is:"+finalRegexName);
                         map1.put("finalRegexName",finalRegexName);
                         SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
                         String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());

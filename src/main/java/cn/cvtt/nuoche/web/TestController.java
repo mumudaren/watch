@@ -473,6 +473,7 @@ public class TestController extends  BaseController {
         giftCardRecord.setSenderOpenid(SenderOpenid);
         giftCardRecord.setMessage(message);
         giftCardRecord.setGetStatus(0);
+        giftCardRecord.setBuyTime(new Date());
         GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
         //加载分享页面所需要的数据。
         //可购买的套餐名称
@@ -602,6 +603,7 @@ public class TestController extends  BaseController {
         giftCardRecord.setMessage(message);
         giftCardRecord.setGetStatus(0);
         giftCardRecord.setCardId(Cardid.getId());
+        giftCardRecord.setBuyTime(new Date());
         GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
         //加载分享页面所需要的数据。
         GiftCard card=giftCardRepository.findByIdEquals(Cardid.getId());
