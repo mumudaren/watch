@@ -765,9 +765,11 @@ public class TestController extends  BaseController {
                                             @RequestParam(value = "number" ,defaultValue = "") String number,
                                             @RequestParam("openid") String openid){
         ModelAndView  model=new ModelAndView();
-        //根据giftCardRecordId查找号码卡record，填写receiver。
+        //根据giftCardRecordId查找号码卡record，填写receiver和卡片领取时间。
         GiftCardRecord giftCardRecord = giftCardRecordRepository.findByIdEquals(giftCardRecordId);
         giftCardRecord.setReceiverOpenid(openid);
+        giftCardRecord.setGetStatus(1);
+        giftCardRecord.setGetTime(new Date());
         //保存receiver
         giftCardRecordRepository.saveAndFlush(giftCardRecord);
         //查找giftCard
