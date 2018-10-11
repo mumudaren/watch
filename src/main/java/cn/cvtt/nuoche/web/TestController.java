@@ -640,20 +640,8 @@ public class TestController extends  BaseController {
     public ModelAndView  qrcodeAfter(@RequestParam("cardRecordId") Long cardRecordId,
                                      @RequestParam(value = "openid",defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
         ModelAndView  model=new ModelAndView();
-        //根据cardId查询qrcode，如果值为空，则未生成过二维码。
+        //查询giftCardRecord
         GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(cardRecordId);
-        if(giftCardRecord.getQrcode()==null){
-            //生成二维码
-            logger.info("[qrcode]"+"create qrcode");
-            String qrcodeHref = qrcodeService.generatorQrcode(cardRecordId,"card");
-            model.addObject("href",qrcodeHref);
-        }else{
-            //提取二维码href
-            logger.info("[qrcode]"+"find qrcode");
-            String qrcodeHref=giftCardRecord.getQrcodeUrl();
-            model.addObject("href",qrcodeHref);
-            logger.info("[qrcode]"+model.getModel().get("href"));
-        }
         //根据cardType的不同跳转到不同的显示页面。
         Long cardId=giftCardRecord.getCardId();
         GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
