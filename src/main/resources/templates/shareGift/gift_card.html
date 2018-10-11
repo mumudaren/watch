@@ -12,6 +12,8 @@
        <script type="text/javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/flexible.js}"></script>
        <script type="text/javascript" th:src="@{/js/flexible_css.js}"></script>
+        <script type="text/javascript" th:src="@{/js/util.js}"></script>
+        <script type="text/javascript" th:src="@{/js/wexinPay.js}"></script>
        
     </head>
     <body>  
@@ -38,8 +40,8 @@
               <div class="z_choiceone_content">
                   <div class="z_choiceone_top">
                                 <span class="z_cardshowone"><strong th:text="${card.cardName}">大吉大利卡</strong><br>
-                                    <b class="z_taocamnumber_price">￥<i  th:text="${card.price}/10">0</i></b>
-                                    <b  th:text="${'号码有效期:'+card.validTimeNumber+card.validTimeUnitName}">有效期：一年</b>
+                                    <b class="z_taocamnumber_price">￥<i  th:text="${card.price}/100">0</i></b>
+                                    <b >有效期：一年</b>
                                 </span>
                       <span class="z_choiceone_img">
                                     <img src="images/giftImage/cardimg_05.png">
@@ -104,6 +106,7 @@
           var openid=[[${openid}]];
           var clicktag = 0;  //微信支付标志
           var isHide=[[${isHideOldDiv}]];
+          var uidNumber;
           $(function(){
               var oldPrice = $(".z_taocamnumber_price i").text();
               $(".z_write_moeny").find("b").text(oldPrice);
@@ -150,15 +153,89 @@
                     if(isHide==false){
                         alert("请选择号码卡。");
                     }else{
-                        var message = $(".write_message").val();
-                        var cardId=[[${card.id}]];
-                        if(message==''){
-                            console.log("message:"+message);
-                            message="大吉大利，今晚有靓号"
-                        }
-                        window.location.href="/card_give.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message;
+                        justPay()
                     }
                 }
+          //支付
+          function justPay(){
+              if (clicktag == 0) {  //判断标志
+                  clicktag = 1;   //进行标志，防止多次点击
+                  setTimeout(function () {
+                      clicktag = 0
+                  }, 4000);
+                  var phone = "15043211581";
+                  uidNumber =randomNum(100,999)+phone+randomNum(100,999);
+                  console.log("uidNumber"+uidNumber);
+                  if (!util.validPhone(phone)) {
+                      //util.showText("不是有效的手机号码!",$(".z_successtext"));
+                      alert("不是有效的手机号码!");
+                      return;
+                  }
+                  var val = "￥"+$(".z_write_moeny").find("b").text();
+                  console.log("val"+val);
+                  var days = 365;
+                  var pay = {};
+                  pay.openid = openid;
+                  pay.totalFee = val;
+                  pay.phone = phone;
+                  pay.extend = 3;
+                  pay.days = days;
+                  pay.uidNumber = uidNumber;
+                  var json = payGiftUtil.payGiftOrder(pay);
+                  if (json.code != 200) {
+                      alert(json.msg);
+                      return;
+                  } else {
+                      json = json.data;
+                  }
+                  if (typeof WeixinJSBridge == "undefined") {
+                      if (document.addEventListener) {
+                          document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
+                      } else if (document.attachEvent) {
+                          document.attachEvent('WeixinJSBridgeReady', onBridgeReady(json));
+                          document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
+                      }
+                  } else {
+                      onBridgeReady(json)
+                  }
+              }
+          }
+          /** 微信支付  start **/
+          function onBridgeReady(json){
+              WeixinJSBridge.invoke(
+                  'getBrandWCPayRequest',json,
+                  function(res){
+                      if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                          var message = $(".write_message").val();
+                          var cardId=[[${card.id}]];
+                          if(message==''){
+                              console.log("message:"+message);
+                              message="大吉大利，今晚有靓号"
+                          }
+                          window.location.href="/card_give.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message+"&uidNumber="+uidNumber;
+                      }else {
+                          //console.log(res.err_msg);
+                          //alert("res.err_msg is:"+res.err_msg);
+                          //window.location.href="/oauth/regex/buy_zhizun.html?"+Math.random()*10;
+                      }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                  }
+              );
+          }
       </script>
+    <script>
+        function randomNum(minNum,maxNum){
+            switch(arguments.length){
+                case 1:
+                    return parseInt(Math.random()*minNum+1,10);
+                    break;
+                case 2:
+                    return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+                    break;
+                default:
+                    return 0;
+                    break;
+            }
+        }
+    </script>
     </body>     
 </html>

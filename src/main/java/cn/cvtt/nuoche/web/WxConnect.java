@@ -133,7 +133,7 @@ public class WxConnect {
             String phone=flag.get("phone");
             String operateType=flag.get("operateType");
             bind.setExpiretime(flag.get("days"));
-            /** 区分绑定、延期、解冻operateType,0,1,2**/
+            /** 区分绑定、延期、解冻、套餐卡购买（不选号）operateType,0,1,2,3**/
             Result  result=null;
             if(StringUtils.equals(operateType,"0")){
                 bind.setRegphone(phone);
@@ -295,7 +295,28 @@ public class WxConnect {
                         }
                     }
                 }
-            }
+            }//elseif over
+             else if(StringUtils.equals(operateType,"3")){
+                synchronized (obj) {
+                    LOGGER.info("[paySuccess]operateType is buy regex card......");
+                    //保存记录
+                    BusinessNumberRecord  record2=new BusinessNumberRecord();
+                    record2.setBusinessId(util.getBusinessKey());
+                    record2.setPrtms(phone);
+                    //临时95号
+                    record2.setSmbms(flag.get("uidnumber"));
+                    record2.setResult(1);
+                    record2.setCallrestrict(0+"");
+                    record2.setSubts(new Date());
+                    record2.setUserPhone(customer.getPhone());
+                    //有效时间
+                    Date validTime=DateUtils.addDay(new Date(),bind.getExpiretime());
+                    record2.setValidTime(validTime);
+                    //临时套餐id
+                    record2.setRegexId(255);
+                    businessNumberRecordRepository.save(record2);
+            }//elseif over(buy regex card)
+        }
         }
         /**  业务流程处理完成返回微信消息*/
         /** 微信返回通知结果**/

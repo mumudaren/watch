@@ -68,6 +68,8 @@ public class TestController extends  BaseController {
     @Autowired
     IGiftCardRepository giftCardRepository;
     @Autowired
+    IGiftCardRulesRepository giftCardRulesRepository;
+    @Autowired
     IGiftCardRecordRepository giftCardRecordRepository;
     @Autowired
     IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
@@ -369,7 +371,7 @@ public class TestController extends  BaseController {
         logger.info("[testRegexGift]isHideOldDiv is:"+isHideOldDiv);
         if(!StringUtils.equals(cardId,"noId")){
           long cardIdSearch=Long.parseLong(cardId);
-          GiftCard card=giftCardRepository.findByIdEquals(cardIdSearch);
+          GiftCardRules card=giftCardRulesRepository.findByIdEquals(cardIdSearch);
           //可购买的套餐名称
             JSONObject eachGiftArray= JSONObject.parseObject(card.getRegexId());
             //遍历套餐，获取套餐名字
@@ -381,18 +383,6 @@ public class TestController extends  BaseController {
             String finalRegexName=regexName.substring(0,regexName.length()-1);
             logger.info("[testRegexGift]finalRegexName is:"+finalRegexName);
             card.setRegexName(finalRegexName);
-            //判断有效期是年、月、日
-            switch(card.getValidTimeUnit()){
-                case 1:
-                    card.setValidTimeUnitName("日");
-                    break;
-                case 2:
-                    card.setValidTimeUnitName("月");
-                    break;
-                case 3:
-                    card.setValidTimeUnitName("年");
-                    break;
-            }
           model.addObject("card",card);
         }else{
             GiftCard card=new  GiftCard();
@@ -421,17 +411,15 @@ public class TestController extends  BaseController {
 //        JSONObject obj=new JSONObject();
 //        obj.put("三连号",1);
 //        obj.put("四连号",2);
-//        GiftCard giftCard=new GiftCard();
+//        GiftCardRules giftCard=new GiftCardRules();
 //        giftCard.setRegexId(obj.toString());
 //        giftCard.setCardName("大吉大利卡");
 //        giftCard.setCardType(1);
 //        giftCard.setPrice(5000);
-//        giftCard.setValidTimeNumber(1);
-//        giftCard.setValidTimeUnit(1);
-//        giftCardRepository.save(giftCard);
+//        giftCardRulesRepository.save(giftCard);
         //查询type是套餐卡的所有套餐
-        List<GiftCard>  giftCardList=giftCardRepository.findAllByCardTypeEquals(1);
-        for(GiftCard eachGift :giftCardList)
+        List<GiftCardRules>  giftCardList=giftCardRulesRepository.findAllByCardTypeEquals(1);
+        for(GiftCardRules eachGift :giftCardList)
         {
             JSONObject eachGiftArray= JSONObject.parseObject(eachGift.getRegexId());
             //遍历套餐，获取套餐名字
@@ -443,21 +431,6 @@ public class TestController extends  BaseController {
             String finalRegexName=regexName.substring(0,regexName.length()-1);
             logger.info("[testChooseRegex]finalRegexName is:"+finalRegexName);
             eachGift.setRegexName(finalRegexName);
-            //判断有效期是年、月、日
-            switch(eachGift.getValidTimeUnit()){
-                case 1:
-                    logger.info("[testChooseRegex]eachGift getValidTimeUnit is:"+1);
-                    eachGift.setValidTimeUnitName("日");
-                    break;
-                case 2:
-                    logger.info("[testChooseRegex]eachGift getValidTimeUnit is:"+2);
-                    eachGift.setValidTimeUnitName("月");
-                    break;
-                case 3:
-                    logger.info("[testChooseRegex]eachGift getValidTimeUnit is:"+3);
-                    eachGift.setValidTimeUnitName("年");
-                    break;
-            }
         }
         //遍历套餐id,查询套餐名字。
         model.addObject("giftCardList",giftCardList);
@@ -481,17 +454,26 @@ public class TestController extends  BaseController {
     @RequestMapping("/card_give.html")
     public  ModelAndView  cardGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
                                    @RequestParam(value ="cardId") String cardId,
+                                   @RequestParam(value ="uidNumber") String uidNumber,
                                    @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
+        GiftCardRules card=giftCardRulesRepository.findByIdEquals(Long.parseLong(cardId));
+        //支付成功后保存新购买卡片。
+        logger.info("[cardGive]uidNumber is:"+uidNumber);
+        GiftCard card2=new GiftCard();
+        card2.setRegexId(card.getRegexId());
+        card2.setPrice(card.getPrice());
+        card2.setCardName(card.getCardName());
+        card2.setCardType(card.getCardType());
+        card2.setNumber(uidNumber);
         //支付成功后将套餐卡信息保存数据库中
         GiftCardRecord giftCardRecord=new GiftCardRecord();
+        giftCardRecord.setCardId(giftCardRepository.saveAndFlush(card2).getId());
         giftCardRecord.setSenderOpenid(SenderOpenid);
         giftCardRecord.setMessage(message);
-        giftCardRecord.setCardId(Long.parseLong(cardId));
         giftCardRecord.setGetStatus(0);
         GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
         //加载分享页面所需要的数据。
-        GiftCard card=giftCardRepository.findByIdEquals(Long.parseLong(cardId));
         //可购买的套餐名称
         JSONObject eachGiftArray= JSONObject.parseObject(card.getRegexId());
         //遍历套餐，获取套餐名字
@@ -502,8 +484,8 @@ public class TestController extends  BaseController {
         }
         String finalRegexName=regexName.substring(0,regexName.length()-1);
         logger.info("[cardGive]finalRegexName is:"+finalRegexName);
-        card.setRegexName(finalRegexName);
-        model.addObject("card",card);
+        card2.setRegexName(finalRegexName);
+        model.addObject("card",card2);
         model.addObject("cardRecordId",cardRecordId.getId());
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
         model.addObject("user",user);
@@ -573,14 +555,15 @@ public class TestController extends  BaseController {
                                      @RequestParam(value ="number") String number,
                                      @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
-        //生成号码卡规则数据
+        //生成号码卡数据
         GiftCard giftCard=new GiftCard();
         giftCard.setCardName("号码卡");
         giftCard.setCardType(2);
         giftCard.setNumber(number);
         giftCard.setPrice(5000);
+        //有效期一年。
         giftCard.setValidTimeNumber(1);
-        giftCard.setValidTimeUnit(3);
+        giftCard.setValidTimeUnit(1);
         GiftCard Cardid=giftCardRepository.save(giftCard);
         //支付成功后将套餐卡信息保存数据库中
         GiftCardRecord giftCardRecord=new GiftCardRecord();
