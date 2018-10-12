@@ -1047,11 +1047,12 @@ public class TestController extends  BaseController {
         modelAndView.addObject("usePoints",usePoints);
         //抽奖次数,当前积分
         int times;
-        int userPoints;
+        int userPoints=userPointsInfo.getPointTotal();
+        int userPointsJS;
         if(userPointsInfo!=null){
-            userPoints=userPointsInfo.getPointTotal()-userPointsInfo.getPointUsed();
+            userPointsJS=userPointsInfo.getPointTotal()-userPointsInfo.getPointUsed();
             //计算可抽奖次数
-            double a=userPoints;
+            double a=userPointsJS;
             double b=usePoints;
             double c = a/b;
             times=(int)Math.floor(c);
@@ -1078,32 +1079,33 @@ public class TestController extends  BaseController {
     @RequestMapping("/lottery")
     @ResponseBody
     public  Result  lotteryMethod(String openid){
-        logger.info("openid:"+openid);
         BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
-        //查询当前九宫格所使用的活动
+        //查询当前九宫格所使用的活动。
         GiftAwardsRules activeNow=giftAwardsRulesRepository.findByIsAbleEquals(1);
-        //当前活动抽一次奖消耗的积分
+        //当前活动抽一次奖消耗的积分。
         int usePoints=activeNow.getPoints();
-        //根据openid查找用户当前积分数
+        //根据openid查找用户当前积分情况。
         GiftPoint userPointsInfo=giftPointRepository.findByOpenidEquals(openid);
-        //抽奖次数,当前积分，奖品index
+        //抽奖次数,当前积分，奖品index。
         int times;
-        int userPoints;
+        int userPoints=userPointsInfo.getPointTotal();
+        int userPointsJS;
         int resultIndex;
         if(userPointsInfo!=null){
-            userPoints=userPointsInfo.getPointTotal()-userPointsInfo.getPointUsed();
+            userPointsJS=userPointsInfo.getPointTotal()-userPointsInfo.getPointUsed();
             //计算可抽奖次数
-            double a=userPoints;
+            double a=userPointsJS;
             double b=usePoints;
             double c = a/b;
             times=(int)Math.floor(c);
-            logger.info("[lottery] shareGiftLottery]userPoints/usePoints=times:"+a+"/"+b+"="+times);
+            logger.info("[lottery]userPoints/usePoints=times:"+a+"/"+b+"="+times);
             if(times>0){
-                //活动奖品
+                //当前活动的所有活动奖品。
                 List<GiftAwards> awards=giftAwardsRepository.findByRulesIdOrderByIndexOrder(activeNow.getId());
                 //得到各奖品的概率列表
                 List<Double> orignalRates = new ArrayList<Double>(awards.size());
                 for (GiftAwards award : awards) {
+                    logger.info("[lottery]awards now:"+award.getGiftName());
                     //库存
                     Integer remainNumer = award.getStock();
                     //概率
@@ -1119,29 +1121,38 @@ public class TestController extends  BaseController {
                 //根据概率等计算奖品结果。
                 //根据概率产生奖品
                 GiftAwards tuple = new GiftAwards();
-                int index = LotteryUtil.lottery(orignalRates);
-                if (index>=0) {//中奖啦
-                    tuple= awards.get(index);
-                    //生成用户的抽奖记录。
-                    GiftAwardsRecords awardsRecords=new GiftAwardsRecords();
-                    awardsRecords.setAwardsId(tuple.getId());
-                    awardsRecords.setAwardsName(tuple.getGiftName());
-                    awardsRecords.setGetTime(new Date() );
-                    awardsRecords.setNickname(userInfo.getNickname());
-                    awardsRecords.setOpenid(openid);
-                    awardsRecords.setPhone(userInfo.getPhone());
-                    giftAwardsRecordRepository.saveAndFlush(awardsRecords);
+                int orignalRatesIndex = LotteryUtil.lottery(orignalRates);
+                logger.info("[lottery]orignalRatesIndex:"+orignalRatesIndex);
+                if (orignalRatesIndex>=0) {//中奖啦
+                    logger.info("[lottery]awards name:"+tuple.getGiftName());
+                    tuple= awards.get(orignalRatesIndex);
+                }else{
+                    //未中奖时，默认中奖产品为index为0的奖品。
+                    tuple=giftAwardsRepository.findByRulesIdEqualsAndIndexOrderEquals(activeNow.getId(),0);
                 }
+                //生成用户的抽奖记录。
+                GiftAwardsRecords awardsRecords=new GiftAwardsRecords();
+                awardsRecords.setAwardsId(tuple.getId());
+                awardsRecords.setAwardsName(tuple.getGiftName());
+                awardsRecords.setGetTime(new Date() );
+                awardsRecords.setNickname(userInfo.getNickname());
+                awardsRecords.setOpenid(openid);
+                awardsRecords.setPhone(userInfo.getPhone());
+                giftAwardsRecordRepository.saveAndFlush(awardsRecords);
                 //返回前台的奖品顺序（indexOrder）
                 resultIndex=tuple.getIndexOrder();
                 //减少奖品的库存。
                 tuple.setStock(tuple.getStock()-1);
                 giftAwardsRepository.saveAndFlush(tuple);
-                //修改用户本次使用的积分
+                //修改用户已使用的积分。
+                logger.info("a+b=c"+userPointsInfo.getPointUsed()+"+"+usePoints+"="+(userPointsInfo.getPointUsed()+usePoints));
                 userPointsInfo.setPointUsed(userPointsInfo.getPointUsed()+usePoints);
-                //抽奖后的剩余积分
+                //修改用户总积分，抽奖后的剩余积分
+                logger.info("userPoints-usePoints:"+userPoints+"-"+usePoints);
                 userPoints=userPoints-usePoints;
+                logger.info("setPointTotal:"+userPoints);
                 userPointsInfo.setPointTotal(userPoints);
+                logger.info("save userPointsInfo id:"+userPointsInfo.getId());
                 giftPointRepository.saveAndFlush(userPointsInfo);
                 //用户积分历史记录表变更。
                 GiftPointRecord userPointsRecord=new GiftPointRecord();
@@ -1149,6 +1160,7 @@ public class TestController extends  BaseController {
                 userPointsRecord.setOpenid(openid);
                 userPointsRecord.setResource(3);
                 userPointsRecord.setUpdateTime(new Date());
+                giftPointRecordRepository.saveAndFlush(userPointsRecord);
                 //剩余可抽奖次数
                 times=times-1;
                 //返回前台数据

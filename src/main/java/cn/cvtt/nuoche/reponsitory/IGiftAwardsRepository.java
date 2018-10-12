@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface IGiftAwardsRepository extends JpaRepository<GiftAwards,Long> {
     List<GiftAwards> findByRulesIdOrderByIndexOrder(Long rulesId);
+    GiftAwards findByRulesIdEqualsAndIndexOrderEquals(Long rulesId,Integer indexOrder);
 }
