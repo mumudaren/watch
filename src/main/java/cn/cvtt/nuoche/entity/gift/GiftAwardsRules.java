@@ -26,17 +26,21 @@ public class GiftAwardsRules {
     //是否是当前活动
     @Column(name="is_able")
     private  Integer  isAble;
+    //当前活动每次抽奖需要消耗的积分数
+    @Column(name="points")
+    private  Integer  points;
 
     public GiftAwardsRules() {
     }
 
-    public GiftAwardsRules(Long id, String name, String createBy, String description, Date createTime, Integer isAble) {
+    public GiftAwardsRules(Long id, String name, String createBy, String description, Date createTime, Integer isAble,Integer  points) {
         this.id = id;
         this.name = name;
         this.createBy = createBy;
         this.description = description;
         this.createTime = createTime;
         this.isAble = isAble;
+        this.points = points;
 
     }
 
@@ -86,5 +90,13 @@ public class GiftAwardsRules {
 
     public void setIsAble(Integer isAble) {
         this.isAble = isAble;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
     }
 }

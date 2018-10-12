@@ -17,27 +17,17 @@
     <body>  
       <div class="wrap lottery_wrap">
           <div class="f_lotterybj" id="lottery">
-            <ul>
-                <li class="lotter_list">iphone</li>
-                <li class="lotter_list">iwatch</li>
-                <li class="lotter_list">ipad</li>
-                <li class="lotter_list">1000积分</li>
-                <li>
-                    <img src="images/giftImage/lottery_03.png">
-                </li>
-                <li class="lotter_list">200积分</li>
-                <li class="lotter_list">20元代金券</li>
-                <li class="lotter_list">1000元代金券</li>
-                <li class="lotter_list">10元代金券</li>
+            <ul >
+                <li class="lotter_list" th:each="award:${awards}">  <img  th:src="${award.imgurl}"  width="160px" height="110px"></li>
             </ul>
           </div> 
           <div class="f_lottery_prize">
-                <span>当前您有<em>200积分</em>，可抽奖<b style="font-weight: normal;">2</b>次</span>
+                <span>当前您有<em th:text="${userPoints}">200</em>积分，可抽奖<b style="font-weight: normal;" th:text="${times}">2</b>次</span>
           </div>
           <div class="f_lottery_rule">
                 <p>规则说明</p>
                 <p>
-                    1、每次抽奖使用100积分<br />
+                    1、每次抽奖使用<span th:text="${usePoints}">100</span>积分<br />
                     2、如何获得积分，你可以分享给朋友，朋友领取后将获得10积分<br />
                     3、最终解释权归天舟通信所有
                 </p>
@@ -46,9 +36,16 @@
 
 
       <script th:inline="javascript">
-          var clickNumber=[[${clickNumber}]];
+          var clickNumber=[[${times}]];
           var openid=[[${openid}]];
-          var indexFinal =[[${index}]];
+          var indexFinal;
+          $(document).ready(function () {
+             var html ="<li>"+
+                  "<img src='images/giftImage/lottery_03.png'>" +
+                  "</li>";
+              var li = $("#lottery ul li:eq(3)");
+              li.after(html);
+          });
                 var lottery={
                     index:-1,	//当前转动到哪个位置，起点位置
                     count:0,	//总共有多少个位置
@@ -97,8 +94,8 @@
                         lottery.times=0;
                         click=false;
                         //显示中奖信息。
-                        this.prizeName = $lottery.find("ul li.lotter_list").eq(lottery.index).text();
-                        $(".f_lottery_prize").find("span em").text(this.prizeName);
+                        //this.prizeName = $lottery.find("ul li.lotter_list").eq(lottery.index).text();
+                        //$(".f_lottery_prize").find("span em").text(this.prizeName);
                     }else{
                         //抽奖50次以内。
                         if (lottery.times<lottery.cycle) {
@@ -129,22 +126,40 @@
                     lottery.init('lottery');
                     //点击抽奖。
                     $("#lottery ul li:eq(4)").click(function(){
-                        clickNum++;
-                        if(clickNum<=clickNumber){
-                            if (click) {
-                                    return false;
-                                }else{
-                                    //转速变为100
+                        $.ajax({
+                            url: "/lottery",
+                            type: "POST",
+                            data: {openid:openid},
+                            dataType: "JSON",
+                            success:function (response) {
+                                console.log("code"+response.code);
+                                console.log("openid"+openid);
+                                if (response.code == 200) {
                                     lottery.speed=100;
+                                    var resultArr = response.data;
+                                    var resultIndex = resultArr.resultIndex;
+                                    var resultTimes = resultArr.times;
+                                    var resultPoints = resultArr.userPoints;
+                                    console.log("resultIndex,resultTimes,resultPoints:"+resultIndex+","+resultTimes+","+resultPoints);
+                                    indexFinal=resultIndex;
+                                    $(".f_lottery_prize").find("span em").text(resultPoints);
+                                    $(".f_lottery_prize").find("span b").text(resultTimes);
                                     roll();
-                                    click=true;
-                                    reduceNum--;                                    
-                                    $(".f_lottery_prize").find("span b").text(reduceNum);
-                                    return false;  
+                                }else{
+                                    alert('抱歉，积分不足，欢迎参与更多活动获得积分。');
                                 }
-                        }else{
-                            alert('抱歉，今日2次机会已用完！');
-                        } 
+                            }
+                            ,error:function () {
+                                alert('抱歉，积分不足，欢迎参与更多活动获得积分。');
+                            }
+                        });
+
+
+
+
+
+
+
                     });
                 };
       </script>

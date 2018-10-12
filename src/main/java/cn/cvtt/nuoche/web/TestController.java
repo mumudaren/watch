@@ -23,18 +23,22 @@ import com.alibaba.fastjson.JSONObject;
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import cn.cvtt.nuoche.server.WxServer;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -74,6 +78,10 @@ public class TestController extends  BaseController {
     IGiftCardRecordRepository giftCardRecordRepository;
     @Autowired
     IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
+    @Autowired
+    IGiftAwardsRulesRepository giftAwardsRulesRepository;
+    @Autowired
+    IGiftAwardsRepository giftAwardsRepository;
     @Autowired  private NumberServiceImpl numberService;
     @Resource
     private QrcodeService qrcodeService;
@@ -1016,22 +1024,105 @@ public class TestController extends  BaseController {
         return  model;
     }
 
+
+    //抽奖
+    @RequestMapping("/testLottery")
+    public  ModelAndView  testLottery( @RequestParam(value = "openid",defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
+        ModelAndView  modelAndView=new ModelAndView();
+        modelAndView.addObject("openid",openid);
+        //查询当前九宫格所使用的活动
+        GiftAwardsRules activeNow=giftAwardsRulesRepository.findByIsAbleEquals(1);
+        //加载当前活动奖品图片。
+        logger.info("activeNow index:"+activeNow.getId());
+        List<GiftAwards> awards=giftAwardsRepository.findByRulesIdOrderByIndexOrder(activeNow.getId());
+        logger.info("GiftAwards :"+awards.toString());
+        modelAndView.addObject("awards",awards);
+        //当前活动所需要消耗的积分
+        int usePoints=activeNow.getPoints();
+        //根据openid查找用户当前积分数
+        GiftPoint userPointsInfo=giftPointRepository.findByOpenidEquals(openid);
+        modelAndView.addObject("usePoints",usePoints);
+        //抽奖次数,当前积分
+        int times;
+        int userPoints;
+        if(userPointsInfo!=null){
+            userPoints=userPointsInfo.getPointTotal()-userPointsInfo.getPointUsed();
+            //计算可抽奖次数
+            double a=userPoints;
+            double b=usePoints;
+            double c = a/b;
+            times=(int)Math.floor(c);
+            logger.info("[ouathController shareGiftLottery]userPoints/usePoints=times:"+a+"/"+b+"="+times);
+        }else{
+            //用户未获得过积分
+            times=0;
+            userPoints=0;
+        }
+        modelAndView.addObject("openid",openid);
+        modelAndView.addObject("times",times);
+        modelAndView.addObject("userPoints",userPoints);
+        modelAndView.setViewName("shareGift/lottery");
+        return modelAndView;
+
+    }
+
+
     //抽奖
     @RequestMapping("/lottery")
-    public  ModelAndView  lottery( @RequestParam(value = "openid",defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
-        ModelAndView  model=new ModelAndView();
-        model.addObject("openid",openid);
-        GiftPoint userPointSearch=giftPointRepository.findByOpenidEquals(openid);
-        //计算可抽奖次数
-        double oldPoint=userPointSearch.getPointTotal();
-        double a=10;
-        double times = oldPoint/a;
-        int clickNumber=(int)Math.floor(times);
-        model.addObject("clickNumber",clickNumber);
-        model.addObject("index",4);
-        model.setViewName("shareGift/lottery");
-        return  model;
+    @ResponseBody
+    public  Result  lotteryMethod(String openid){
+        logger.info("openid:"+openid);
+        //查询当前九宫格所使用的活动
+        GiftAwardsRules activeNow=giftAwardsRulesRepository.findByIsAbleEquals(1);
+        //当前活动抽一次奖消耗的积分
+        int usePoints=activeNow.getPoints();
+        //根据openid查找用户当前积分数
+        GiftPoint userPointsInfo=giftPointRepository.findByOpenidEquals(openid);
+        //抽奖次数,当前积分，奖品index
+        int times;
+        int userPoints;
+        int resultIndex;
+        if(userPointsInfo!=null){
+            userPoints=userPointsInfo.getPointTotal()-userPointsInfo.getPointUsed();
+            //计算可抽奖次数
+            double a=userPoints;
+            double b=usePoints;
+            double c = a/b;
+            times=(int)Math.floor(c);
+            logger.info("[lottery] shareGiftLottery]userPoints/usePoints=times:"+a+"/"+b+"="+times);
+            if(times>0){
+                //根据概率等计算奖品结果。
+                resultIndex=2;
+                //剩余积分
+                userPoints=userPoints-usePoints;
+                //剩余可抽奖次数
+                times=times-1;
+                //返回前台数据
+                Map<String,Object> map=new HashMap<>();
+                map.put("resultIndex",resultIndex);
+                map.put("times",times);
+                map.put("userPoints",userPoints);
+                return  new Result(ResultMsg.OPERATESUCEESS,map);
+            }else{
+                resultIndex=0;
+                times=0;
+            }
+        }else{
+            //用户未获得过积分
+            resultIndex=0;
+            times=0;
+            userPoints=0;
+        }
+        //返回前台数据
+        Map<String,Object> map=new HashMap<>();
+        map.put("resultIndex",resultIndex);
+        map.put("times",times);
+        map.put("userPoints",userPoints);
+        return  new Result(ResultMsg.OPERATEXCEPTIN,map);
     }
+
+
+
 
     @RequestMapping("/OwnerSafeNumber.html")
     public ModelAndView  OwnerSafeNumber( ){
@@ -1097,6 +1188,218 @@ public class TestController extends  BaseController {
             model.addObject("will",will);
             model.addObject("expired",expired);
        }
+
+    /**
+     * 抽奖
+     *
+     * @return
+     */
+//    @RequestMapping(value = "/getAwards", method = { RequestMethod.GET,
+//            RequestMethod.POST })
+//    @ResponseBody
+//    public Result getAwards(@RequestParam WeixinDto weixinDto,
+//                              HttpServletRequest request) {
+//        JSONObject  resultData=new JSONObject();
+//
+//        logger.info(request+"getAwards parameter WeixinDto={}."+weixinDto );
+//        // 获取活动ID
+//        String actId = weixinDto.getActId();
+//        try {
+//            // 参数验证
+//            validateWeixinDtoParam(weixinDto);
+//            if (weixinDto.getOpenid() != null) {
+//                String openId=weixinDto.getOpenid();
+//                String nickname = WeiXinHttpUtil.getNickName(
+//                        weixinDto.getOpenid(), jwid);
+//                weixinDto.setNickname(EmojiFilter.filterEmoji(nickname));
+//            }
+//            // 获取活动信息
+//            WxActJiugongge wxActJiugongge = wxActJiugonggeService
+//                    .queryById(weixinDto.getActId());
+//            //--update-end---author:huangqingquan---date:20161125-----for:是否关注可参加---------------
+//            if("1".equals(wxActJiugongge.getBindingMobileCanJoin())){//如果活动设置了需要绑定手机号才能参加
+//                // 获取绑定手机号
+//                String bindPhone = getBindPhone(weixinDto.getOpenid(),jwid);
+//                // 判断是否绑定了手机号
+//                if (StringUtils.isEmpty(bindPhone)) {
+//                    j.setSuccess(false);
+//                    j.setObj("isNotBind");
+//                    return j;
+//                }
+//            }
+//            // 判断总抽奖次数是否用完
+//            Date currDate = new Date();
+//            List<WxActJiugonggeRecord> bargainRecordList = wxActJiugonggeRecordService
+//                    .queryBargainRecordListByOpenidAndActidAndJwid(
+//                            weixinDto.getOpenid(), weixinDto.getActId(),
+//                            weixinDto.getJwid(), null);
+//            if (bargainRecordList != null&&wxActJiugongge.getCount()!=null&&wxActJiugongge.getCount()!=0
+//                    && bargainRecordList.size() >= wxActJiugongge.getCount()) {
+//                System.err.println(bargainRecordList.size());
+//                throw new JiugonggeException(
+//                        JiugonggeExceptionEnum.DATA_EXIST_ERROR,systemActTxtService.queryActTxtByCode(
+//                        "controller.exception.nocount",
+//                        weixinDto.getActId()));
+//            }
+//            if(wxActJiugongge.getNumPerDay()!= 0){	//每天次数设置为0，代表不限制每天抽奖次数，如果不等于0代表限制了每天抽奖次数
+//                bargainRecordList = wxActJiugonggeRecordService
+//                        .queryBargainRecordListByOpenidAndActidAndJwid(
+//                                weixinDto.getOpenid(), weixinDto.getActId(),
+//                                weixinDto.getJwid(), currDate);
+//                if (bargainRecordList != null
+//                        && bargainRecordList.size() >= wxActJiugongge
+//                        .getNumPerDay()) {
+//                    throw new JiugonggeException(
+//                            JiugonggeExceptionEnum.DATA_EXIST_ERROR,systemActTxtService.queryActTxtByCode(
+//                            "controller.exception.nownocount",
+//                            weixinDto.getActId()));
+//                }
+//            }
+//            //生成用户的抽奖记录
+//            WxActJiugonggeRecord wxActJiugonggeRecord = new WxActJiugonggeRecord();
+//            wxActJiugonggeRecord.setId(RandomUtils.generateID());
+//            wxActJiugonggeRecord.setActId(weixinDto.getActId());
+//            wxActJiugonggeRecord.setNickname(weixinDto.getNickname());
+//            wxActJiugonggeRecord.setOpenid(weixinDto.getOpenid());
+//            wxActJiugonggeRecord.setJwid(weixinDto.getJwid());
+//            //update-begin--Author:zhangweijian  Date: 20180413 for:修改抽奖时间,默认未中奖
+//            wxActJiugonggeRecord.setAwardTime(new Date());
+//            wxActJiugonggeRecord.setAwardStatus("0");
+//            //update-begin--Author:zhangweijian  Date: 20180413 for:修改抽奖时间，默认未中奖
+//            Map<String,Object> map = new HashMap<String,Object>();
+//            //为用户抽取活动奖品
+//            if("0".equals(wxActJiugongge.getPrizeStatus())){//中奖可继续参与
+//                //活动奖品
+//                List<WxActJiugonggePrizes> awards = wxActJiugonggePrizesService
+//                        .queryRemainAwardsByActId(weixinDto.getActId());
+//                //得到各奖品的概率列表
+//                List<Double> orignalRates = new ArrayList<Double>(awards.size());
+//                for (WxActJiugonggePrizes award : awards) {
+//                    Integer remainNum = award.getRemainNum();
+//                    Double probability = award.getProbability();
+//                    if (remainNum==null||remainNum <= 0) {//剩余数量为零，需使它不能被抽到
+//                        probability = new Double(0);
+//                    }
+//                    if(probability==null){
+//                        probability = new Double(0);
+//                    }
+//                    orignalRates.add(probability);
+//                }
+//                //根据概率产生奖品
+//                WxActJiugonggePrizes tuple = new WxActJiugonggePrizes();
+//                int index = LotteryUtil.lottery(orignalRates);
+//                if (index>=0) {//中奖啦
+//                    tuple= awards.get(index);
+//                    wxActJiugonggeRecord.setAwardsId(tuple.getAwardId());
+//                    //update-begin--Author:zhangweijian  Date: 20180413 for:随机生成兑奖码，默认领奖状态为0
+//                    wxActJiugonggeRecord.setAwardStatus("1");
+//                    wxActJiugonggeRecord.setRecieveStatus("0");
+//                    String awardCode="";
+//                    for(int i=0;i<3;i++){
+//                        awardCode=getCoupon();
+//                        //判断新生成的兑奖码是否存在
+//                        WxActJiugonggeRecord codeRecord=wxActJiugonggeRecordService.queryByActIdAndawardCode(actId,awardCode);
+//                        if(codeRecord==null){
+//                            break;
+//                        }
+//                        if(i==2){
+//                            throw new JiugonggeException(JiugonggeExceptionEnum.SYS_ERROR);
+//                        }
+//                    }
+//                    wxActJiugonggeRecord.setAwardCode(awardCode);
+//                    //update-end--Author:zhangweijian  Date: 20180413 for:随机生成兑奖码，默认领奖状态为0
+//                    map.put("index", index+1);
+//                }
+//            }else{//一旦中奖不可继续参与
+//                // 中奖记录
+//                bargainRecordList  = wxActJiugonggeRecordService
+//                        .queryMyAwardsByOpenidAndActidAndJwid(
+//                                weixinDto.getOpenid(), weixinDto.getActId(),
+//                                weixinDto.getJwid());
+//                if (bargainRecordList.size()==0) {//未曾中过奖项可继续正常参与抽奖
+//                    //活动奖品
+//                    List<WxActJiugonggePrizes> awards = wxActJiugonggePrizesService
+//                            .queryRemainAwardsByActId(weixinDto.getActId());
+//                    //得到各奖品的概率列表
+//                    List<Double> orignalRates = new ArrayList<Double>(awards.size());
+//                    for (WxActJiugonggePrizes award : awards) {
+//                        Integer remainNum = award.getRemainNum();
+//                        Double probability = award.getProbability();
+//                        if (remainNum==null||remainNum <= 0) {//剩余数量为零，需使它不能被抽到
+//                            probability = new Double(0);
+//                        }
+//                        if(probability==null){
+//                            probability = new Double(0);
+//                        }
+//                        orignalRates.add(probability);
+//                    }
+//                    //根据概率产生奖品
+//                    WxActJiugonggePrizes tuple = new WxActJiugonggePrizes();
+//                    Integer index = LotteryUtil.lottery(orignalRates);
+//                    if (index!=null&&index>=0) {//中奖啦
+//                        tuple= awards.get(index);
+//                        wxActJiugonggeRecord.setAwardsId(tuple.getAwardId());
+//                        //update-begin--Author:zhangweijian  Date: 20180413 for:随机生成兑奖码
+//                        wxActJiugonggeRecord.setAwardStatus("1");
+//                        wxActJiugonggeRecord.setRecieveStatus("0");
+//                        String awardCode="";
+//                        for(int i=0;i<3;i++){
+//                            awardCode=getCoupon();
+//                            //判断新生成的兑奖码是否存在
+//                            WxActJiugonggeRecord codeRecord=wxActJiugonggeRecordService.queryByActIdAndawardCode(actId,awardCode);
+//                            if(codeRecord==null){
+//                                break;
+//                            }
+//                            if(i==2){
+//                                throw new JiugonggeException(JiugonggeExceptionEnum.SYS_ERROR);
+//                            }
+//                        }
+//                        wxActJiugonggeRecord.setAwardCode(awardCode);
+//                        //update-end--Author:zhangweijian  Date: 20180413 for:随机生成兑奖码
+//                        map.put("index", index+1);
+//                    }
+//                }
+//            }
+//
+//
+//            WxActJiugonggePrizes wxActJiugonggePrize = wxActJiugonggeRecordService.creatAwards(wxActJiugonggeRecord);
+//            j.setSuccess(true);
+//            String basePath = request.getContextPath();
+//            map.put("basePath",basePath);
+//            map.put("wxActJiugonggeRecord",wxActJiugonggeRecord);
+//            map.put("wxActJiugonggePrize", wxActJiugonggePrize);
+//
+//            j.setAttributes(map);
+//
+//            j.setObj(wxActJiugonggePrize);
+//        } catch (JiugonggeException e) {
+//            e.printStackTrace();
+//            j.setSuccess(false);
+//            j.setMsg(e.getMessage());
+//            LOG.error("bargain error:{}", e.getMessage());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            j.setSuccess(false);
+//            j.setMsg("很遗憾，您未中奖!");
+//            LOG.error("bargain error:{}", e.getMessage());
+//        }
+//        return j;
+//    }
+//
+//    private void validateWeixinDtoParam(WeixinDto weixinDto) {
+//        if (StringUtils.isEmpty(weixinDto.getActId())) {
+//            throw new JiugonggeException(JiugonggeExceptionEnum.ARGUMENT_ERROR,
+//                    "活动ID不能为空");
+//        }
+//        if (StringUtils.isEmpty(weixinDto.getOpenid())) {
+//            throw new JiugonggeException(JiugonggeExceptionEnum.ARGUMENT_ERROR,
+//                    "参与人openid不能为空");
+//        }
+//        if (StringUtils.isEmpty(weixinDto.getJwid())) {
+//            throw new JiugonggeException(JiugonggeExceptionEnum.ARGUMENT_ERROR,
+//                    "微信ID不能为空");
+//        }
+//    }
 
 
 }

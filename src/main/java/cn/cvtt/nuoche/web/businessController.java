@@ -71,6 +71,8 @@ public class businessController extends  BaseController{
     IGiftCouponRepository giftCouponRepository;
     @Autowired
     IGiftCardRepository giftCardRepository;
+    @Autowired
+    IGiftAwardsRulesRepository giftAwardsRulesRepository;
     @Resource
     private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(businessController.class);

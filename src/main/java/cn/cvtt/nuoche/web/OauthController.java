@@ -7,10 +7,13 @@ import cn.cvtt.nuoche.entity.WeixinOauth2Token;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.wx_product;
+import cn.cvtt.nuoche.entity.gift.GiftAwards;
+import cn.cvtt.nuoche.entity.gift.GiftAwardsRules;
 import cn.cvtt.nuoche.entity.gift.GiftCard;
 import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
 import cn.cvtt.nuoche.entity.gift.GiftCoupon;
 import cn.cvtt.nuoche.entity.gift.GiftCouponQrcode;
+import cn.cvtt.nuoche.entity.gift.GiftPoint;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
 import cn.cvtt.nuoche.reponsitory.*;
@@ -60,6 +63,12 @@ public class OauthController extends  BaseController{
     IGiftCardRepository giftCardRepository;
     @Autowired
     IGiftCardRecordRepository giftCardRecordRepository;
+    @Autowired
+    IGiftAwardsRulesRepository giftAwardsRulesRepository;
+    @Autowired
+    IGiftAwardsRepository giftAwardsRepository;
+    @Autowired
+    IGiftPointRepository giftPointRepository;
     @Resource
     private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(OauthController.class);
@@ -712,6 +721,40 @@ public class OauthController extends  BaseController{
         }else if(StringUtils.equals(state,"giftCard")){
             modelAndView.addObject("openid",openId);
             modelAndView.setViewName("shareGift/gift");
+        }else if(StringUtils.equals(state,"shareGiftLottery")){
+            /***==> 九宫格抽奖页面*/
+            modelAndView.addObject("openid",openId);
+            //查询当前九宫格所使用的活动
+            GiftAwardsRules activeNow=giftAwardsRulesRepository.findByIsAbleEquals(1);
+            //加载当前活动奖品图片。
+            List<GiftAwards> awards=giftAwardsRepository.findByRulesIdOrderByIndexOrder(activeNow.getId());
+            modelAndView.addObject("awards",awards);
+            //当前活动所需要消耗的积分
+            int usePoints=activeNow.getPoints();
+            modelAndView.addObject("usePoints",usePoints);
+            //根据openid查找用户当前积分数
+            GiftPoint userPointsInfo=giftPointRepository.findByOpenidEquals(openId);
+            //抽奖次数,当前积分
+            int times;
+            int userPoints;
+            if(userPointsInfo!=null){
+                userPoints=userPointsInfo.getPointTotal()-userPointsInfo.getPointUsed();
+                //计算可抽奖次数
+                double a=userPoints;
+                double b=usePoints;
+                double c = a/b;
+                times=(int)Math.floor(c);
+                logger.info("[ouathController shareGiftLottery]userPoints/usePoints=times:"+a+"/"+b+"="+times);
+            }else{
+                //用户未获得过积分
+                times=0;
+                userPoints=0;
+            }
+            modelAndView.addObject("openid",openId);
+            modelAndView.addObject("times",times);
+            modelAndView.addObject("userPoints",userPoints);
+            modelAndView.setViewName("shareGift/lottery");
+
         }
 
         return modelAndView;
