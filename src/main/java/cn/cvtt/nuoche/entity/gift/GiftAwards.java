@@ -22,7 +22,7 @@ public class GiftAwards {
     private  String  giftName;
     //概率
     @Column(name="probability")
-    private  Integer  probability;
+    private  Double  probability;
     //图片位置索引
     @Column(name="indexOrder")
     private  Integer  indexOrder;
@@ -34,7 +34,7 @@ public class GiftAwards {
     }
 
     public GiftAwards(Long id, Long rulesId, String imgurl, String giftName,
-                      Integer probability, Integer index,Integer stock) {
+                      Double probability, Integer indexOrder,Integer stock) {
         this.id = id;
         this.rulesId = rulesId;
         this.imgurl = imgurl;
@@ -76,11 +76,11 @@ public class GiftAwards {
         this.giftName = giftName;
     }
 
-    public Integer getProbability() {
+    public Double getProbability() {
         return probability;
     }
 
-    public void setProbability(Integer probability) {
+    public void setProbability(Double probability) {
         this.probability = probability;
     }
 

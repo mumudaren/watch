@@ -17,7 +17,7 @@ public class GiftPointRecord {
     private  Long    id;
     @Column(name="openid")
     private  String  openid;
-    //1好友扫码领取,2每日分享
+    //1好友扫码领取,2每日分享,3抽奖
     @Column(name="resource")
     private  Integer  resource;
     @Column(name="change_point")
