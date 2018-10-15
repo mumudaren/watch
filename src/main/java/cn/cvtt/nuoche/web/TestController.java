@@ -1225,7 +1225,7 @@ public class TestController extends  BaseController {
         Map<String,String> map=new HashMap<>();
         map.put("openid",openid);
         model.addObject("user",map);
-        model.setViewName("my_safenumber");
+        model.setViewName("shareGift/my_safenumber");
         return model;
     }
 
