@@ -655,7 +655,7 @@ public class TestController extends  BaseController {
     //gift扫描二维码后领取页面
     @RequestMapping("/qrcodeAfter")
     public ModelAndView  qrcodeAfter(@RequestParam("cardRecordId") Long cardRecordId,
-                                     @RequestParam(value = "openid",defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
+                                     @RequestParam(value = "openid",defaultValue = "oIFn9005fexvo3QP1HIBaQozdf7Q") String openid){
         ModelAndView  model=new ModelAndView();
         //查询giftCardRecord
         GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(cardRecordId);
