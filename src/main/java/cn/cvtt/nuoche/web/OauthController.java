@@ -395,7 +395,8 @@ public class OauthController extends  BaseController{
                 modelAndView.addObject("phone",regphone);
             }
         }else {
-            modelAndView.setViewName("my_safenumber");
+            //查看我的95号
+            modelAndView.setViewName("shareGift/my_safenumber");
             BusinessCustomer  userInfo=businessCusRepository.findByOpenidEquals(openId);
             //WxUserInfo userInfo=userRepository.findByOpenidEquals(openId);
             String  url= userInfo.getHeadimgurl();
