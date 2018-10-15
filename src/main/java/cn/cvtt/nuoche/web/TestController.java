@@ -412,6 +412,8 @@ public class TestController extends  BaseController {
         }
         model.addObject("giftRecord",giftRecordList);
         model.addObject("openid",openid);
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(openid);
+        model.addObject("userPhone",user.getPhone());
         model.setViewName("shareGift/gift_card");
         return  model;
     }
@@ -575,18 +577,22 @@ public class TestController extends  BaseController {
         }
         model.addObject("giftRecord",giftRecordList);
         if(!StringUtils.equals(chooseNumber,"0")){
+            //选择号码后
             logger.info("[testNumberRegex]pram are:"+util.getBusinessKey()+","+chooseNumber);
             String number=numberInterface.searchNumber(util.getBusinessKey(),chooseNumber);
             Map<String,String> mapNumber=JsonUtils.handlerOriginalNumberJson(number);
             model.addObject("mapNumber",mapNumber);
             logger.info("[testNumberRegex]mapNumber is:"+mapNumber);
         }else{
+            //未选择号码
             Map<String,String> mapNumber=new HashMap<>();
             mapNumber.put("number","");
             mapNumber.put("numberPrice","0");
             model.addObject("mapNumber",mapNumber);
         }
         model.addObject("openid",openid);
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(openid);
+        model.addObject("userPhone",user.getPhone());
         model.addObject("isHideOldDiv",isHideOldDiv);
         model.setViewName("shareGift/gift_number");
         return  model;

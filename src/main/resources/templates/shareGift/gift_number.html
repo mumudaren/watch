@@ -98,6 +98,7 @@
       </div>
       <script th:inline="javascript">
               var openid = [[${openid}]];
+              var userPhone = [[${userPhone}]];
               var isHide=[[${isHideOldDiv}]];
               var clicktag = 0;  //微信支付标志
               $(function(){
@@ -156,7 +157,7 @@
                       setTimeout(function () {
                           clicktag = 0
                       }, 4000);
-                      var phone = "15043211581";
+                      var phone =userPhone;
                       var uidNumber =[[${mapNumber.number}]];
                       if (!util.validPhone(phone)) {
                           //util.showText("不是有效的手机号码!",$(".z_successtext"));

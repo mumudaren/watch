@@ -104,6 +104,7 @@
 
       <script th:inline="javascript">
           var openid=[[${openid}]];
+          var userPhone = [[${userPhone}]];
           var clicktag = 0;  //微信支付标志
           var isHide=[[${isHideOldDiv}]];
           var uidNumber;
@@ -164,7 +165,7 @@
                   setTimeout(function () {
                       clicktag = 0
                   }, 4000);
-                  var phone = "15043211581";
+                  var phone = userPhone;
                   uidNumber =randomNum(100,999)+phone+randomNum(100,999);
                   console.log("uidNumber"+uidNumber);
                   if (!util.validPhone(phone)) {
