@@ -468,7 +468,7 @@ public class OauthController extends  BaseController{
         return "redirect:" + requestUrl;
     }
     /**
-     * gift页面需要基本授权的请求
+     * gift页面需要基本授权的请求（不含有参数的页面）
      * @param path
      * @return
      */
@@ -485,7 +485,24 @@ public class OauthController extends  BaseController{
         return "redirect:" + requestUrl;
     }
     /**
-     * gift页面需要基本授权的请求
+     * gift页面需要基本授权的请求，需要一个参数，gift扫描二维码后领取页面
+     * @param path
+     * @return
+     */
+    @RequestMapping("/oauth/gift/{path}/{cardRecordId}")
+    public String qrcodeAfterGift(@PathVariable String path,@PathVariable Long cardRecordId) {
+        logger.info("[qrcodeAfterGift]path:"+path);
+        String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
+        String state=path+"_"+cardRecordId;
+        requestUrl = requestUrl.replace("APPID", Constant.APP_ID)
+                .replace("REDIRECT_URI", HttpClientUtil.urlEncodeUTF8(util.getUrl() + "/oauth/gift"))
+                .replace("SCOPE", "snsapi_base")
+                .replace("STATE", state);
+        logger.info("[redirectGift]requestUrl:::"+requestUrl);
+        return "redirect:" + requestUrl;
+    }
+    /**
+     * gift页面需要基本授权的请求,转发朋友圈后跳转页面,含有两个参数
      * @param path
      * @return
      */
@@ -573,6 +590,45 @@ public class OauthController extends  BaseController{
             modelAndView.addObject("coupon",coupon);
             modelAndView.addObject("openid",openId);
             modelAndView.setViewName("shareGift/share_number_info");
+        }else if(StringUtils.equals(StringUtils.substringBefore(state,"_"),"qrcodeAfter")){
+            /***==> gift扫描二维码后领取套餐卡、号码卡的页面*/
+            String cardRecordId=StringUtils.substringAfterLast(state,"_");
+            String openid=openId;
+            //查询giftCardRecord
+            GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(Long.parseLong(cardRecordId));
+            //根据cardType的不同跳转到不同的显示页面,套餐卡或者号码卡。
+            Long cardId=giftCardRecord.getCardId();
+            GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
+            if(giftCard.getCardType()==1){
+                //可购买的套餐名称
+                JSONObject eachGiftArray= JSONObject.parseObject(giftCard.getRegexId());
+                //遍历套餐，获取套餐名字
+                String regexName="";
+                for(String str:eachGiftArray.keySet()){
+                    regexName=regexName+str+",";
+                    logger.info("[qrcodeAfter]eachGiftRegex is:"+regexName);
+                }
+                String finalRegexName=regexName.substring(0,regexName.length()-1);
+                logger.info("[qrcodeAfter]finalRegexName is:"+finalRegexName);
+                giftCard.setRegexName(finalRegexName);
+                modelAndView.addObject("card",giftCard);
+                BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+                modelAndView.addObject("user",user);
+                modelAndView.addObject("openid",openid);
+                modelAndView.addObject("giftCardRecord",giftCardRecord);
+                modelAndView.setViewName("shareGift/recive_card");
+                //model.setViewName("shareGift/card_qrcode");
+            }else{
+                //加载分享页面所需要的数据。
+                modelAndView.addObject("card",giftCard);
+                BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+                //senderUser
+                modelAndView.addObject("user",user);
+                modelAndView.addObject("giftCardRecord",giftCardRecord);
+                modelAndView.setViewName("shareGift/recive_gift");
+                //model.setViewName("shareGift/gift_qrcode");
+            }
+
         }else if(StringUtils.equals(state,"history")){
             /***==> 套餐卡等历史记录*/
             //根据openId查询记录

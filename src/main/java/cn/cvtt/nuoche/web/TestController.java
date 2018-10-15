@@ -639,10 +639,11 @@ public class TestController extends  BaseController {
         String type=StringUtils.substringAfter(id,"_");
         String realId=StringUtils.substringBefore(id,"_");
         if(StringUtils.equals(type,"card") ){
-            //根据二维码找到相应的记录。
+            //根据二维码id找到相应的卡片记录。
             GiftCardRecord giftCardRecord = giftCardRecordRepository.findByQrcodeEquals(realId);
             Long cardRecordId=giftCardRecord.getId();
-            return  "redirect:"+"qrcodeAfter?cardRecordId="+cardRecordId;
+            return  "redirect:"+"/oauth/gift/qrcodeAfter/"+cardRecordId;
+            //return  "redirect:"+"qrcodeAfter?cardRecordId="+cardRecordId;
         }else if(StringUtils.equals(type,"coupon")){
             GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
             Long couponId=giftCouponRecord.getCouponId();
@@ -652,7 +653,7 @@ public class TestController extends  BaseController {
         }else return null;
 
     }
-    //gift扫描二维码后领取页面
+    //gift扫描二维码后领取页面，已授权，地址为/oauth/gift/{qrcodeAfter}/{cardRecordId}
     @RequestMapping("/qrcodeAfter")
     public ModelAndView  qrcodeAfter(@RequestParam("cardRecordId") Long cardRecordId,
                                      @RequestParam(value = "openid",defaultValue = "oIFn9005fexvo3QP1HIBaQozdf7Q") String openid){
