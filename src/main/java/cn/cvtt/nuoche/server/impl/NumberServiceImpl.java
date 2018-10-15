@@ -42,6 +42,8 @@ public class NumberServiceImpl implements NumberService {
         Map<String, String> map = new HashMap<>();
         map.put("msgtype", "binding_Relation");
         map.put("unitID", args.get("SAFENUMBER_APP_UNITID") );
+        //主叫外呼
+        map.put("productid", "1");
         map.put("prtms", param.getRegphone());
         map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
         map.put("uuidinpartner", "");
@@ -83,6 +85,8 @@ public class NumberServiceImpl implements NumberService {
         Map<String, String> map = new HashMap<>();
         map.put("msgtype", "binding_Relation");
         map.put("unitID", args.get("SAFENUMBER_APP_UNITID_ZZ") );
+        //主叫外呼
+        map.put("productid", "1");
         map.put("prtms", param.getRegphone());
         map.put("smbms", param.getUidnumber() == null ? "" : param.getUidnumber());
         map.put("uuidinpartner", "");
