@@ -25,10 +25,10 @@
                 </p>
                 <div class="z_givefriend_listcontent">
                     <span class="z_gumi" th:text="${senderUser.nickname}">咪咕虾</span>
-                    <span class="z_choicethree" th:text="'送给你'+(${coupon.amount}/10)+'元代金券，赶紧来领取吧'">送给你30元代金券，赶紧来领取吧！</span>
+                    <span class="z_choicethree" th:text="'送给你'+(${coupon.amount}/100)+'元代金券，赶紧来领取吧'">送给你30元代金券，赶紧来领取吧！</span>
                     <span class="z_gumi" style="padding-top:0;">可用于购买95号码</span>
                     <span class="shareinfo_img">
-                        <em>￥<b  th:text="(${coupon.amount}/10)">30</b></em>
+                        <em>￥<b  th:text="(${coupon.amount}/100)">30</b></em>
                         <em  th:text="'有效期：'+${coupon.effectiveTime}+'-'+${coupon.endTime}">有效期：2019.08.22—2020.08.22</em>
                     </span>
 
