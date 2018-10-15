@@ -30,23 +30,26 @@
                     <ul class="z_reciveimg">
                         <li>
                             <a href="tel:95013780000">
-                                <img src="images/giftImage/recivecard_01.png"><br>
+                                <img th:src="@{/images/giftImage/recivecard_01.png}" >
+                                <br>
                                 拨打电话
                             </a>
                         </li>
                         <li>
-                            <img src="images/giftImage/recivecard_02.png"><br>
+                            <img th:src="@{/images/giftImage/recivecard_02.png}" >
+                            <br>
                             来电留言箱
                         </li>
                         <li>
-                            <img src="images/giftImage/recivecard_03.png"><br>
+                            <img th:src="@{/images/giftImage/recivecard_03.png}" >
+                            <br>
                             防骚扰
                         </li>
                     </ul>                
                 </div>                          
            </div>
            <div class="z_choice_flowerimg">
-                <img src="images/giftImage/give_05.png">
+               <img th:src="@{/images/giftImage/give_05.png}" >
             </div>
             <div class="longpic">
                     <span ><a th:onclick="'javascript:toCardPage('+${card.id}+')'" >选择我的靓号</a></span>
