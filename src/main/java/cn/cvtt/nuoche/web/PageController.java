@@ -8,6 +8,7 @@ import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.wx_product;
 import cn.cvtt.nuoche.entity.gift.GiftCard;
 import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
+import cn.cvtt.nuoche.entity.gift.GiftNumberQRcode;
 import cn.cvtt.nuoche.entity.gift.GiftPoint;
 import cn.cvtt.nuoche.entity.gift.GiftPointRecord;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
@@ -17,9 +18,11 @@ import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCardRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCardRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftNumberQRcodeRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftPointRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftPointRepository;
 import cn.cvtt.nuoche.server.impl.NumberServiceImpl;
+import cn.cvtt.nuoche.service.QrcodeService;
 import cn.cvtt.nuoche.util.ConfigUtil;
 import cn.cvtt.nuoche.util.DateUtils;
 import cn.cvtt.nuoche.util.JsonUtils;
@@ -35,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -60,6 +64,10 @@ public class PageController extends  BaseController{
     @Autowired  private NumberServiceImpl numberService;
     @Autowired
     IBusinessNumberRecordRepository  recordRepository;
+    @Resource
+    private QrcodeService qrcodeService;
+    @Autowired
+    IGiftNumberQRcodeRepository giftNumberQRcodeRepository;
     @Autowired
     IBusinessCallRecordInterface  callRecordInterface;
     @Autowired
@@ -548,5 +556,49 @@ public class PageController extends  BaseController{
         modelAndView.addObject("userPoints",points);
         modelAndView.setViewName("shareGift/my_points");
         return modelAndView;
+    }
+    @RequestMapping("/myNumberQrcode")
+    public ModelAndView  myNumberQRCode( @RequestParam(value = "openid") String openid,
+                                         @RequestParam(value = "number95") String number95){
+        ModelAndView  model=new ModelAndView();
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
+        //根据openid和number查询二维码，没有则创建新的二维码。
+        GiftNumberQRcode qrcode=giftNumberQRcodeRepository.findByOpenidEqualsAndNumber95Equals(openid,number95);
+        if(qrcode==null){
+            //创建二维码
+            GiftNumberQRcode giftNumberQRcode=new GiftNumberQRcode();
+            giftNumberQRcode.setNumber95(number95);
+            giftNumberQRcode.setOpenid(openid);
+            GiftNumberQRcode giftNumberQRcodeId=giftNumberQRcodeRepository.saveAndFlush(giftNumberQRcode) ;
+            String qrcodeHref = qrcodeService.generatorQrcode(giftNumberQRcodeId.getId(),"call");
+            model.addObject("href",qrcodeHref);
+        }else{
+            //读取二维码
+            String qrcodeHref =qrcode.getQrcodeUrl();
+            model.addObject("href",qrcodeHref);
+        }
+        model.addObject("number",number95);
+        model.addObject("userInfo",userInfo);
+        model.setViewName("shareGift/card");
+        return model;
+    }
+    @RequestMapping("/showNumber95")
+    public ModelAndView  showNumber95(@RequestParam(value = "qrcode") String qrcode) {
+        ModelAndView  model=new ModelAndView();
+        //根据qrcodeId查找相应的信息(GiftNumberQRcode表)。
+        GiftNumberQRcode qrcodeMsg=giftNumberQRcodeRepository.findByQrcodeEquals(qrcode);
+        //根据讯息查找95号码是否过期，如果过期则跳转到无法拨打页面。没过期跳转到拨打95号码页面。
+        String number=qrcodeMsg.getNumber95();
+        BusinessNumberRecord  record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(number,util.getBusinessKey());
+        if(record.getValidTime().getTime()<System.currentTimeMillis()){
+            model.setViewName("shareGift/erweima");
+        }else{
+            model.setViewName("shareGift/95number");
+        }
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(qrcodeMsg.getOpenid());
+        String nickName=userInfo.getNickname();
+        model.addObject("number",number);
+        model.addObject("nickName",nickName);
+        return model;
     }
 }

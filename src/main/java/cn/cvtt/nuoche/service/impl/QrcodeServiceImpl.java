@@ -4,9 +4,11 @@ import cn.cvtt.nuoche.common.Constant;
 import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
 import cn.cvtt.nuoche.entity.gift.GiftCouponQrcode;
 import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
+import cn.cvtt.nuoche.entity.gift.GiftNumberQRcode;
 import cn.cvtt.nuoche.reponsitory.IGiftCardRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCouponQrcodeRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCouponRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftNumberQRcodeRepository;
 import cn.cvtt.nuoche.service.QrcodeService;
 
 import cn.cvtt.nuoche.util.QRCodeUtil;
@@ -44,6 +46,9 @@ public class QrcodeServiceImpl implements QrcodeService {
     @Autowired
     IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
 
+    @Autowired
+    IGiftNumberQRcodeRepository giftNumberQRcodeRepository;
+
 
     @Override
     public void save(GiftCardRecord q) {
@@ -66,6 +71,7 @@ public class QrcodeServiceImpl implements QrcodeService {
         try {
             String qrcodeId =null;
             if(StringUtils.equals(type,"card")) {
+                //号码卡、套餐卡
                 //根据senderOpenid查找record。
                 GiftCardRecord qrcode = giftCardRecordRepository.findByIdEquals(cardId);
                 qrcodeId=QRCodeUtil.encode(UUID.randomUUID().toString(), type, Constant.APP_SECRET,
@@ -74,7 +80,16 @@ public class QrcodeServiceImpl implements QrcodeService {
                 qrcode.setQrcodeUrl(QRCODE_DOWNLOAD + qrcodeId + ".jpg");
                 // 存入数据库
                 save(qrcode);
-            }else{
+            }else if(StringUtils.equals(type,"call")){
+                //识别二维码呼叫95号类型
+                GiftNumberQRcode qrcode=giftNumberQRcodeRepository.findByIdEquals(cardId);
+                qrcodeId=QRCodeUtil.encode(UUID.randomUUID().toString(), type, Constant.APP_SECRET,
+                        QRCODE_PATH.substring(QRCODE_PATH.indexOf(":") + 1), WX_QRCODE_URL, LOGO_PATH, "");
+                qrcode.setQrcode(qrcodeId);
+                qrcode.setQrcodeUrl(QRCODE_DOWNLOAD + qrcodeId + ".jpg");
+                giftNumberQRcodeRepository.saveAndFlush(qrcode);
+            } else{
+                //优惠券二维码
                 GiftCouponQrcode qrcode = giftCouponQrcodeRepository.findByIdEquals(cardId);
                 qrcodeId = QRCodeUtil.encode(UUID.randomUUID().toString(), type, Constant.APP_SECRET,
                         QRCODE_PATH.substring(QRCODE_PATH.indexOf(":") + 1), WX_QRCODE_URL, LOGO_PATH, "");

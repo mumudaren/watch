@@ -25,6 +25,7 @@ import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -644,7 +645,11 @@ public class TestController extends  BaseController {
             Long cardRecordId=giftCardRecord.getId();
             return  "redirect:"+"/oauth/gift/qrcodeAfter/"+cardRecordId;
             //return  "redirect:"+"qrcodeAfter?cardRecordId="+cardRecordId;
-        }else if(StringUtils.equals(type,"coupon")){
+        }else if(StringUtils.equals(type,"call")){
+            //识别二维码显示95号码页面
+            return  "redirect:"+"/showNumber95?qrcode="+realId;
+        } else if(StringUtils.equals(type,"coupon")){
+            //优惠券
             GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
             Long couponId=giftCouponRecord.getCouponId();
             String senderId=giftCouponRecord.getCreatorOpenid();
@@ -1035,7 +1040,7 @@ public class TestController extends  BaseController {
     }
 
 
-    //抽奖
+    //抽奖页面
     @RequestMapping("/testLottery")
     public  ModelAndView  testLottery( @RequestParam(value = "openid",defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
         ModelAndView  modelAndView=new ModelAndView();
@@ -1197,7 +1202,7 @@ public class TestController extends  BaseController {
 
 
 
-
+    //个人中心
     @RequestMapping("/OwnerSafeNumber.html")
     public ModelAndView  OwnerSafeNumber( ){
         ModelAndView  model=new ModelAndView();
@@ -1232,8 +1237,7 @@ public class TestController extends  BaseController {
 
 
 
-
-       public  void  handlerOther(List<BusinessNumberRecord > records){
+    public  void  handlerOther(List<BusinessNumberRecord > records){
            for(BusinessNumberRecord  record:records){
                record.setTime(DateUtils.format(record.getValidTime(),"yyyy-MM-dd"));
            }

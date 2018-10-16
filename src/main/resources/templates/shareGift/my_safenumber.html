@@ -98,7 +98,7 @@
 
                       <div class="f_delay_detail">
                                   <span class="z_number_dalay">
-                                      <a href="javascript:void(0);" class="number_delay">充留言/短信</a>
+                                      <a href="javascript:void(0);" class="qrCode">二维码</a>
                                   </span>
                                   <span class="z_number_dalay">
                                       <a href="javascript:void(0);" class="number_delay">号码延期</a>
@@ -109,71 +109,9 @@
                                       <a href="#" class="number_detail">号码详情</a>
                                   </span>
                           <span class="numIndex" style="visibility: hidden" th:text="${record.regexId}">123</span>
+                          <span class="number95" style="visibility: hidden" th:text="${record.smbms}">950135901234785</span>
                       </div>
                   </div>
-
-                  <!--<div class="f_mynumber_list">-->
-                      <!--<div class="z_mynumber_list">-->
-                            <!--<p>-->
-                              <!--<span class="z_imgkey">-->
-                                <!--<img src="images/key.png" />-->
-                              <!--</span>-->
-                              <!--<span class="z_mynumber95013">950135901234785</span>-->
-                              <!--<span class="z_mynumber_smalltitle">时长剩余: 10&nbsp;留言剩余: 5&nbsp;短信剩余: 5</span>-->
-                            <!--</p>-->
-                            <!--<p class="f_myimg_tel">-->
-                              <!--<span class="z_imgkey z_imgtel">-->
-                                <!--<img src="images/tel.png" />-->
-                              <!--</span>-->
-                              <!--<span class="z_mynumber_telphone">13466787750</span>-->
-                              <!--<span class="z_todatetime">有效期至：今天</span>-->
-                            <!--</p>                        -->
-                      <!--</div>-->
-                      <!--<div class="f_delay_detail">-->
-                              <!--<span class="z_number_dalay">-->
-                                  <!--<a href="javascript:void(0);" class="number_delay">充留言/短信</a>-->
-                              <!--</span>-->
-                              <!--<span class="z_number_dalay">-->
-                                  <!--<a href="">号码延期</a>-->
-                              <!--</span>-->
-                              <!--<span>-->
-                                  <!--<a href="">号码详情</a>-->
-                              <!--</span>-->
-                      <!--</div>-->
-                  <!--</div>-->
-
-                  <!--<div class="f_mynumber_list">-->
-                      <!--<div class="number_expire">-->
-                        <!--<a href="">号码延期</a>-->
-                      <!--</div>-->
-                      <!--<div class="z_mynumber_list">-->
-                            <!--<p>-->
-                              <!--<span class="z_imgkey z_imgkey_gray">-->
-                                <!--<img src="images/key.png" />-->
-                              <!--</span>-->
-                              <!--<span class="z_mynumber95013 z_mynumber95013_gray">950135901234785</span>-->
-                              <!--<span class="z_mynumber_smalltitle z_mynumber_smalltitleexpire">时长剩余: 0&nbsp;留言剩余: 0&nbsp;短信剩余: 0</span>-->
-                            <!--</p>-->
-                            <!--<p class="f_myimg_tel">-->
-                              <!--<span class="z_imgkey z_imgtel z_imgtel_gray">-->
-                                <!--<img src="images/tel.png" />-->
-                              <!--</span>-->
-                              <!--<span class="z_mynumber_telphone z_mynumber_telphone_gray">13466787750</span>-->
-                              <!--<span class="z_todatetime z_todatetime_gray">有效期至：2017年05月22日</span>-->
-                            <!--</p>                        -->
-                      <!--</div>-->
-                      <!--<div class="f_delay_detail">-->
-                              <!--<span class="z_number_dalay">-->
-                                  <!--<a href="javascript:void(0);" class="number_delay">充留言/短信</a>-->
-                              <!--</span>-->
-                              <!--<span class="z_number_dalay">-->
-                                  <!--<a href="">号码延期</a>-->
-                              <!--</span>-->
-                              <!--<span>-->
-                                  <!--<a href="">号码详情</a>-->
-                              <!--</span>-->
-                      <!--</div>-->
-                  <!--</div>-->
 
                   <!-- <p class="f_mynumber_time">显示在有效期内及已过期&nbsp;<span>60</span>&nbsp;天内的记录</p> -->
                   <p class="f_bindsuc_share f_mynumberbtn">
@@ -432,7 +370,12 @@
           function myPoints(){
               window.location.href="/myPoints?openid="+openid;
           }
-
+          //点击二维码
+          $(".qrCode").click(function() {
+              var number95=$(this).parent(".z_number_dalay").parent(".f_delay_detail").children(".number95").text();
+              console.log("95number is:"+number95);
+              window.location.href="/myNumberQrcode?openid="+openid+"&number95="+number95;
+          });
           function delayFun(obj){
               var  resourceObj= $(obj).parent().parent().prev();
               var  uidnumber= $(resourceObj).find(".z_mynumber95013").text();

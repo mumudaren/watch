@@ -28,14 +28,14 @@
            </div>
            <div class="z_giverfriend_content">
                 <p class="z_friend_personimg">
-                    <img src="images/giftImage/pic.png">
+                    <img th:src="${userInfo.headimgurl}">
                 </p>
                 <div class="z_givefriend_listcontent">
-                    <span class="z_gumi">36k纯帅</span>
+                    <span class="z_gumi"  th:text="${userInfo.nickname}">36k纯帅</span>
                     <span class="z_friend_giveimg z_friend_erweima">
-                        <img src="images/giftImage/erweima.jpg">
+                        <img th:src="${href}">
                     </span> 
-                    <span class="z_gumi" style="padding-top:.4rem;">我的号码：9501375123456</span>
+                    <span class="z_gumi" style="padding-top:.4rem;" th:text="${'我的号码：'+number}">9501375123456</span>
                     <span class="z_saoyisao">
                       <img src="images/giftImage/icon5.png" style="width:.6rem;">微信扫一扫，联系我
                     </span>  

@@ -32,7 +32,7 @@
                <img src="images/giftImage/qrcodeimg.jpg">
            </div>
            <div class="z_giverfriend_content">
-               <span class="z_gumi">36k纯帅的95号码</span> 
+               <span class="z_gumi"  th:text="${nickName+'的95号码'}">36k纯帅的95号码</span>
                <span class="z_choice_goodnumber">号码已过期</span>   
                <span class="z_sharenumber">无法拨打</span>                                         
            </div>
@@ -43,5 +43,12 @@
                <span>我也要用95号码</span>
             </div>        
       </div>     
-    </body>     
+    </body>
+    <script th:inline="javascript">
+        //点击二维码
+        $(".f_usednumber").click(function() {
+            //点击我也要用95号
+            window.location.href="/oauth/gift/giftCard";
+        });
+    </script>
 </html>
