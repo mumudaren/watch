@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
         <meta name="Description" content="二维码" />
@@ -8,10 +8,10 @@
         <meta content="yes" name="apple-touch-fullscreen">
         <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
         <meta content="telephone=no" name="format-detection">
-        <link rel="stylesheet" type="text/css" href="css/gift.css" />
-        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-        <script type="text/javascript" src="js/flexible.js"></script>
-        <script type="text/javascript" src="js/flexible_css.js"></script>   
+        <link rel="stylesheet" type="text/css" th:href="@{/css/gift.css}" />
+        <script type="text/javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/flexible.js}"></script>
+        <script type="text/javascript" th:src="@{/js/flexible_css.js}"></script>
         <style type="text/css">
           .z_giverfriend_content span{display: block;text-align: center;}
           .z_gumi{font-size: .4rem;padding-top:.8rem;}
@@ -29,17 +29,17 @@
     <body>  
       <div class="wrap give_wrap">
            <div class="f_qrcode_top">
-               <img src="images/qrcodeimg.jpg">
+               <img src="images/giftImage/qrcodeimg.jpg">
            </div>
            <div class="z_giverfriend_content">
                <span class="z_gumi">36k纯帅的95号码</span> 
                <span class="z_choice_goodnumber">9501375123456</span>   
                <span class="z_sharenumber">
-                <img src="images/icon5.png"><a href="tel:9501375123456">拨打</a>
+                <img src="images/giftImage/icon5.png"><a href="tel:9501375123456">拨打</a>
                </span>                                         
            </div>
            <div class="z_choice_flowerimg">
-                <img src="images/give_05.png">
+                <img src="images/giftImage/give_05.png">
            </div> 
            <div class="longpic f_usednumber">
                <span>我也要用95号码</span>
