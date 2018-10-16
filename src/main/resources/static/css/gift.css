@@ -1,5 +1,5 @@
 /* ============================================================
-   样式重置 
+   样式重置
    ============================================================ */
 body,p,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,form,fieldset,legend,input,select,textarea,button,th,td{margin:0;padding:0;}
 h1,h2,h3,h4,h5,h6{font-size:100%;}
@@ -242,7 +242,7 @@ opacity: .5;
 .z_friend_erweima{margin-top:.3rem;}
 .z_saoyisao{color:#3481eb;font-size:.4rem;margin-top:.5rem;}
 .longpic{margin:0 auto;padding-bottom:1rem;text-align:center;}
-.longpic span{margin:1rem auto 0;display:block;text-align: center;border-radius:.5rem;color:#fff;width:6rem;height:1.1rem;line-height: 1.1rem;font-size:.5rem;border:1px solid #fff;}
+.longpic span{margin:1rem auto 0;display:block;text-align: center;border-radius:.5rem;color:#3481eb;width:6rem;height:1.1rem;line-height: 1.1rem;font-size:.5rem;border:1px solid #3481eb;}
 .f_qrcode_top img{width:10rem;}
 .f_recive_numbercard{background:url(../images/giftImage/numbercard_02.jpg) no-repeat;width:10rem;height:4.7rem;background-size:contain;}
 .z_recivethreefour{margin-top:.8rem;font-size:.7rem;}

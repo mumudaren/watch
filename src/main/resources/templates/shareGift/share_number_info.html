@@ -37,15 +37,17 @@
                         <input style="display:none" id="senderUser" name="senderUser" th:value="${senderUser.openid}">
                         <input style="display:none" id="receiveUser" name="receiveUser" th:value="${receiveUser.openid}">
                     </form>
+                    <div class="longpic" >
+                        <span>长按图片保存到相册</span>
+                    </div>
                     <span class="z_sharenumber">领取</span>             
-                </div>                                           
+                </div>
+
            </div>
            <div class="z_choice_flowerimg">
                <img th:src="@{/images/giftImage/give_05.png}" >
            </div> 
-           <div class="longpic">
-               <span>长按图片保存到相册</span>
-            </div>        
+
       </div>     
     </body>
     <script th:inline="javascript">
