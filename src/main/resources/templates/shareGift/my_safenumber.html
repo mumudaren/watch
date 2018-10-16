@@ -61,7 +61,7 @@
                 </div>                 
               </li>
               <li>
-                <div class="f_mynumber_gift f_mynumber_giftthree">
+                <div class="f_mynumber_gift f_mynumber_giftthree" th:onclick="'javascript:myPoints()'">
                     <img  th:src="@{/images/giftImage/myicon_05.png}"  style="width:.9rem;"><br>我的积分<br>
                     <em>分享越多&nbsp;积分越多</em>
                 </div>                 
@@ -338,7 +338,6 @@
                   showDetail($(this));
               });
 
-
               $("#delayTime").click(function(){
                   console.log("delayTime");
                   $(".f_numberdetail").hide();
@@ -351,9 +350,6 @@
               // changePay();
           });
 
-          function   showDetail(obj){
-              window.location.href='/toDetail.html?number='+obj.prev().prev().text()+"&smbms;="+obj.prev().text()+"&openid;="+openid;
-          }
 
 
           function  initialPay(){
@@ -430,6 +426,11 @@
                       }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
                   }
               );
+          }
+
+          //点击我的积分
+          function myPoints(){
+              window.location.href="/myPoints?openid="+openid;
           }
 
           function delayFun(obj){
