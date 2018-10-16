@@ -16,7 +16,7 @@
     </head>
     <body>  
       <div class="wrap mygift_givewrap">
-          <p class="f_mypointsimg">可用积分<span>2000</span></p>
+          <p class="f_mypointsimg">可用积分<span th:text="${userPoints}">2000</span></p>
           <div id="tab">
                 <div class="f_tabnav">
                         <ul>
@@ -29,66 +29,66 @@
                       <dl>
                           <dd>
                               <ul>
-                                          <li>
+                                          <li  th:if="${moreThanRecord}" th:each="eachRecord:${moreThanRecord}">
                                               <div class="z_tablist z_pointsone">
-                                                  <p class="z_pointsday">每日分享到朋友圈<span>+10分</span></p>
-                                                  <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
-                                                  <p class="z_pointsbg"></p>
+                                                  <p class="z_pointsday"><strong th:text="${eachRecord.resourceName}">每日分享到朋友圈</strong><span th:text="${'+'+eachRecord.changePoint+'分'}">+10分</span></p>
+                                                  <p class="z_pointsdatetime" th:text="${eachRecord.datePrase}">2018年09月23日 16:25:08 </p>
+                                                  <p class="z_pointsbg" ></p>
                                               </div>
                                           </li>
-                                          <li>
-                                              <div class="z_tablist z_pointsone">
-                                                  <p class="z_pointsday z_pointstwoday">每日分享给朋友<span>+10分</span></p>
-                                                  <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
-                                                  <p class="z_pointsbg z_pointsbg_two"></p>
-                                              </div>
-                                          </li>
-                                          <li>
-                                              <div class="z_tablist z_pointsone">
-                                                  <p class="z_pointsday z_pointsthreeday">三毛&nbsp;领取您的代金券<span>+10分</span></p>
-                                                  <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
-                                                  <p class="z_pointsbg z_pointsbg_three"></p>
-                                              </div>
-                                          </li>
-                                          <li>
-                                                <div class="z_tablist z_pointsone">
-                                                    <p class="z_pointsday">每日分享到朋友圈<span>+10分</span></p>
-                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
-                                                    <p class="z_pointsbg"></p>
-                                                </div>
-                                          </li>                                            
+                                          <!--<li>-->
+                                              <!--<div class="z_tablist z_pointsone">-->
+                                                  <!--<p class="z_pointsday z_pointstwoday">每日分享给朋友<span>+10分</span></p>-->
+                                                  <!--<p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>-->
+                                                  <!--<p class="z_pointsbg z_pointsbg_two"></p>-->
+                                              <!--</div>-->
+                                          <!--</li>-->
+                                          <!--<li>-->
+                                              <!--<div class="z_tablist z_pointsone">-->
+                                                  <!--<p class="z_pointsday z_pointsthreeday">三毛&nbsp;领取您的代金券<span>+10分</span></p>-->
+                                                  <!--<p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>-->
+                                                  <!--<p class="z_pointsbg z_pointsbg_three"></p>-->
+                                              <!--</div>-->
+                                          <!--</li>-->
+                                          <!--<li>-->
+                                                <!--<div class="z_tablist z_pointsone">-->
+                                                    <!--<p class="z_pointsday">每日分享到朋友圈<span>+10分</span></p>-->
+                                                    <!--<p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>-->
+                                                    <!--<p class="z_pointsbg"></p>-->
+                                                <!--</div>-->
+                                          <!--</li>                                            -->
                               </ul>
                           </dd>
                           <dd style="display:none;">
                                 <ul>
-                                            <li>
+                                            <li   th:if="${lessThanRecord}" th:each="eachLessRecord:${lessThanRecord}">
                                                 <div class="z_tablist z_pointsone">
-                                                    <p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>
-                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
+                                                    <p class="z_pointsday z_usetext"><strong th:text="${eachLessRecord.resourceName}">幸运大抽奖</strong><span  th:text="${eachLessRecord.changePoint+'分'}">-100分</span></p>
+                                                    <p class="z_pointsdatetime"  th:text="${eachLessRecord.datePrase}">2018年09月23日 16:25:08 </p>
                                                     <p class="z_pointsbg z_usebg"></p>
                                                 </div>
                                             </li>
-                                            <li>
-                                                <div class="z_tablist z_pointsone">
-                                                    <p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>
-                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
-                                                    <p class="z_pointsbg z_usebg"></p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="z_tablist z_pointsone">
-                                                    <p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>
-                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
-                                                    <p class="z_pointsbg z_usebg"></p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="z_tablist z_pointsone">
-                                                    <p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>
-                                                    <p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>
-                                                    <p class="z_pointsbg z_usebg"></p>
-                                                </div>
-                                            </li>
+                                            <!--<li>-->
+                                                <!--<div class="z_tablist z_pointsone">-->
+                                                    <!--<p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>-->
+                                                    <!--<p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>-->
+                                                    <!--<p class="z_pointsbg z_usebg"></p>-->
+                                                <!--</div>-->
+                                            <!--</li>-->
+                                            <!--<li>-->
+                                                <!--<div class="z_tablist z_pointsone">-->
+                                                    <!--<p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>-->
+                                                    <!--<p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>-->
+                                                    <!--<p class="z_pointsbg z_usebg"></p>-->
+                                                <!--</div>-->
+                                            <!--</li>-->
+                                            <!--<li>-->
+                                                <!--<div class="z_tablist z_pointsone">-->
+                                                    <!--<p class="z_pointsday z_usetext">幸运大抽奖<span>-100分</span></p>-->
+                                                    <!--<p class="z_pointsdatetime">2018年09月23日 16:25:08 </p>-->
+                                                    <!--<p class="z_pointsbg z_usebg"></p>-->
+                                                <!--</div>-->
+                                            <!--</li>-->
                                                                                     
                                 </ul>
                             </dd>               

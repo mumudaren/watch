@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
@@ -24,17 +25,22 @@ public class GiftPointRecord {
     private   Integer  changePoint;
     @Column(name="update_time")
     private Date updateTime;
+    @Transient
+    private String resourceName;
+    @Transient
+    private String datePrase;
 
     public GiftPointRecord() {
     }
 
-    public GiftPointRecord(Long id, String openid, Integer resource, Integer changePoint, Date updateTime) {
+    public GiftPointRecord(Long id, String openid, Integer resource, Integer changePoint, Date updateTime,String resourceName,String datePrase) {
         this.id = id;
         this.openid = openid;
         this.resource = resource;
         this.changePoint = changePoint;
         this.updateTime = updateTime;
-
+        this.resourceName = resourceName;
+        this.datePrase = datePrase;
     }
 
     public Long getId() {
@@ -75,5 +81,21 @@ public class GiftPointRecord {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
+
+    public String getDatePrase() {
+        return datePrase;
+    }
+
+    public void setDatePrase(String datePrase) {
+        this.datePrase = datePrase;
     }
 }

@@ -1074,7 +1074,58 @@ public class TestController extends  BaseController {
         modelAndView.addObject("userPoints",userPoints);
         modelAndView.setViewName("shareGift/lottery");
         return modelAndView;
+    }
 
+    //抽奖
+    @RequestMapping("/myPoints")
+    public  ModelAndView  myPoint( @RequestParam(value = "openid",defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
+        ModelAndView  modelAndView=new ModelAndView();
+        //根据openId查找用户积分
+        GiftPoint userPointsInfo=giftPointRepository.findByOpenidEquals(openid);
+        int points;
+        if(userPointsInfo!=null) {
+             points = userPointsInfo.getPointTotal() - userPointsInfo.getPointUsed();
+        }else{
+            points=0;
+        }
+        //查找用户的积分消耗记录
+        List<GiftPointRecord> lessThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointLessThan(openid,0);
+        if(lessThanZeroRecord!=null){
+            for(GiftPointRecord res:lessThanZeroRecord){
+                switch(res.getResource()){
+                    case 3:
+                        res.setResourceName("幸运大抽奖");
+                        break;
+                }
+                String datePrase=DateUtils.format(res.getUpdateTime());
+                res.setDatePrase(datePrase);
+            }
+        }
+        //查找用户的积分增长记录
+        List<GiftPointRecord> moreThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointGreaterThan(openid,0);
+        if(moreThanZeroRecord!=null){
+            logger.info("[myPoints]moreThanZeroRecord is not null.");
+            for(GiftPointRecord temp:moreThanZeroRecord){
+                logger.info("[myPoints]temp.getResource()"+temp.getResource());
+                switch(temp.getResource()){
+                    case 1:
+                        temp.setResourceName("好友扫码领取代金券");
+                        logger.info("[myPoints]temp.setResourceName:"+temp.getResourceName());
+                        break;
+                    case 2:
+                        temp.setResourceName("每日分享给好友/朋友圈");
+                        logger.info("[myPoints]temp.setResourceName:"+temp.getResourceName());
+                        break;
+                }
+                String datePrase2=DateUtils.format(temp.getUpdateTime());
+                temp.setDatePrase(datePrase2);
+            }
+        }
+        modelAndView.addObject("lessThanRecord",lessThanZeroRecord);
+        modelAndView.addObject("moreThanRecord",moreThanZeroRecord);
+        modelAndView.addObject("userPoints",points);
+        modelAndView.setViewName("shareGift/my_points");
+        return modelAndView;
     }
 
 
