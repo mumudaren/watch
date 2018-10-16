@@ -213,7 +213,7 @@ opacity: .5;
 .f_givefriend_top{background:url(../images/giftImage/give_02.jpg) no-repeat;width:10rem;height:4.7rem;background-size:contain;}
 .z_giverfriend_send{color:#fdf036;text-align: center;display: block;padding-top:1.5rem;padding-left:.5rem;}
 .z_giverfriend_content{border-radius:.3rem;background-color:#fff;padding-bottom:.5rem;width:9.4rem;margin: -2rem auto 0;position: relative;}
-.z_friend_personimg{position: absolute;top:-.5rem;left:3.7rem;}
+.z_friend_personimg{position: absolute;top:-1rem;left:3.7rem;}
 .z_friend_personimg img{width: 2.1rem;}
 .z_givefriend_listcontent{text-align: center;margin: 0 auto;}
 .z_givefriend_listcontent span{display: block;}
