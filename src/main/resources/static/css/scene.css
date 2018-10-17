@@ -1,0 +1,102 @@
+/* ============================================================
+   样式重置 
+   ============================================================ */
+body,p,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,form,fieldset,legend,input,select,textarea,button,th,td{margin:0;padding:0;}
+h1,h2,h3,h4,h5,h6{font-size:100%;}
+body{-webkit-user-select:none; -moz-user-select: none; /* Firefox all */ -ms-user-select: none; /* IE 10+ */ /* No support for these yet, use at own risk */ -o-user-select: none; user-select: none; }
+ul,dl,ol{list-style:none;}
+img,fieldset,input[type="submit"]{border:0 none;}
+img{display:inline-block;overflow:hidden;vertical-align:top;}
+em{font-style:normal;}
+strong{font-weight:normal;}
+table{border-collapse:collapse;border-spacing:0;}
+button,input[type="button"]{cursor:pointer;border:0 none;}
+textarea{word-wrap:break-word;resize:none;}  /* word-wrap for opera, resize for webkit */
+menu{margin:0;padding:0;}
+body{-webkit-user-select:none;-webkit-text-size-adjust:none!important;font-family:Helvetica;}
+div,input[type="number"]{-webkit-user-select:none;}
+div,a,button,input,img{-webkit-touch-callout:none;}/* 1.ios 长按时不触发系统的菜单 2.禁止长按时下载图片 */
+input,select,textarea{outline:none;}
+select{-webkit-appearance:none;appearance:none;}
+
+/* 去除android4.0以下 a/button/input标签被点击时产生的边框 因为边框引起了不少bug */
+a,button,input,select{-webkit-tap-highlight-color:rgba(0,0,0,0);}
+/* Android4.0下不识别选择器-webkit-transform-3d 使用它可做Android4.0下版本兼容 */
+@media all and (-webkit-transform-3d){
+/* android4.0+ ios4+ 恢复按钮被点击时产生的效果 */
+/*a,button,input{-webkit-tap-highlight-color:rgba(130,130,130,.52);}*/
+a,button,input,select{-webkit-tap-highlight-color:rgba(0,0,0,0);}
+} 
+html,body{height:100%;font-size:14px;}
+a{text-decoration:none;} 
+
+/** 清浮动 **/
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clearfix {
+    _overflow: hidden;
+}
+
+* html > body .clearfix {
+    display: inline-block;
+    width: 100%;
+}
+
+* html .clearfix {
+    height: 1%; /* End hide from IE-mac */
+}
+
+a {
+    text-decoration: none;
+}
+a:hover{text-decoration: none;}
+input[type="button"], input[type="submit"], input[type="reset"] {
+    -webkit-appearance: none;
+}
+
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { 
+color: #f82eff; 
+font-size:.5rem;
+} 
+input:-moz-placeholder, textarea:-moz-placeholder { 
+color: #f82eff; 
+font-size:.5rem;
+} 
+input::-moz-placeholder, textarea::-moz-placeholder { 
+color: #f82eff; 
+font-size:.5rem;
+} 
+input:-ms-input-placeholder, textarea:-ms-input-placeholder { 
+color: #f82eff; 
+font-size:.5rem;
+} 
+
+
+
+.wrap{width:10rem;margin:0 auto;padding:1rem 0;}
+a:hover img{box-shadow:5px 5px 5px rgba(0,0,0,.1);}
+a:active img{box-shadow:5px 5px 5px rgba(0,0,0,.1);}
+a:focus img{box-shadow:5px 5px 5px rgba(0,0,0,.1);}
+
+
+/*内容样式*/
+.f_wuliutitle{color:#2a6cdf;font-size:1.2rem;text-align:center;margin-top:1rem;}
+.f_wuliusmalltitle,.f_wuliuimgtitle{color:#999;font-size:.5rem;margin-top:.5rem;padding:0 .5rem}
+.f_wuliusmalltitle{text-align: center;}
+.wuliu,.ershou,.nuoche,.zufang{margin-top:1.5rem;}
+
+.wuliu img,.ershou img,.nuoche img,.zufang img{width:9.8rem;text-align:center;margin:0 auto;display:block;margin-top:1rem;}
+.f_wuliuimgtitle{font-size:.38rem;line-height:.6rem;}
+.f_wuliutitle01{font-size:.9rem;}
+
+/*浮动窗口*/
+.f_pop{width:10rem;position:fixed;top:0;background:#333;}
+.f_pop ul li{float:left;padding:.4rem .65rem;}
+.f_pop ul li a{color:#fff;font-size:.5rem;}

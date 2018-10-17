@@ -1,0 +1,113 @@
+/* ============================================================
+   样式重置 
+   ============================================================ */
+body,p,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,form,fieldset,legend,input,select,textarea,button,th,td{margin:0;padding:0;}
+h1,h2,h3,h4,h5,h6{font-size:100%;}
+body{-webkit-user-select:none; -moz-user-select: none; /* Firefox all */ -ms-user-select: none; /* IE 10+ */ /* No support for these yet, use at own risk */ -o-user-select: none; user-select: none; }
+ul,dl,ol{list-style:none;}
+img,fieldset,input[type="submit"]{border:0 none;}
+img{display:inline-block;overflow:hidden;vertical-align:top;}
+em{font-style:normal;}
+strong{font-weight:normal;}
+table{border-collapse:collapse;border-spacing:0;}
+button,input[type="button"]{cursor:pointer;border:0 none;}
+textarea{word-wrap:break-word;resize:none;}  /* word-wrap for opera, resize for webkit */
+menu{margin:0;padding:0;}
+body{-webkit-user-select:none;-webkit-text-size-adjust:none!important;font-family:Helvetica;}
+div,input[type="number"]{-webkit-user-select:none;}
+div,a,button,input,img{-webkit-touch-callout:none;}/* 1.ios 长按时不触发系统的菜单 2.禁止长按时下载图片 */
+input,select,textarea{outline:none;}
+select{-webkit-appearance:none;appearance:none;}
+
+/* 去除android4.0以下 a/button/input标签被点击时产生的边框 因为边框引起了不少bug */
+a,button,input,select{-webkit-tap-highlight-color:rgba(0,0,0,0);}
+/* Android4.0下不识别选择器-webkit-transform-3d 使用它可做Android4.0下版本兼容 */
+@media all and (-webkit-transform-3d){
+/* android4.0+ ios4+ 恢复按钮被点击时产生的效果 */
+/*a,button,input{-webkit-tap-highlight-color:rgba(130,130,130,.52);}*/
+a,button,input,select{-webkit-tap-highlight-color:rgba(0,0,0,0);}
+} 
+html,body{height:100%;font-size:14px;}
+a{text-decoration:none;} 
+
+/** 清浮动 **/
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clearfix {
+    _overflow: hidden;
+}
+
+* html > body .clearfix {
+    display: inline-block;
+    width: 100%;
+}
+
+* html .clearfix {
+    height: 1%; /* End hide from IE-mac */
+}
+
+a {
+    text-decoration: none;
+}
+a:hover{text-decoration: none;}
+input[type="button"], input[type="submit"], input[type="reset"] {
+    -webkit-appearance: none;
+}
+
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { 
+color: #f82eff; 
+font-size:.5rem;
+} 
+input:-moz-placeholder, textarea:-moz-placeholder { 
+color: #f82eff; 
+font-size:.5rem;
+} 
+input::-moz-placeholder, textarea::-moz-placeholder { 
+color: #f82eff; 
+font-size:.5rem;
+} 
+input:-ms-input-placeholder, textarea:-ms-input-placeholder { 
+color: #f82eff; 
+font-size:.5rem;
+} 
+
+
+
+.wrap{width:10rem;margin:0 auto;}
+a:hover img{box-shadow:5px 5px 5px rgba(0,0,0,.1);}
+a:active img{box-shadow:5px 5px 5px rgba(0,0,0,.1);}
+a:focus img{box-shadow:5px 5px 5px rgba(0,0,0,.1);}
+
+
+/*内容样式*/
+.f_title{font-size:.45rem;text-align:center;margin-top:1rem;line-height:.7rem;color:#a2acb7;}
+.z_numbertext{color:#03bbf1;}
+.f_onlinetel{background:url(../images/scene/guide_08.png) no-repeat center center;text-align:center;width:10rem;background-size:10rem .05rem;margin-top:1rem;font-size:.45rem;}
+.z_telbj{background:#a2acb7;border-radius:3rem;color:#fff;padding:.2rem .6rem;font-weight:bold;}
+
+.f_call95013,.f_bohaonumber{margin-top:1rem;display:table;}
+.f_callleft,.f_bohaoleft{display:table-cell;font-size:.45rem;color:#a2acb7;padding-left:.5rem;padding-top:1.5rem;line-height:.6rem;}
+.f_call95013 img{width:4.5rem;padding-right:.5rem;}
+.z_950132{color:#03bcf2;}
+.f_bohaoleft{padding-top:.5rem;}
+.f_first{color:#333;font-size:.5rem;display:block;font-weight:bold;}
+.f_first:before{display:inline-block;content:'';background:#03bcf2;width:.11rem;height:.6rem;vertical-align:-.1rem;margin-right:.1rem;}
+.f_bohaonumber img{width:5rem;}
+.z_bohaonum{padding-left:.2rem;padding-top:.2rem;display:block;}
+.z_tip{color:#c2cad2;font-size:.3rem;padding-left:.5rem;margin-top:-1.8rem;}
+.f_onlinetel01{margin-top:1.6rem;}
+
+.f_wxtip{font-size:.45rem;color:#a2acb7;margin:1rem auto;line-height:.75rem;padding:0 .5rem;width:9rem;}
+.z_03bcf2{color:#03bcf2;}
+
+.f_95013number{font-size:.6rem;text-align:center;color:#000;line-height:1rem;width:9rem;margin:0 auto;margin-top:.2rem}
+
+.z_line{margin:0 auto;}
+

@@ -601,4 +601,14 @@ public class PageController extends  BaseController{
         model.addObject("nickName",nickName);
         return model;
     }
+    @RequestMapping("/wechatsite/helpcenter/scene")
+    public  String  scene(){
+
+        return  "scene/scene";
+    }
+    @RequestMapping("/wechatsite/helpcenter/help")
+    public  String  guide(){
+
+        return  "guide/guide";
+    }
 }
