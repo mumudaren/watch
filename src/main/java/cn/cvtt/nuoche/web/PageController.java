@@ -522,7 +522,7 @@ public class PageController extends  BaseController{
             points=0;
         }
         //查找用户的积分消耗记录
-        List<GiftPointRecord> lessThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointLessThan(openid,0);
+        List<GiftPointRecord> lessThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointLessThanOrderByUpdateTimeDesc(openid,0);
         if(lessThanZeroRecord!=null){
             for(GiftPointRecord res:lessThanZeroRecord){
                 switch(res.getResource()){
@@ -535,7 +535,7 @@ public class PageController extends  BaseController{
             }
         }
         //查找用户的积分增长记录
-        List<GiftPointRecord> moreThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointGreaterThan(openid,0);
+        List<GiftPointRecord> moreThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointGreaterThanOrderByUpdateTimeDesc(openid,0);
         if(moreThanZeroRecord!=null){
             logger.info("[myPoints]moreThanZeroRecord is not null.");
             for(GiftPointRecord temp:moreThanZeroRecord){

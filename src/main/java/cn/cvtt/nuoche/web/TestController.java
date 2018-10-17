@@ -341,7 +341,7 @@ public class TestController extends  BaseController {
         Date todayPlusReset = cal1.getTime();
         logger.info("testReceivePoint date are:"+todayReset+","+todayPlusReset);
 
-        GiftPointRecord couponRecord=giftPointRecordRepository.findByResourceEqualsAndUpdateTimeGreaterThanEqualAndUpdateTimeLessThan(2,todayReset,todayPlusReset);
+        GiftPointRecord couponRecord=giftPointRecordRepository.findByResourceEqualsAndUpdateTimeGreaterThanEqualAndUpdateTimeLessThanOrderByUpdateTimeDesc(2,todayReset,todayPlusReset);
         if(couponRecord==null) {
             GiftCoupon couponItem = giftCouponRepository.findByIdEquals(couponId);
             //积分变更表增加sender的记录
