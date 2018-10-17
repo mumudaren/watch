@@ -43,7 +43,7 @@
                                                   <br><em>朋友未领取</em></span>
                                               <span class="z_tablist_notusesendbtn">
                                                          <a  th:onclick="'javascript:toFriend()'">送给朋友</a>
-                                                          <a class="z_dothing_share">生成礼品卡</a>
+                                                          <a class="z_dothing_share" th:onclick="'javascript:toErWeiMa()'">生成礼品卡</a>
                                                       </span>
                                           </p>
                                       </div>
@@ -62,7 +62,7 @@
                                                   <strong th:text="${card.buyTime}">2018年08月23日</strong>购买的<br><em>朋友未领取</em></span>
                                               <span class="z_tablist_notusesendbtn">
                                                           <a  th:onclick="'javascript:toFriend()'">送给朋友</a>
-                                                             <a class="z_dothing_share">生成礼品卡</a>
+                                                             <a class="z_dothing_share" th:onclick="'javascript:toErWeiMa()'">生成礼品卡</a>
                                                       </span>
                                           </p>
                                       </div>
@@ -135,11 +135,15 @@
 
             function toFriend () {
                   ///chooseToFriend接口，参数有openid和callRecordId。
-                  //window.location.href = "/chooseToFriend?cardId=" + cardId + "&" + "openid=" + openid + "&message=" + message;
+                  //window.location.href = "/chooseToFriend?cardRecordId=" + cardRecordId + "&" + "openid=" + openid;
             }
-            $(".z_dothing_share").click(function(){
-                window.location.href="/qrcode?cardRecordId="+cardRecordId;
-            });
+            function toErWeiMa () {
+                ///chooseToFriend接口，参数有openid和callRecordId。
+                //  window.location.href="/qrcode?cardRecordId="+cardRecordId;
+            }
+//            $(".z_dothing_share").click(function(){
+//                window.location.href="/qrcode?cardRecordId="+cardRecordId;
+//            });
       </script>
     </body>     
 </html>
