@@ -88,6 +88,7 @@
                               <li th:each="p:${giftRecord}">
                                   <span>￥<em th:text="${p.giftCoupon.amount/100}">10</em></span>
                                   <span th:text="${'有效期'+p.giftCoupon.createAt+'-'+p.giftCoupon.effectiveTime}">有效期：2019.08.22—2020.08.22</span>
+                                  <span class="giftRecordId" th:text="${p.id}" style="display: none"></span>
                               </li>
                               <!--<li>-->
                                   <!--<span>￥<em>20</em></span>-->
@@ -107,7 +108,9 @@
           var userPhone = [[${userPhone}]];
           var clicktag = 0;  //微信支付标志
           var isHide=[[${isHideOldDiv}]];
+          var totalPrice;
           var uidNumber;
+          var couponRecordId;
           $(function(){
               var oldPrice = $(".z_taocamnumber_price i").text();
               $(".z_write_moeny").find("b").text(oldPrice);
@@ -131,12 +134,14 @@
                     var normalPrice1 = $(".z_taocamnumber_price").text();
                     var selCash= $(this).find("span em").text();
                     var selCshe1 = $(this).find("span:eq(0)").text();
+                    couponRecordId=$(this).find(".giftRecordId").text();
                     console.log("normalPrice - selCash"+normalPrice+","+selCash);
-                    var totalPrice = (normalPrice - selCash).toFixed(2);
+                    console.log("couponRecordId:"+couponRecordId);
+                    totalPrice = (normalPrice - selCash).toFixed(2);
                     $(".z_cashselect").text("已选择：￥" + selCash);
                     $(".f_cashshow").hide();
                     if(totalPrice<0){
-                        totalPrice=0.01;
+                        totalPrice=0;
                     }
                     $(".z_write_moeny").find("b").text(totalPrice);
                     
@@ -154,6 +159,8 @@
                     console.log("pay");
                     if(isHide==false){
                         alert("请选择号码卡。");
+                    }else if(isHide==true&&totalPrice==0){
+                        alert("价格是0的情况。");
                     }else{
                         justPay()
                     }
@@ -214,7 +221,7 @@
                               console.log("message:"+message);
                               message="大吉大利，今晚有靓号"
                           }
-                          window.location.href="/card_give.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message+"&uidNumber="+uidNumber;
+                          window.location.href="/card_give.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message+"&uidNumber="+uidNumber+"&couponRecordId="+couponRecordId;
                       }else {
                           //console.log(res.err_msg);
                           //alert("res.err_msg is:"+res.err_msg);

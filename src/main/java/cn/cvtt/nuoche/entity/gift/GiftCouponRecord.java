@@ -19,19 +19,23 @@ public class GiftCouponRecord {
     private  Long  couponId;
     @Column(name="get_time")
     private Date getTime;
+    //优惠券是否使用，0未使用，1已使用
+    @Column(name="is_used")
+    private Integer isUsed;
     @Transient
     private GiftCoupon giftCoupon;
 
     public GiftCouponRecord() {
     }
 
-    public GiftCouponRecord(Long id, String senderOpenid, String receiverOpenid, Long pointUsed,Date getTime,GiftCoupon giftCoupon) {
+    public GiftCouponRecord(Long id, String senderOpenid, String receiverOpenid, Long pointUsed,Date getTime,GiftCoupon giftCoupon,Integer isUsed) {
         this.id = id;
         this.senderOpenid = senderOpenid;
         this.receiverOpenid = receiverOpenid;
         this.couponId = pointUsed;
         this.getTime = getTime;
         this.giftCoupon = giftCoupon;
+        this.isUsed = isUsed;
     }
 
     public Long getId() {
@@ -80,5 +84,13 @@ public class GiftCouponRecord {
 
     public void setGiftCoupon(GiftCoupon giftCoupon) {
         this.giftCoupon = giftCoupon;
+    }
+
+    public Integer getIsUsed() {
+        return isUsed;
+    }
+
+    public void setIsUsed(Integer isUsed) {
+        this.isUsed = isUsed;
     }
 }

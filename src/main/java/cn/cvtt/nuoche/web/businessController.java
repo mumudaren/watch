@@ -483,6 +483,7 @@ public class businessController extends  BaseController{
             couponRecordNew.setSenderOpenid(senderUser);
             couponRecordNew.setReceiverOpenid(receiveUser);
             couponRecordNew.setGetTime(new Date());
+            couponRecordNew.setIsUsed(0);
             couponRecordNew.setCouponId(coupon);
             giftCouponRecordRepository.saveAndFlush(couponRecordNew);
             GiftCoupon couponItem=giftCouponRepository.findByIdEquals(coupon);

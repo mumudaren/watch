@@ -243,7 +243,7 @@ public class TestController extends  BaseController {
     }
 
 
-    //领取优惠券测试页面
+    //领取优惠券测试页面,/couponReceive为真实接口
     @RequestMapping("/couponReceiveTest")
     public ModelAndView testReceiveTest(@RequestParam(value = "coupon" ,defaultValue = "1") Long coupon,
                                     @RequestParam(value = "senderUser",defaultValue="oIFn90393PZMsIt-kprqw0GWmVko") String senderUser,
@@ -259,6 +259,7 @@ public class TestController extends  BaseController {
             couponRecordNew.setReceiverOpenid(receiveUser);
             couponRecordNew.setGetTime(new Date());
             couponRecordNew.setCouponId(coupon);
+            couponRecordNew.setIsUsed(0);
             giftCouponRecordRepository.saveAndFlush(couponRecordNew);
             GiftCoupon couponItem=giftCouponRepository.findByIdEquals(coupon);
             model.addObject("coupon",couponItem);
@@ -403,8 +404,9 @@ public class TestController extends  BaseController {
             model.addObject("card",card);
         }
         model.addObject("isHideOldDiv",isHideOldDiv);
-        //查找该用户所有的优惠券。
-        List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEquals(openid);
+        //查找该用户所有未使用过的优惠券。
+        //List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEquals(openid);
+        List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEqualsAndIsUsedEqualsOrderByGetTimeDesc(openid,0);
         for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
         {
             Long couponId=eachGiftCouponRecord.getCouponId();
@@ -465,14 +467,19 @@ public class TestController extends  BaseController {
         return  "redirect:"+"testRegexGift?isHideOldDiv="+isHideOldDiv+"&cardId="+cardId+"&openid="+openid;
     }
 
-    //分享套餐卡页面
+    //套餐卡支付成功后页面
     @RequestMapping("/card_give.html")
     public  ModelAndView  cardGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
                                    @RequestParam(value ="cardId") String cardId,
+                                   @RequestParam(value ="couponRecordId") long couponRecordId,
                                    @RequestParam(value ="uidNumber") String uidNumber,
                                    @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
         GiftCardRules card=giftCardRulesRepository.findByIdEquals(Long.parseLong(cardId));
+        //支付成功后删除优惠券，即isUsed设置为1.
+        GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
+        giftCouponRecord.setIsUsed(1);
+        giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
         //支付成功后保存新购买卡片。
         logger.info("[cardGive]uidNumber is:"+uidNumber);
         GiftCard card2=new GiftCard();
@@ -568,8 +575,8 @@ public class TestController extends  BaseController {
                                                @RequestParam(value ="openid") String openid) {
         ModelAndView  model=new ModelAndView();
          //openid="oIFn90393PZMsIt-kprqw0GWmVko";
-        //查找该用户所有的优惠券。
-        List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEquals(openid);
+        //查找该用户所有未使用的优惠券。
+        List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEqualsAndIsUsedEqualsOrderByGetTimeDesc(openid,0);
         for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
         {
             Long couponId=eachGiftCouponRecord.getCouponId();
@@ -603,8 +610,13 @@ public class TestController extends  BaseController {
     @RequestMapping("/number_give.html")
     public  ModelAndView  numberGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
                                      @RequestParam(value ="number") String number,
+                                     @RequestParam(value ="couponRecordId") long couponRecordId,
                                      @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
+        //支付成功后删除优惠券，即isUsed设置为1.
+        GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
+        giftCouponRecord.setIsUsed(1);
+        giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
         //生成号码卡数据
         GiftCard giftCard=new GiftCard();
         giftCard.setCardName("号码卡");
@@ -652,7 +664,7 @@ public class TestController extends  BaseController {
             //优惠券
             GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
             Long couponId=giftCouponRecord.getCouponId();
-            
+
             String senderId=giftCouponRecord.getCreatorOpenid();
             return  "redirect:"+"/oauth/gift/giftReturn/"+couponId+"/"+senderId;
             //return  "redirect:"+"oauth/gift/giftReturn?couponId="+couponId+"&senderId="+senderId;

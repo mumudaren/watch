@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface IGiftCouponRecordRepository extends JpaRepository<GiftCouponRecord,Long> {
+    GiftCouponRecord findGiftCouponRecordByIdEquals(long id);
     GiftCouponRecord findGiftCouponRecordBySenderOpenidEqualsAndReceiverOpenidEquals(String sender,String receiver);
     List<GiftCouponRecord> findAllByReceiverOpenidEquals(String receiverOpenid);
+    List<GiftCouponRecord> findAllByReceiverOpenidEqualsAndIsUsedEqualsOrderByGetTimeDesc(String receiverOpenid,int isUsed);
   //  GiftCouponRecord findGiftCouponRecordByIdEquals(String id);
 }
