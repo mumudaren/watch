@@ -50,13 +50,13 @@
             <ul>
               <li>
                 <div class="f_mynumber_gift">
-                    <img  th:src="@{/images/giftImage/myicon_03.png}" ><br>微信送礼<br>
+                    <img  th:src="@{/images/giftImage/myicon_03.png}" th:onclick="'javascript:wechatGift()'" ><br>微信送礼<br>
                     <em>95号码送朋友</em>
                 </div>                 
               </li>
               <li>
                 <div class="f_mynumber_gift f_mynumber_gifttwo">
-                    <img  th:src="@{/images/giftImage/myicon_08.png}" ><br>福利送朋友<br>
+                    <img  th:src="@{/images/giftImage/myicon_08.png}" th:onclick="'javascript:giftToFriend()'" ><br>福利送朋友<br>
                     <em>让朋友也用上95号</em>
                 </div>                 
               </li>
@@ -369,6 +369,14 @@
           //点击我的积分
           function myPoints(){
               window.location.href="/myPoints?openid="+openid;
+          }
+          //点击微信送礼
+          function wechatGift(){
+              window.location.href="/myPoints";
+          }
+          //点击送好友礼物
+          function giftToFriend(){
+              window.location.href="/myPoints";
           }
           //点击二维码
           $(".qrCode").click(function() {
