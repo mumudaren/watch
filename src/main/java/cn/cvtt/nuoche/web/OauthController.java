@@ -562,8 +562,8 @@ public class OauthController extends  BaseController{
             }else{
                 modelAndView.addObject("coupon",coupon);
             }
-            //生成二维码
-            GiftCouponQrcode giftCouponQrcode=giftCouponQrcodeRepository.findByCouponIdEquals(coupon.getId());
+            //通过coupon查询，生成二维码
+            GiftCouponQrcode giftCouponQrcode=giftCouponQrcodeRepository.findByCouponIdEqualsAndCreatorOpenidEquals(coupon.getId(),openId);
             if(giftCouponQrcode==null){
                 logger.info("[create qrcode]"+"create qrcode");
                 GiftCouponQrcode giftCouponQrcodeNew=new GiftCouponQrcode();
@@ -580,8 +580,13 @@ public class OauthController extends  BaseController{
             modelAndView.setViewName("shareGift/share_number");
         }else if(StringUtils.equals(StringUtils.substringBefore(state,"_"),"giftReturn")){
             /***==> 转发朋友圈后点击（扫描优惠券二维码)跳转的页面*/
-           Long couponId=Long.parseLong(StringUtils.substringBetween(state,"_","_"));
-           String senderId=StringUtils.substringAfterLast(state,"_");
+            // 从第1次出现"_"的位置向后截取，不包含第一次出现的"_",即type_couponId_openid中的couponId_openid中截取
+            String subStringFirst=StringUtils.substringAfter(state, "_");
+            logger.info("[/oauth/gift]subStringFirst:"+subStringFirst);
+           Long couponId=Long.parseLong(StringUtils.substringBefore(subStringFirst,"_"));
+            // 从第1次出现"_"的位置向后截取，不包含第1次出现的"_",即couponId_openid中获取openid
+           String senderId=StringUtils.substringAfter(subStringFirst,"_");
+           logger.info("[/oauth/gift]senderUser senderId，couponId:"+senderId+","+couponId);
            String receiverOpenid=openId;
             BusinessCustomer receiveUser= businessCusRepository.findByOpenidEquals(receiverOpenid);
             modelAndView.addObject("receiveUser",receiveUser);

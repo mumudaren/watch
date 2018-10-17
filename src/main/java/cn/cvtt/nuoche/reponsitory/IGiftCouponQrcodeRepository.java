@@ -10,4 +10,5 @@ public interface IGiftCouponQrcodeRepository extends JpaRepository<GiftCouponQrc
     GiftCouponQrcode findByIdEquals(Long id);
     GiftCouponQrcode   findByQrcodeEquals(String  qrcodeId);
     GiftCouponQrcode findByCouponIdEquals(Long couponId);
+    GiftCouponQrcode findByCouponIdEqualsAndCreatorOpenidEquals(Long couponId,String creator);
 }

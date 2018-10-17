@@ -652,6 +652,7 @@ public class TestController extends  BaseController {
             //优惠券
             GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
             Long couponId=giftCouponRecord.getCouponId();
+            
             String senderId=giftCouponRecord.getCreatorOpenid();
             return  "redirect:"+"/oauth/gift/giftReturn/"+couponId+"/"+senderId;
             //return  "redirect:"+"oauth/gift/giftReturn?couponId="+couponId+"&senderId="+senderId;
