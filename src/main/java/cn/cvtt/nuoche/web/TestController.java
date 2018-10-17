@@ -404,7 +404,7 @@ public class TestController extends  BaseController {
             model.addObject("card",card);
         }
         model.addObject("isHideOldDiv",isHideOldDiv);
-        //查找该用户所有未使用过的优惠券。
+        //查找该用户所有未使用过的并且在有效期内的优惠券。
         //List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEquals(openid);
         List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEqualsAndIsUsedEqualsOrderByGetTimeDesc(openid,0);
         for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
@@ -470,6 +470,56 @@ public class TestController extends  BaseController {
     //套餐卡支付成功后页面
     @RequestMapping("/card_give.html")
     public  ModelAndView  cardGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
+                                   @RequestParam(value ="cardId") String cardId,
+                                   @RequestParam(value ="couponRecordId") long couponRecordId,
+                                   @RequestParam(value ="uidNumber") String uidNumber,
+                                   @RequestParam(value ="message",defaultValue ="") String message){
+        ModelAndView  model=new ModelAndView();
+        GiftCardRules card=giftCardRulesRepository.findByIdEquals(Long.parseLong(cardId));
+        //支付成功后删除优惠券，即isUsed设置为1.
+        GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
+        giftCouponRecord.setIsUsed(1);
+        giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        //支付成功后保存新购买卡片。
+        logger.info("[cardGive]uidNumber is:"+uidNumber);
+        GiftCard card2=new GiftCard();
+        card2.setRegexId(card.getRegexId());
+        card2.setPrice(card.getPrice());
+        card2.setCardName(card.getCardName());
+        card2.setCardType(card.getCardType());
+        card2.setNumber(uidNumber);
+        //支付成功后将套餐卡信息保存数据库中
+        GiftCardRecord giftCardRecord=new GiftCardRecord();
+        giftCardRecord.setCardId(giftCardRepository.saveAndFlush(card2).getId());
+        giftCardRecord.setSenderOpenid(SenderOpenid);
+        giftCardRecord.setMessage(message);
+        giftCardRecord.setGetStatus(0);
+        giftCardRecord.setBuyTime(new Date());
+        GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
+        //加载分享页面所需要的数据。
+        //可购买的套餐名称
+        JSONObject eachGiftArray= JSONObject.parseObject(card.getRegexId());
+        //遍历套餐，获取套餐名字
+        String regexName="";
+        for(String str:eachGiftArray.keySet()){
+            regexName=regexName+str+",";
+            logger.info("[cardGive]eachGiftRegex is:"+regexName);
+        }
+        String finalRegexName=regexName.substring(0,regexName.length()-1);
+        logger.info("[cardGive]finalRegexName is:"+finalRegexName);
+        card2.setRegexName(finalRegexName);
+        model.addObject("card",card2);
+        model.addObject("cardRecordId",cardRecordId.getId());
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
+        model.addObject("user",user);
+        model.addObject("message",message);
+        model.setViewName("shareGift/card_give");
+        return  model;
+    }
+
+    //套餐卡价格为0无需支付直接跳转的页面
+    @RequestMapping("/card_give_price.html")
+    public  ModelAndView  cardGivePrice(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
                                    @RequestParam(value ="cardId") String cardId,
                                    @RequestParam(value ="couponRecordId") long couponRecordId,
                                    @RequestParam(value ="uidNumber") String uidNumber,

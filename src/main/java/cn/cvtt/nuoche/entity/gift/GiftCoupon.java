@@ -26,8 +26,10 @@ public class GiftCoupon {
     private  String  creator;
     @Column(name="create_at")
     private  Date  createAt;
+    //生效时间
     @Column(name="effective_time")
     private  Date  effectiveTime;
+    //生效结束时间
     @Column(name="end_time")
     private  Date  endTime;
     @Column(name="is_able")
