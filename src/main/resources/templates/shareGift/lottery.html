@@ -21,6 +21,7 @@
                 <li class="lotter_list" th:each="award:${awards}">
                     <img  th:src="${award.imgurl}"  style="width:1.6rem;vertical-align: middle;">
                 </li>
+                <li class="hidden" ><img th:src="@{/images/giftImage/lottery_03.png}"></li>
             </ul>
           </div> 
           <div class="f_lottery_prize">
@@ -42,9 +43,10 @@
           var openid=[[${openid}]];
           var indexFinal;
           $(document).ready(function () {
-             var html ="<li>"+
-                  "<img src='images/giftImage/lottery_03.png'>" +
-                  "</li>";
+//             var html ="<li>"+
+//                  "<img src='images/giftImage/lottery_03.png'>" +
+//                  "</li>";
+              var html =$("#lottery ul").find(".hidden");
               var li = $("#lottery ul li:eq(3)");
               li.after(html);
           });
