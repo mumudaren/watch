@@ -849,8 +849,12 @@ public class TestController extends  BaseController {
         String type=StringUtils.substringAfter(id,"_");
         String realId=StringUtils.substringBefore(id,"_");
         if(StringUtils.equals(type,"card") ){
-            //根据二维码id找到相应的卡片记录。
+            //根据二维码id找到相应的套餐卡或者号码卡记录。
             GiftCardRecord giftCardRecord = giftCardRecordRepository.findByQrcodeEquals(realId);
+            if(giftCardRecord.getGetStatus()==1){
+                //跳转到已经被人领取的页面
+                // return  "redirect:"+"/oauth/gift/qrcodeAfter/"+cardRecordId;
+            }
             Long cardRecordId=giftCardRecord.getId();
             return  "redirect:"+"/oauth/gift/qrcodeAfter/"+cardRecordId;
             //return  "redirect:"+"qrcodeAfter?cardRecordId="+cardRecordId;
@@ -861,7 +865,6 @@ public class TestController extends  BaseController {
             //优惠券
             GiftCouponQrcode giftCouponRecord = giftCouponQrcodeRepository.findByQrcodeEquals(realId);
             Long couponId=giftCouponRecord.getCouponId();
-
             String senderId=giftCouponRecord.getCreatorOpenid();
             return  "redirect:"+"/oauth/gift/giftReturn/"+couponId+"/"+senderId;
             //return  "redirect:"+"oauth/gift/giftReturn?couponId="+couponId+"&senderId="+senderId;
