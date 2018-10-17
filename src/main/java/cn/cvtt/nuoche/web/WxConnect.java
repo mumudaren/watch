@@ -298,6 +298,7 @@ public class WxConnect {
             }//elseif over
              else if(StringUtils.equals(operateType,"3")){
                 synchronized (obj) {
+                    //送好友的套餐卡购买完支付成功
                     LOGGER.info("[paySuccess]operateType is buy regex card......");
                     //保存记录
                     BusinessNumberRecord  record2=new BusinessNumberRecord();
