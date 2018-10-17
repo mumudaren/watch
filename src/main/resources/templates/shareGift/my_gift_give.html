@@ -108,6 +108,7 @@
                                               <span class="z_tablist_text"><strong  th:text="${receive.receiverNickname}">大喇叭</strong>
                                                   <br><strong th:text="${receive.getTime}">2018年09月23日 16:25:08</strong> 送给我的</span>
                                               <span class="z_tablist_selectnumber" th:if="${receive.cardNumber}">已选号码：<em th:text="${receive.cardNumber}">95013780000</em></span>
+                                              <span class="hiddenId" style="display:none;" th:text="${receive.id}"></span>
                                           </p>
                                       </div>
                                   </li>
@@ -133,16 +134,8 @@
             });
 
             function toFriend () {
-                console.log("toFriend this:"+ $(this).text());
-                console.log("toFriend this:"+ $(this).text());
-                console.log("toFriend this:"+ $(this).text());
-//                var message = $(".write_message").val();
-//                var cardId = [[${card.id}]];
-//                if (message == '') {
-//                    console.log("message:" + message);
-//                    message = "大吉大利，今晚有靓号"
-//                }
-//                window.location.href = "/card_give.html?cardId=" + cardId + "&" + "openid=" + openid + "&message=" + message;
+                  ///chooseToFriend接口，参数有openid和callRecordId。
+                  //window.location.href = "/chooseToFriend?cardId=" + cardId + "&" + "openid=" + openid + "&message=" + message;
             }
             $(".z_dothing_share").click(function(){
                 window.location.href="/qrcode?cardRecordId="+cardRecordId;

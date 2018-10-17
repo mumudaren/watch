@@ -587,6 +587,40 @@ public class TestController extends  BaseController {
         model.setViewName("shareGift/card_give");
         return  model;
     }
+    //历史记录页面点击送朋友按钮
+    @RequestMapping("/chooseToFriend")
+    public ModelAndView  chooseToFriend(@RequestParam(value ="openid",defaultValue ="oIFn906sugrd9l_xVq70djzcZcjU") String openid,
+                                        @RequestParam(value ="callRecordId",defaultValue ="84") Long callRecordId){
+        ModelAndView  model=new ModelAndView();
+        //历史记录中根据cardRecordId查询cardId,根据cardId查card。
+        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(callRecordId);
+        GiftCard card2=giftCardRepository.findByIdEquals(giftCardRecord.getCardId());
+        //判断card Type
+        if(card2.getCardType()==1){
+            //card type为1,套餐卡时。需要遍历名字
+            //可购买的套餐名称
+            JSONObject eachGiftArray= JSONObject.parseObject(card2.getRegexId());
+            //遍历套餐，获取套餐名字
+            String regexName="";
+            for(String str:eachGiftArray.keySet()){
+                regexName=regexName+str+",";
+                logger.info("[chooseToFriend]eachGiftRegex is:"+regexName);
+            }
+            String finalRegexName=regexName.substring(0,regexName.length()-1);
+            card2.setRegexName(finalRegexName);
+            model.setViewName("shareGift/card_give");
+        }else{
+            //card type为2时，号码卡跳转不同页面
+            model.setViewName("shareGift/gift_give");
+        }
+        //当前用户
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(openid);
+        model.addObject("card",card2);
+        model.addObject("cardRecordId",callRecordId);
+        model.addObject("user",user);
+        model.addObject("message",giftCardRecord.getMessage());
+        return  model;
+    }
     //分享号码卡页面
     @RequestMapping("/testNumberGift")
     public ModelAndView  numberGiftMethod( ){
@@ -716,7 +750,7 @@ public class TestController extends  BaseController {
         model.setViewName("shareGift/gift_give");
         return  model;
     }
-    //分享号码卡页面
+    //号码卡支付成功，价格为0的情况
     @RequestMapping("/number_give_price.html")
     public  ModelAndView  numberGivePrice(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
                                      @RequestParam(value ="number") String number,
