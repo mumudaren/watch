@@ -103,6 +103,12 @@
               var isHide=[[${isHideOldDiv}]];
               var totalPrice;
               var couponRecordId;
+              var message = $(".write_message").val();
+              var number=[[${mapNumber.number}]];
+              if(message==''){
+                  console.log("message:"+message);
+                  message="大吉大利，今晚有靓号"
+              }
               var clicktag = 0;  //微信支付标志
               $(function(){
                   var oldPrice = $(".oldPrice").text();
@@ -150,7 +156,8 @@
               if(isHide==false){
                   alert("请先选择靓号。");
               }else if(isHide==true&&totalPrice==0){
-                  alert("价格是0的情况。");
+                  //alert("价格是0的情况。");
+                  window.location.href="/number_give_price.html?number="+number+"&"+"openid="+openid+"&message="+message+"&couponRecordId="+couponRecordId;
               }else{
                   justPay();
               }
@@ -209,12 +216,6 @@
                       function(res){
                           if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                               //window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
-                              var message = $(".write_message").val();
-                              var number=[[${mapNumber.number}]];
-                              if(message==''){
-                                  console.log("message:"+message);
-                                  message="大吉大利，今晚有靓号"
-                              }
                               window.location.href="/number_give.html?number="+number+"&"+"openid="+openid+"&message="+message+"&couponRecordId="+couponRecordId;
                           }else {
                               //console.log(res.err_msg);

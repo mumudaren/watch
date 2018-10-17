@@ -43,6 +43,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -84,6 +85,7 @@ public class TestController extends  BaseController {
     IGiftAwardsRulesRepository giftAwardsRulesRepository;
     @Autowired
     IGiftAwardsRecordRepository giftAwardsRecordRepository;
+    @Autowired  private IBusinessNumberRecordRepository  businessNumberRecordRepository;
     @Autowired
     IGiftAwardsRepository giftAwardsRepository;
     @Autowired  private NumberServiceImpl numberService;
@@ -525,6 +527,26 @@ public class TestController extends  BaseController {
                                    @RequestParam(value ="uidNumber") String uidNumber,
                                    @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
+        //当前用户
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
+        //正常情况微信支付成功后的操作
+        //保存记录
+        BusinessNumberRecord  record2=new BusinessNumberRecord();
+        record2.setBusinessId(util.getBusinessKey());
+        record2.setPrtms(user.getPhone());
+        //临时95号
+        record2.setSmbms(uidNumber);
+        record2.setResult(1);
+        record2.setCallrestrict(0+"");
+        record2.setSubts(new Date());
+        record2.setUserPhone(user.getPhone());
+        //有效时间
+        Date validTime=DateUtils.addDay(new Date(),"365");
+        record2.setValidTime(validTime);
+        //临时套餐id
+        record2.setRegexId(255);
+        businessNumberRecordRepository.save(record2);
+        //正常情况前台获取微信支付成功后的操作
         GiftCardRules card=giftCardRulesRepository.findByIdEquals(Long.parseLong(cardId));
         //支付成功后删除优惠券，即isUsed设置为1.
         GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
@@ -560,7 +582,6 @@ public class TestController extends  BaseController {
         card2.setRegexName(finalRegexName);
         model.addObject("card",card2);
         model.addObject("cardRecordId",cardRecordId.getId());
-        BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
         model.addObject("user",user);
         model.addObject("message",message);
         model.setViewName("shareGift/card_give");
@@ -690,6 +711,98 @@ public class TestController extends  BaseController {
         model.addObject("card",card);
         model.addObject("cardRecordId",cardRecordId.getId());
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
+        model.addObject("user",user);
+        model.addObject("message",message);
+        model.setViewName("shareGift/gift_give");
+        return  model;
+    }
+    //分享号码卡页面
+    @RequestMapping("/number_give_price.html")
+    public  ModelAndView  numberGivePrice(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
+                                     @RequestParam(value ="number") String number,
+                                     @RequestParam(value ="couponRecordId") long couponRecordId,
+                                     @RequestParam(value ="message",defaultValue ="") String message) throws IOException {
+        ModelAndView  model=new ModelAndView();
+        //根据openid查找用户信息
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
+        //微信支付不为0时，所用的流程复制到这里
+        //绑定靓号参数
+        BindVo bindVo = new BindVo();
+        bindVo.setUidnumber(number);
+        bindVo.setRegphone(user.getPhone());
+        //待更新真实时间
+        bindVo.setExpiretime("365");
+        Result result = null;
+        try {
+            result = numberService.bindZhiZun(bindVo);
+            if(result.getCode()!=200){
+                model.setViewName("wrongPage");
+                return model;
+            }else{
+                //绑定成功
+                String  jsonReturn=productInterface.deleteSpeNumber(util.getBusinessKey(),number);
+                //获得真实的号码所属套餐ID
+                String regexId=JsonUtils.handlerNumberReturnRegexJson(jsonReturn);
+                JSONObject jobj = JSONObject.parseObject(result.getData().toString());
+                logger.info("[receiveCardSuccess]jobj======" + jobj.toJSONString());
+                JSONObject res = jobj.getJSONObject("binding_Relation_response");
+                if (null == res) {
+                    model.setViewName("wrongPage");
+                    return model;
+                } else {
+                    logger.info("[receiveCardSuccess]change result is :" + res.toJSONString());
+                }
+                //获取返回结果。
+                JSONObject jobjZhiZun = JSONObject.parseObject(result.getData().toString());
+                JSONObject resZhiZun = jobjZhiZun.getJSONObject("binding_Relation_response");
+                if (null == resZhiZun) {
+                    logger.warn("[number_give_price paySuccess]"+number+" bind wrong."+"\n");
+                }
+                //保存记录
+                BusinessNumberRecord  record2=new BusinessNumberRecord();
+                record2.setBusinessId(util.getBusinessKey());
+                record2.setPrtms(resZhiZun.getString("prtms"));
+                record2.setSmbms(resZhiZun.getString("smbms"));
+                record2.setResult(1);
+                record2.setCallrestrict(0+"");
+                record2.setSubts(new Date());
+                record2.setUserPhone(user.getPhone());
+                record2.setValidTime(DateUtils.parse(resZhiZun.getString("validitytime")));
+                record2.setRegexId(Integer.parseInt(StringUtils.equals(regexId,"")?"0":regexId));
+                businessNumberRecordRepository.save(record2);
+            }
+        } catch (IOException e) {
+            model.setViewName("wrongPage");
+            return model;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //支付成功后删除优惠券，即isUsed设置为1.
+        GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
+        giftCouponRecord.setIsUsed(1);
+        giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        //生成号码卡数据
+        GiftCard giftCard=new GiftCard();
+        giftCard.setCardName("号码卡");
+        giftCard.setCardType(2);
+        giftCard.setNumber(number);
+        giftCard.setPrice(5000);
+        //有效期一年。
+        giftCard.setValidTimeNumber(1);
+        giftCard.setValidTimeUnit(1);
+        GiftCard Cardid=giftCardRepository.save(giftCard);
+        //支付成功后将套餐卡信息保存数据库中
+        GiftCardRecord giftCardRecord=new GiftCardRecord();
+        giftCardRecord.setSenderOpenid(SenderOpenid);
+        giftCardRecord.setMessage(message);
+        giftCardRecord.setGetStatus(0);
+        giftCardRecord.setCardId(Cardid.getId());
+        giftCardRecord.setBuyTime(new Date());
+        GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
+        //加载分享页面所需要的数据。
+        GiftCard card=giftCardRepository.findByIdEquals(Cardid.getId());
+        model.addObject("card",card);
+        model.addObject("cardRecordId",cardRecordId.getId());
         model.addObject("user",user);
         model.addObject("message",message);
         model.setViewName("shareGift/gift_give");

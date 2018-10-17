@@ -111,6 +111,14 @@
           var totalPrice;
           var uidNumber;
           var couponRecordId;
+          var cardId=[[${card.id}]];
+          var message = $(".write_message").val();
+          var phone = userPhone;
+          uidNumber =randomNum(100,999)+phone+randomNum(100,999);
+          if(message==''){
+              console.log("message:"+message);
+              message="大吉大利，今晚有靓号"
+          }
           $(function(){
               var oldPrice = $(".z_taocamnumber_price i").text();
               $(".z_write_moeny").find("b").text(oldPrice);
@@ -160,7 +168,8 @@
                     if(isHide==false){
                         alert("请选择号码卡。");
                     }else if(isHide==true&&totalPrice==0){
-                        alert("价格是0的情况。");
+                    //alert("价格是0的情况。");
+                        window.location.href="/card_give_price.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message+"&uidNumber="+uidNumber+"&couponRecordId="+couponRecordId;
                     }else{
                         justPay()
                     }
@@ -172,8 +181,6 @@
                   setTimeout(function () {
                       clicktag = 0
                   }, 4000);
-                  var phone = userPhone;
-                  uidNumber =randomNum(100,999)+phone+randomNum(100,999);
                   console.log("uidNumber"+uidNumber);
                   if (!util.validPhone(phone)) {
                       //util.showText("不是有效的手机号码!",$(".z_successtext"));
@@ -215,12 +222,6 @@
                   'getBrandWCPayRequest',json,
                   function(res){
                       if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                          var message = $(".write_message").val();
-                          var cardId=[[${card.id}]];
-                          if(message==''){
-                              console.log("message:"+message);
-                              message="大吉大利，今晚有靓号"
-                          }
                           window.location.href="/card_give.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message+"&uidNumber="+uidNumber+"&couponRecordId="+couponRecordId;
                       }else {
                           //console.log(res.err_msg);
@@ -230,8 +231,7 @@
                   }
               );
           }
-      </script>
-    <script>
+
         function randomNum(minNum,maxNum){
             switch(arguments.length){
                 case 1:
