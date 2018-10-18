@@ -116,7 +116,25 @@ public class JsonUtils {
         if(obj.getIntValue("code")!=200){
             return  new ArrayList<>();
         }
+        JSONArray  arr=JSONArray.parseArray(obj.getString("data"));
+        System.out.println("prase json JSONArray:"+arr);
+        List<Map<String,String>>  list=new ArrayList<>();
+        for(Object o:arr){
+            Map<String,String> args=new HashMap<>();
+            JSONObject  param=JSONObject.parseObject(o.toString());
+            args.put("key",param.get(key).toString());
+            args.put("value",param.get(valueKey).toString());
+            list.add(args);
+        }
+        return  list;
+    }
 
+    /** 解析Regex正则表达式带套餐图片路径的JSON**/
+    public  static  List<Map<String,String>>  handlerImgJson(String  json,String key,String valueKey){
+        JSONObject  obj=JSONObject.parseObject(json);
+        if(obj.getIntValue("code")!=200){
+            return  new ArrayList<>();
+        }
         JSONArray  arr=JSONArray.parseArray(obj.getString("data"));
         List<Map<String,String>>  list=new ArrayList<>();
         for(Object o:arr){
@@ -124,6 +142,7 @@ public class JsonUtils {
             JSONObject  param=JSONObject.parseObject(o.toString());
             args.put("key",param.get(key).toString());
             args.put("value",param.get(valueKey).toString());
+            args.put("imgUrl",param.get("imgUrl").toString());
             list.add(args);
         }
         return  list;

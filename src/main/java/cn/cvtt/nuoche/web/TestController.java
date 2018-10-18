@@ -634,7 +634,8 @@ public class TestController extends  BaseController {
         ModelAndView  model=new ModelAndView();
         //String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
         String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
-        List<Map<String,String>> map=JsonUtils.handlerNormalJson(json,"id","regexName");
+        //加载所有套餐，id和regexName
+        List<Map<String,String>> map=JsonUtils.handlerImgJson(json,"id","regexName");
         model.addObject("regexs",map);
         model.addObject("openid",openid);
         logger.info("[testChooseNumberRegex]map is:"+map.toString());
