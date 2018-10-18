@@ -853,7 +853,7 @@ public class TestController extends  BaseController {
             GiftCardRecord giftCardRecord = giftCardRecordRepository.findByQrcodeEquals(realId);
             if(giftCardRecord.getGetStatus()==1){
                 //跳转到已经被人领取的页面
-                // return  "redirect:"+"/oauth/gift/qrcodeAfter/"+cardRecordId;
+                 return  "shareGift/used";
             }
             Long cardRecordId=giftCardRecord.getId();
             return  "redirect:"+"/oauth/gift/qrcodeAfter/"+cardRecordId;
