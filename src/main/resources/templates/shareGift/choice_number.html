@@ -152,7 +152,7 @@
                                 "<p class='z_numberlist_content'>" +
                                 "<span class='z_number_price'>"+itemPrice/100+"元／年"+"</span>" +
                                 "<span >"+"朋友送的号码卡，可免费领取"+"</span>" +
-                                "<span class='z_number_selected z_numberbuy_selected numberClick'>选这个号</span>" +
+                                "<span class='z_number_selected z_numberbuy_selected'>选这个号</span>" +
                                 "</p>" +
                                 "</div>"+"</li>";
                         });
@@ -179,7 +179,7 @@
            // $(".z_numberbuy_selected").click(function(){
            //   $(".selectnumber_show").show();
            // });
-           $(document).on('click', '.numberClick', function() {
+           $(document).on('click', '.z_numberbuy_selected', function() {
                 number= $(this).parent().parent().find(".z_numberlists_number").text();
                $(".selectnumber_show").show();
                //var chooseNumber =$(this).parent().parent().find(".z_numberlists_number").text();
