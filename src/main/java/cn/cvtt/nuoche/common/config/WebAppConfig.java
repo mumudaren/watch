@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 
-    // 获取配置文件中图片的路径，项目外访问图片
+    // 获取配置文件中图片的路径，项目外访问图片。
     @Value("${wx.qrcode.path}")
     private String QRCODE_DOWNLOAD;
     private static final Logger logger = LoggerFactory.getLogger(WebAppConfig.class);
