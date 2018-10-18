@@ -487,7 +487,6 @@ public class TestController extends  BaseController {
         giftCardRecord.setMessage(message);
         giftCardRecord.setGetStatus(0);
         giftCardRecord.setBuyTime(new Date());
-        GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
         //加载分享页面所需要的数据。
         //可购买的套餐名称
         JSONObject eachGiftArray= JSONObject.parseObject(card.getRegexId());
@@ -501,7 +500,7 @@ public class TestController extends  BaseController {
         logger.info("[cardGive]finalRegexName is:"+finalRegexName);
         card2.setRegexName(finalRegexName);
         model.addObject("card",card2);
-        model.addObject("cardRecordId",cardRecordId.getId());
+        model.addObject("cardRecordId",giftCardRecordRepository.saveAndFlush(giftCardRecord).getId());
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
         model.addObject("user",user);
         model.addObject("message",message);
