@@ -16,7 +16,7 @@
         <script type="text/javascript" th:src="@{/js/wexinPay.js}"></script>
        
     </head>
-    <body>  
+    <body>
       <div class="wrap gift_wrap">
             <div class="f_gifttop">
                 <div class="f_gifttop_bj" style="opacity:.7;">
@@ -102,8 +102,15 @@
                       </div>  
                   </div>
         </div>
-
-      <script th:inline="javascript">
+      <form id="send"  th:method="post" style="display: none">
+          <input name="openid" id="openid"/>
+          <input name="cardId"  id="cardId"/>
+          <input name="message"   id="message"/>
+          <input name="uidNumber"   id="uidNumber"/>
+          <input name="couponRecordId"   id="couponRecordId"/>
+      </form>
+    </body>
+    <script th:inline="javascript">
           var openid=[[${openid}]];
           var userPhone = [[${userPhone}]];
           var clicktag = 0;  //微信支付标志
@@ -169,7 +176,14 @@
                         alert("请选择号码卡。");
                     }else if(isHide==true&&totalPrice==0){
                     //alert("价格是0的情况。");
-                        window.location.href="/card_give_price.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message+"&uidNumber="+uidNumber+"&couponRecordId="+couponRecordId;
+                        document.getElementById('send').action = "/card_give_price.html";
+                        $("#openid").val(openid);
+                        $("#cardId").val(cardId);
+                        $("#message").val(message);
+                        $("#uidNumber").val(uidNumber);
+                        $("#couponRecordId").val(couponRecordId);
+                        document.getElementById("send").submit();
+                        //window.location.href="/card_give_price.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message+"&uidNumber="+uidNumber+"&couponRecordId="+couponRecordId;
                     }else{
                         justPay()
                     }
@@ -222,7 +236,14 @@
                   'getBrandWCPayRequest',json,
                   function(res){
                       if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                          window.location.href="/card_give.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message+"&uidNumber="+uidNumber+"&couponRecordId="+couponRecordId;
+                          document.getElementById('send').action = "/card_give.html";
+                          $("#openid").val(openid);
+                          $("#cardId").val(cardId);
+                          $("#message").val(message);
+                          $("#uidNumber").val(uidNumber);
+                          $("#couponRecordId").val(couponRecordId);
+                          document.getElementById("send").submit();
+                          //window.location.href="/card_give.html?cardId="+cardId+"&"+"openid="+openid+"&message="+message+"&uidNumber="+uidNumber+"&couponRecordId="+couponRecordId;
                       }else {
                           //console.log(res.err_msg);
                           //alert("res.err_msg is:"+res.err_msg);
@@ -246,5 +267,5 @@
             }
         }
     </script>
-    </body>     
+
 </html>
