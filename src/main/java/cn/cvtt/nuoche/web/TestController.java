@@ -426,19 +426,9 @@ public class TestController extends  BaseController {
     @RequestMapping("/testChooseRegex")
     public  ModelAndView  testChooseRegex(@RequestParam(value ="openid") String openid){
         ModelAndView  model=new ModelAndView();
-//送套餐卡的规则数据
-//        JSONObject obj=new JSONObject();
-//        obj.put("三连号",1);
-//        obj.put("四连号",2);
-//        GiftCardRules giftCard=new GiftCardRules();
-//        giftCard.setRegexId(obj.toString());
-//        giftCard.setCardName("大吉大利卡");
-//        giftCard.setCardType(1);
-//        giftCard.setPrice(5000);
-//        giftCardRulesRepository.save(giftCard);
         //查询type是套餐卡的所有套餐
-        List<GiftCardRules>  giftCardList=giftCardRulesRepository.findAllByCardTypeEquals(1);
-        for(GiftCardRules eachGift :giftCardList)
+        List<GiftCardRules>  giftCardRulesList=giftCardRulesRepository.findAllByCardTypeEquals(1);
+        for(GiftCardRules eachGift :giftCardRulesList)
         {
             JSONObject eachGiftArray= JSONObject.parseObject(eachGift.getRegexId());
             //遍历套餐，获取套餐名字
@@ -452,7 +442,7 @@ public class TestController extends  BaseController {
             eachGift.setRegexName(finalRegexName);
         }
         //遍历套餐id,查询套餐名字。
-        model.addObject("giftCardList",giftCardList);
+        model.addObject("giftCardList",giftCardRulesList);
         model.addObject("openid",openid);
         model.setViewName("shareGift/card_choice");
         return  model;
@@ -527,27 +517,28 @@ public class TestController extends  BaseController {
                                    @RequestParam(value ="uidNumber") String uidNumber,
                                    @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
+        Date now=new Date();
         //当前用户
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
         //正常情况微信支付成功后的操作
         //保存记录
         BusinessNumberRecord  record2=new BusinessNumberRecord();
         record2.setBusinessId(util.getBusinessKey());
-        record2.setPrtms(user.getPhone());
+        record2.setPrtms("010123456");
         //临时95号
         record2.setSmbms(uidNumber);
         record2.setResult(1);
         record2.setCallrestrict(0+"");
-        record2.setSubts(new Date());
-        record2.setUserPhone(user.getPhone());
+        record2.setSubts(now);
+        record2.setUserPhone("010123456");
         //有效时间
-        Date validTime=DateUtils.addDay(new Date(),"365");
+        Date validTime=DateUtils.addDay(now,"365");
         record2.setValidTime(validTime);
         //临时套餐id
         record2.setRegexId(255);
         businessNumberRecordRepository.save(record2);
-        //正常情况前台获取微信支付成功后的操作
-        GiftCardRules card=giftCardRulesRepository.findByIdEquals(Long.parseLong(cardId));
+        //正常情况前台获取微信支付成功后的操作,cardId实际为cardRulesId，根据rules查找号码卡规则。
+        GiftCardRules cardRules=giftCardRulesRepository.findByIdEquals(Long.parseLong(cardId));
         //支付成功后删除优惠券，即isUsed设置为1.
         GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
         giftCouponRecord.setIsUsed(1);
@@ -555,10 +546,10 @@ public class TestController extends  BaseController {
         //支付成功后保存新购买卡片。
         logger.info("[cardGive]uidNumber is:"+uidNumber);
         GiftCard card2=new GiftCard();
-        card2.setRegexId(card.getRegexId());
-        card2.setPrice(card.getPrice());
-        card2.setCardName(card.getCardName());
-        card2.setCardType(card.getCardType());
+        card2.setRegexId(cardRules.getRegexId());
+        card2.setPrice(cardRules.getPrice());
+        card2.setCardName(cardRules.getCardName());
+        card2.setCardType(cardRules.getCardType());
         card2.setNumber(uidNumber);
         //支付成功后将套餐卡信息保存数据库中
         GiftCardRecord giftCardRecord=new GiftCardRecord();
@@ -566,11 +557,10 @@ public class TestController extends  BaseController {
         giftCardRecord.setSenderOpenid(SenderOpenid);
         giftCardRecord.setMessage(message);
         giftCardRecord.setGetStatus(0);
-        giftCardRecord.setBuyTime(new Date());
-        GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
+        giftCardRecord.setBuyTime(now);
         //加载分享页面所需要的数据。
         //可购买的套餐名称
-        JSONObject eachGiftArray= JSONObject.parseObject(card.getRegexId());
+        JSONObject eachGiftArray= JSONObject.parseObject(cardRules.getRegexId());
         //遍历套餐，获取套餐名字
         String regexName="";
         for(String str:eachGiftArray.keySet()){
@@ -581,7 +571,7 @@ public class TestController extends  BaseController {
         logger.info("[cardGive]finalRegexName is:"+finalRegexName);
         card2.setRegexName(finalRegexName);
         model.addObject("card",card2);
-        model.addObject("cardRecordId",cardRecordId.getId());
+        model.addObject("cardRecordId",giftCardRecordRepository.saveAndFlush(giftCardRecord).getId());
         model.addObject("user",user);
         model.addObject("message",message);
         model.setViewName("shareGift/card_give");
@@ -636,7 +626,7 @@ public class TestController extends  BaseController {
         String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
         //加载所有套餐，id和regexName
         List<Map<String,String>> map=JsonUtils.handlerImgJson(json,"id","regexName");
-        model.addObject("regexs",map);
+        model.addObject("regex",map);
         model.addObject("openid",openid);
         logger.info("[testChooseNumberRegex]map is:"+map.toString());
         //加载user
@@ -953,9 +943,7 @@ public class TestController extends  BaseController {
            // model.setViewName("shareGift/recive_card");
            model.setViewName("shareGift/card_qrcode");
         }else{
-
-
-            //加载分享页面所需要的数据。
+            //加载分享页面所需要的数据。号码卡
             model.addObject("card",giftCard);
             BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
             model.addObject("user",user);
@@ -1017,7 +1005,9 @@ public class TestController extends  BaseController {
                 bindVo.setUidnumber(number);
                 bindVo.setRegphone(userInfo.getPhone());
                 //待更新真实时间
-                bindVo.setExpiretime("365");
+                String realTime=record.getValidTime().toString();
+                logger.info("[receiveCardSuccess]bind realTime is:"+realTime);
+                bindVo.setExpiretime(realTime);
                 //使用真实的95号调用绑定接口
                 try {
                     Result result = numberService.bindZhiZun(bindVo);
