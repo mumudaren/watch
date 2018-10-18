@@ -55,7 +55,10 @@
         var sender=[[${senderUser.openid}]];
         var coupon=[[${coupon.id}]];
         $(".z_sharenumber").click(function(){
-            window.location.href="/couponReceive?coupon="+coupon+"&senderUser="+sender+"&receiveUser="+openid;
+            if(openid==sender){
+                alert("非常抱歉，您不能领取自己分享得优惠券");
+            }else{
+            window.location.href="/couponReceive?coupon="+coupon+"&senderUser="+sender+"&receiveUser="+openid;}
         })
         </script>
 </html>
