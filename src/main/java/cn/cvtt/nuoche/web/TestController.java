@@ -322,12 +322,14 @@ public class TestController extends  BaseController {
                 senderPointSearch.setPointTotal(oldSenderPoint+couponItem.getPoint());
                 giftPointRepository.saveAndFlush(senderPointSearch);
             }
+            model.addObject("isAlert",false);
             model.setViewName("shareGift/share_number_success");
         }else{
             logger.info("[couponReceive]you have received a coupon buy the same sender before.");
             //领取过优惠券。
             //优惠券领取记录表增加receiver的记录
             GiftCoupon couponItem=giftCouponRepository.findByIdEquals(coupon);
+            model.addObject("isAlert",true);
             model.addObject("coupon",couponItem);
             model.setViewName("shareGift/share_number_success");
         }
