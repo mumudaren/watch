@@ -737,11 +737,10 @@ public class TestController extends  BaseController {
         giftCardRecord.setGetStatus(0);
         giftCardRecord.setCardId(Cardid.getId());
         giftCardRecord.setBuyTime(new Date());
-        GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
         //加载分享页面所需要的数据。
         GiftCard card=giftCardRepository.findByIdEquals(Cardid.getId());
         model.addObject("card",card);
-        model.addObject("cardRecordId",cardRecordId.getId());
+        model.addObject("cardRecordId",giftCardRecordRepository.saveAndFlush(giftCardRecord).getId());
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);
         model.addObject("user",user);
         model.addObject("message",message);
@@ -832,11 +831,10 @@ public class TestController extends  BaseController {
         giftCardRecord.setGetStatus(0);
         giftCardRecord.setCardId(Cardid.getId());
         giftCardRecord.setBuyTime(new Date());
-        GiftCardRecord cardRecordId=giftCardRecordRepository.saveAndFlush(giftCardRecord);
         //加载分享页面所需要的数据。
         GiftCard card=giftCardRepository.findByIdEquals(Cardid.getId());
         model.addObject("card",card);
-        model.addObject("cardRecordId",cardRecordId.getId());
+        model.addObject("cardRecordId",giftCardRecordRepository.saveAndFlush(giftCardRecord).getId());
         model.addObject("user",user);
         model.addObject("message",message);
         model.setViewName("shareGift/gift_give");
