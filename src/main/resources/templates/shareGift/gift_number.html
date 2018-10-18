@@ -102,7 +102,7 @@
               var userPhone = [[${userPhone}]];
               var isHide=[[${isHideOldDiv}]];
               var totalPrice;
-              var couponRecordId;
+              var couponRecordId='';
               var message = $(".write_message").val();
               var number=[[${mapNumber.number}]];
               if(message==''){
@@ -187,7 +187,7 @@
                       pay.openid = openid;
                       pay.totalFee = val;
                       pay.phone = phone;
-                      pay.extend = 0;
+                      pay.extend = 4;
                       pay.days = days;
                       pay.uidNumber = uidNumber;
                       var json = payGiftUtil.payGiftOrder(pay);

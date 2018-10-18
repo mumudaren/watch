@@ -760,7 +760,7 @@ public class TestController extends  BaseController {
         //绑定靓号参数
         BindVo bindVo = new BindVo();
         bindVo.setUidnumber(number);
-        bindVo.setRegphone(user.getPhone());
+        bindVo.setRegphone("01012345678");
         //待更新真实时间
         bindVo.setExpiretime("365");
         Result result = null;

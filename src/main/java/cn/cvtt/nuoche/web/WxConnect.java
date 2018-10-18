@@ -317,8 +317,42 @@ public class WxConnect {
                     //临时套餐id
                     record2.setRegexId(255);
                     businessNumberRecordRepository.save(record2);
-            }//elseif over(buy regex card)
-        }
+            }
+        }//elseif over(buy regex card)
+            else if(StringUtils.equals(operateType,"4")){
+                //购买号码卡
+                bind.setRegphone("01082345678");
+                String regexId="";
+                if(StringUtils.isNotEmpty(flag.get("uidnumber")))bind.setUidnumber(flag.get("uidnumber"));
+                synchronized (obj){
+                    result=numberService.bindZhiZun(bind);
+                    if(result.getCode()==200){
+                        //删除号码池中的号码。
+                        String  json=productInterface.deleteSpeNumber(util.getBusinessKey(),flag.get("uidnumber"));
+                        regexId=JsonUtils.handlerNumberReturnRegexJson(json);
+                        LOGGER.info("[paySuccess]bind ZhiZun number is success and result:"+json+"\n");
+                        //获取返回结果。
+                        JSONObject jobjZhiZun = JSONObject.parseObject(result.getData().toString());
+                        JSONObject resZhiZun = jobjZhiZun.getJSONObject("binding_Relation_response");
+                        if (null == resZhiZun) {
+                            LOGGER.warn("[paySuccess]"+phone+" bind wrong."+"\n");
+                        }
+                        //保存记录
+                        BusinessNumberRecord  record2=new BusinessNumberRecord();
+                        record2.setBusinessId(util.getBusinessKey());
+                        record2.setPrtms("010123456");
+                        record2.setSmbms(resZhiZun.getString("smbms"));
+                        record2.setResult(1);
+                        record2.setCallrestrict(0+"");
+                        record2.setSubts(new Date());
+                        record2.setUserPhone("010123456");
+                        record2.setValidTime(DateUtils.parse(resZhiZun.getString("validitytime")));
+                        record2.setRegexId(Integer.parseInt(StringUtils.equals(regexId,"")?"0":regexId));
+                        businessNumberRecordRepository.save(record2);
+                    }
+                }
+
+            }
         }
         /**  业务流程处理完成返回微信消息*/
         /** 微信返回通知结果**/
