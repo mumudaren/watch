@@ -638,6 +638,7 @@ public class OauthController extends  BaseController{
         }else if(StringUtils.equals(state,"history")){
             /***==> 套餐卡等历史记录*/
             //根据openId查询记录
+            modelAndView.addObject("openid",openId);
             //自己未领取
             List<GiftCardRecord> giftCardRecordList =giftCardRecordRepository.findByGetStatusEqualsAndSenderOpenidEqualsOrderByGetTimeDesc(0,openId);
             logger.info("[ouathGift]GiftCardRecord size is:"+giftCardRecordList.size());
@@ -651,6 +652,7 @@ public class OauthController extends  BaseController{
                     if(giftCard.getCardType()==2){
                         //号码卡
                         Map<String,Object>map2=new HashedMap();
+                        map2.put("id",giftCardRecord.getId());
                         map2.put("cardName",giftCard.getNumber());
                         map2.put("cardMessage",giftCardRecord.getMessage());
                         map2.put("price",giftCard.getPrice());
@@ -661,6 +663,7 @@ public class OauthController extends  BaseController{
                     }else if(giftCard.getCardType()==1){
                         //套餐卡
                         Map<String,Object>map1=new HashedMap();
+                        map1.put("id",giftCardRecord.getId());
                         map1.put("cardName",giftCard.getCardName());
                         map1.put("cardMessage",giftCardRecord.getMessage());
                         map1.put("price",giftCard.getPrice());
@@ -741,6 +744,7 @@ public class OauthController extends  BaseController{
                     if(giftCard.getCardType()==0){
                         //号码卡
                         Map<String,Object>receiveMap1=new HashedMap();
+                        receiveMap1.put("id",giftCardRecord.getId());
                         receiveMap1.put("cardName",giftCard.getNumber());
                         receiveMap1.put("cardNumber",giftCard.getNumber());
                         receiveMap1.put("cardMessage",giftCardRecord.getMessage());
@@ -759,6 +763,7 @@ public class OauthController extends  BaseController{
                     }else if(giftCard.getCardType()==1){
                         //套餐卡
                         Map<String,Object>receiveMap2=new HashedMap();
+                        receiveMap2.put("id",giftCardRecord.getId());
                         receiveMap2.put("cardName",giftCard.getCardName());
                         receiveMap2.put("cardNumber",giftCard.getNumber());
                         receiveMap2.put("cardMessage",giftCardRecord.getMessage());

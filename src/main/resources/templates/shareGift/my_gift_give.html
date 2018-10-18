@@ -36,16 +36,16 @@
                                           </p>
                                           <p class="z_tablist_price" >
                                               <strong th:text="${numberCard.price/10+'元/年'}">399元／年</strong>
-
                                           </p>
                                           <p class="z_tablist_content">
                                               <span class="z_tanlist_notusedate"><strong th:text="${numberCard.buyTime+'购买的'}">2018年08月23日购买的</strong>
                                                   <br><em>朋友未领取</em></span>
                                               <span class="z_tablist_notusesendbtn">
-                                                         <a  th:onclick="'javascript:toFriend()'">送给朋友</a>
-                                                          <a class="z_dothing_share" th:onclick="'javascript:toErWeiMa()'">生成礼品卡</a>
-                                                      </span>
+                                                         <a class="toFriend"  >送给朋友</a>
+                                                          <a class="z_dothing_share toErWeiMa" >生成礼品卡</a>
+                                              </span>
                                           </p>
+                                          <p class="hiddenValue" style="display:none" th:text="${numberCard.id}"></p>
                                       </div>
                                   </li>
                                   <li  th:if="${myGiftRegexCardRecordList}" th:each="card:${myGiftRegexCardRecordList}">
@@ -61,10 +61,11 @@
                                               <span class="z_tanlist_notusedate">
                                                   <strong th:text="${card.buyTime}">2018年08月23日</strong>购买的<br><em>朋友未领取</em></span>
                                               <span class="z_tablist_notusesendbtn">
-                                                          <a  th:onclick="'javascript:toFriend()'">送给朋友</a>
-                                                             <a class="z_dothing_share" th:onclick="'javascript:toErWeiMa()'">生成礼品卡</a>
+                                                          <a class="toFriend"  >送给朋友</a>
+                                                             <a class="z_dothing_share toErWeiMa">生成礼品卡</a>
                                                       </span>
                                           </p>
+                                          <p class="hiddenValue" style="display:none" th:text="${card.id}"></p>
                                       </div>
                                   </li>
                                           <li  th:if="${cardHave}" th:each="cardItem:${cardHave}">
@@ -119,9 +120,10 @@
                 </div>   
           </div>
           
-      </div>  
-      
-      <script type="text/javascript">
+      </div>
+
+      <script th:inline="javascript">
+          var openid=[[${openid}]];
             $(function(){
                 $(".f_tabnav ul li").click(function(){
                     var index = $(this).index();
@@ -132,15 +134,28 @@
                     
                 })
             });
+            //送朋友
+          $(".toFriend").click(function(){
+              var callRecordId=$(this).parent(".z_tablist_notusesendbtn").parent().parent().find(".hiddenValue").text();
+              window.location.href = "/chooseToFriend?callRecordId=" + callRecordId + "&" + "openid=" + openid;
 
-            function toFriend () {
-                  ///chooseToFriend接口，参数有openid和callRecordId。
-                  //window.location.href = "/chooseToFriend?cardRecordId=" + cardRecordId + "&" + "openid=" + openid;
-            }
-            function toErWeiMa () {
-                ///chooseToFriend接口，参数有openid和callRecordId。
-                //  window.location.href="/qrcode?cardRecordId="+cardRecordId;
-            }
+          });
+          //礼品卡
+          $(".toErWeiMa").click(function(){
+              var callRecordId=$(this).parent(".z_tablist_notusesendbtn").parent().parent().find(".hiddenValue").text();
+              window.location.href="/qrcode?cardRecordId="+callRecordId;
+
+          });
+            // function toFriend () {
+            //       ///chooseToFriend接口，参数有openid和callRecordId。
+            //       //window.location.href = "/chooseToFriend?cardRecordId=" + cardRecordId + "&" + "openid=" + openid;
+            // }
+            // function toErWeiMa () {
+            //     ///chooseToFriend接口，参数有openid和callRecordId。
+            //     console.log("toErWeiMa:"+$(this).parent().parent().parent().find(".hiddenValue").text());
+            //     console.log("openid:"+openid);
+            //     //  window.location.href="/qrcode?cardRecordId="+cardRecordId;
+            // }
 //            $(".z_dothing_share").click(function(){
 //                window.location.href="/qrcode?cardRecordId="+cardRecordId;
 //            });

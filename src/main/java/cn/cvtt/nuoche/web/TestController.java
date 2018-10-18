@@ -589,8 +589,8 @@ public class TestController extends  BaseController {
     }
     //历史记录页面点击送朋友按钮
     @RequestMapping("/chooseToFriend")
-    public ModelAndView  chooseToFriend(@RequestParam(value ="openid",defaultValue ="oIFn906sugrd9l_xVq70djzcZcjU") String openid,
-                                        @RequestParam(value ="callRecordId",defaultValue ="84") Long callRecordId){
+    public ModelAndView  chooseToFriend(@RequestParam(value ="openid") String openid,
+                                        @RequestParam(value ="callRecordId") Long callRecordId){
         ModelAndView  model=new ModelAndView();
         //历史记录中根据cardRecordId查询cardId,根据cardId查card。
         GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(callRecordId);
