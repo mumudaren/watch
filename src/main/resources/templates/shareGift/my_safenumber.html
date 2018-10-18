@@ -291,7 +291,9 @@
               // initialPay();
               // changePay();
           });
-
+          function   showDetail(obj){
+              window.location.href='/toDetail.html?number='+obj.prev().prev().text()+"&smbms;="+obj.prev().text()+"&openid;="+openid;
+          }
 
 
           function  initialPay(){
