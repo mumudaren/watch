@@ -304,9 +304,9 @@ public class WxConnect {
                     //保存记录
                     BusinessNumberRecord  record2=new BusinessNumberRecord();
                     record2.setBusinessId(util.getBusinessKey());
-                    record2.setPrtms(phone);
+                    record2.setPrtms("010123456");
                     //临时95号
-                    record2.setSmbms("010123456");
+                    record2.setSmbms(flag.get("uidnumber"));
                     record2.setResult(1);
                     record2.setCallrestrict(0+"");
                     record2.setSubts(now);

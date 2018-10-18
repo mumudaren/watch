@@ -463,15 +463,19 @@ public class TestController extends  BaseController {
     @RequestMapping("/card_give.html")
     public  ModelAndView  cardGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
                                    @RequestParam(value ="cardId") String cardId,
-                                   @RequestParam(value ="couponRecordId") long couponRecordId,
+                                   @RequestParam(value ="couponRecordId") String couponRecordId,
                                    @RequestParam(value ="uidNumber") String uidNumber,
                                    @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
+        logger.info("[card_give.html]this is card_give.html method.");
         GiftCardRules card=giftCardRulesRepository.findByIdEquals(Long.parseLong(cardId));
         //支付成功后删除优惠券，即isUsed设置为1.
-        GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
-        giftCouponRecord.setIsUsed(1);
-        giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        if(!StringUtils.isEmpty(couponRecordId)) {
+            logger.info("[card_give.html]couponRecordId is:"+couponRecordId);
+            GiftCouponRecord giftCouponRecord = giftCouponRecordRepository.findGiftCouponRecordByIdEquals(Long.parseLong(couponRecordId));
+            giftCouponRecord.setIsUsed(1);
+            giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        }
         //支付成功后保存新购买卡片。
         logger.info("[cardGive]uidNumber is:"+uidNumber);
         GiftCard card2=new GiftCard();
@@ -512,7 +516,7 @@ public class TestController extends  BaseController {
     @RequestMapping("/card_give_price.html")
     public  ModelAndView  cardGivePrice(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
                                    @RequestParam(value ="cardId") String cardId,
-                                   @RequestParam(value ="couponRecordId") long couponRecordId,
+                                   @RequestParam(value ="couponRecordId") String couponRecordId,
                                    @RequestParam(value ="uidNumber") String uidNumber,
                                    @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
@@ -539,9 +543,11 @@ public class TestController extends  BaseController {
         //正常情况前台获取微信支付成功后的操作,cardId实际为cardRulesId，根据rules查找号码卡规则。
         GiftCardRules cardRules=giftCardRulesRepository.findByIdEquals(Long.parseLong(cardId));
         //支付成功后删除优惠券，即isUsed设置为1.
-        GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
-        giftCouponRecord.setIsUsed(1);
-        giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        if(!StringUtils.isEmpty(couponRecordId)) {
+            GiftCouponRecord giftCouponRecord = giftCouponRecordRepository.findGiftCouponRecordByIdEquals(Long.parseLong(couponRecordId));
+            giftCouponRecord.setIsUsed(1);
+            giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        }
         //支付成功后保存新购买卡片。
         logger.info("[cardGive]uidNumber is:"+uidNumber);
         GiftCard card2=new GiftCard();
@@ -705,13 +711,15 @@ public class TestController extends  BaseController {
     @RequestMapping("/number_give.html")
     public  ModelAndView  numberGive(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
                                      @RequestParam(value ="number") String number,
-                                     @RequestParam(value ="couponRecordId") long couponRecordId,
+                                     @RequestParam(value ="couponRecordId") String couponRecordId,
                                      @RequestParam(value ="message",defaultValue ="") String message){
         ModelAndView  model=new ModelAndView();
         //支付成功后删除优惠券，即isUsed设置为1.
-        GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
-        giftCouponRecord.setIsUsed(1);
-        giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        if(!StringUtils.isEmpty(couponRecordId)) {
+            GiftCouponRecord giftCouponRecord = giftCouponRecordRepository.findGiftCouponRecordByIdEquals(Long.parseLong(couponRecordId));
+            giftCouponRecord.setIsUsed(1);
+            giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        }
         //生成号码卡数据
         GiftCard giftCard=new GiftCard();
         giftCard.setCardName("号码卡");
@@ -744,7 +752,7 @@ public class TestController extends  BaseController {
     @RequestMapping("/number_give_price.html")
     public  ModelAndView  numberGivePrice(@RequestParam(value ="openid",defaultValue ="0") String SenderOpenid,
                                      @RequestParam(value ="number") String number,
-                                     @RequestParam(value ="couponRecordId") long couponRecordId,
+                                     @RequestParam(value ="couponRecordId") String couponRecordId,
                                      @RequestParam(value ="message",defaultValue ="") String message) throws IOException {
         ModelAndView  model=new ModelAndView();
         //根据openid查找用户信息
@@ -802,9 +810,11 @@ public class TestController extends  BaseController {
             e.printStackTrace();
         }
         //支付成功后删除优惠券，即isUsed设置为1.
-        GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(couponRecordId);
-        giftCouponRecord.setIsUsed(1);
-        giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        if(!StringUtils.isEmpty(couponRecordId)) {
+            GiftCouponRecord giftCouponRecord = giftCouponRecordRepository.findGiftCouponRecordByIdEquals(Long.parseLong(couponRecordId));
+            giftCouponRecord.setIsUsed(1);
+            giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        }
         //生成号码卡数据
         GiftCard giftCard=new GiftCard();
         giftCard.setCardName("号码卡");
