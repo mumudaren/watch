@@ -29,7 +29,7 @@
                     <span class="z_gumi" style="padding-top:0;">可用于购买95号码</span>
                     <span class="shareinfo_img">
                         <em>￥<b  th:text="(${coupon.amount}/100)">30</b></em>
-                        <em  th:text="'有效期：'+${coupon.effectiveTime}+'-'+${coupon.endTime}">有效期：2019.08.22—2020.08.22</em>
+                        <em  th:text="'有效期：'+${#dates.format(coupon.effectiveTime,'yyyy.MM.dd')}+'-'+${#dates.format(coupon.endTime,'yyyy.MM.dd')}">有效期：2019.08.22—2020.08.22</em>
                     </span>
 
                     <form th:action="@{/testReceive.html}"  th:method="post" id="parmForm">

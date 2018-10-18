@@ -25,7 +25,7 @@
                     <span class="z_gumi"></span>
                     <span class="shareinfo_img" style="margin-top:0;">
                         <em>￥<b  th:text="(${coupon.amount}/100)">30</b></em>
-                        <em  th:text="'有效期：'+${coupon.effectiveTime}+'-'+${coupon.endTime}">有效期：2019.08.22—2020.08.22</em>
+                        <em  th:text="'有效期：'+${#dates.format(coupon.effectiveTime,'yyyy.MM.dd')}+'-'+${#dates.format(coupon.endTime,'yyyy.MM.dd')}">有效期：2019.08.22—2020.08.22</em>
                     </span>           
                 </div>  
                 <div class="z_choice_wxdoting" style="margin-top:2rem;">

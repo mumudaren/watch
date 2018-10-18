@@ -87,7 +87,7 @@
                           <ul>
                               <li th:each="p:${giftRecord}">
                                   <span>￥<em th:text="${p.giftCoupon.amount/100}">10</em></span>
-                                  <span th:text="${'有效期'+p.giftCoupon.createAt+'-'+p.giftCoupon.effectiveTime}">有效期：2019.08.22—2020.08.22</span>
+                                  <span th:text="${'有效期'+#dates.format(p.giftCoupon.createAt,'yyyy.MM.dd')+'-'+#dates.format(p.giftCoupon.effectiveTime,'yyyy.MM.dd')}">有效期：2019.08.22—2020.08.22</span>
                                   <span class="giftRecordId" th:text="${p.id}" style="display: none"></span>
                               </li>
                               <!--<li>-->
