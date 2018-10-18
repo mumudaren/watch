@@ -245,6 +245,20 @@ public class TestController extends  BaseController {
     }
 
 
+    //套餐卡、号码卡转发朋友圈后跳转页面
+    @RequestMapping("/giftCardReturn")
+    public  String  giftCardReturn(@RequestParam("cardRecordId") Long cardRecordId){
+        //朋友圈转发后
+        //根据cardId查询qrcode，如果值为空，则未生成过二维码。
+        GiftCardRecord giftCardRecord=giftCardRecordRepository.findByIdEquals(cardRecordId);
+        if(giftCardRecord.getQrcode()==null) {
+            //生成二维码
+            qrcodeService.generatorQrcode(cardRecordId, "card");
+        }
+        return "redirect:"+"sweep?id="+giftCardRecord.getQrcode()+"_card";
+    }
+
+
     //领取优惠券测试页面,/couponReceive为真实接口
     @RequestMapping("/couponReceiveTest")
     public ModelAndView testReceiveTest(@RequestParam(value = "coupon" ,defaultValue = "1") Long coupon,

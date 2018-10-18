@@ -49,26 +49,23 @@
           </div>
       </div>
       <script th:inline="javascript">
-              var cardRecordId=[[${cardRecordId}]];
-
-              //点击按钮显示浮层，gift_give,card_give
-              $(".tb_overflay").click(function(){
-                  $(".f_sharewrap").hide();
-              });
-              $(".f_sharewrap").click(function(){
-                  $(this).hide();
-              });
-              $(".z_send_wxfriend").click(function(){
-                  $(".f_sharewrap").show();
-              });
-              $(".z_dothing_share").click(function(){
-                  window.location.href="/qrcode?cardRecordId="+cardRecordId;
-              });
-      </script>
-      <script th:inline="javascript">
           var cardId=[[${card.id}]];
           var openid=[[${user.openid}]];
           var nickname=[[${user.nickname}]];
+          var cardRecordId=[[${cardRecordId}]];
+          //点击按钮显示浮层，gift_give,card_give
+          $(".tb_overflay").click(function(){
+              $(".f_sharewrap").hide();
+          });
+          $(".f_sharewrap").click(function(){
+              $(this).hide();
+          });
+          $(".z_send_wxfriend").click(function(){
+              $(".f_sharewrap").show();
+          });
+          $(".z_dothing_share").click(function(){
+              window.location.href="/qrcode?cardRecordId="+cardRecordId;
+          });
           //转发
           var url=window.location.href.split('#')[0];
           url = url.replace(/&/g, '%26');
@@ -98,7 +95,7 @@
               wx.onMenuShareAppMessage({
                   title: '天啊噜，'+nickname+'送给你一个靓号，赶快领取！', // 分享标题
                   desc: '祝您大吉大利，今晚有靓号！', // 分享描述
-                  link: getHostPath()+'/giftReturn?cardId='+cardId+'&senderId='+openid,
+                  link: getHostPath()+'/giftCardReturn?cardRecordId='+cardRecordId,
                   imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
                   success: function () {
                       // 用户点击了分享后执行的回调函数
@@ -108,7 +105,7 @@
               wx.onMenuShareTimeline({
                   title: '天啊噜，'+nickname+'送给你一个靓号，赶快领取！', // 分享标题
                   desc: '祝您大吉大利，今晚有靓号！', // 分享描述
-                  link: getHostPath()+'/giftReturn?cardId='+cardId+'&senderId='+openid,
+                  link: getHostPath()+'/giftCardReturn?cardRecordId='+cardRecordId,
                   imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
                   success: function () {
                       // 用户点击了分享后执行的回调函数
