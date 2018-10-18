@@ -1440,16 +1440,15 @@ public class TestController extends  BaseController {
         model.addObject("phone",userInfo.getPhone());
         Date now=DateUtils.addDay(new Date(),"-60");
         List<BusinessNumberRecord>  ls=recordRepository.findAllByPrtmsEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),util.getBusinessKey(),now);
+        if(ls.size()>0) {
         handlerList(model,ls);
         model.addObject("ls",ls);
-        logger.info("record is:"+ls.get(0).getIsValid().toString());
+        }
         List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey(),now);
-
+        if(other.size()>0) {
         model.addObject("other",other);
         handlerOther(other);
-       /* List<wx_product> products= productRespository.findAll();
-        model.addObject("products",products);
-       */
+        }
         String businessId=util.getBusinessKey();
         logger.info("bussinessId is:"+businessId);
         String json= productInterface.findRegexProduct(businessId,"0");

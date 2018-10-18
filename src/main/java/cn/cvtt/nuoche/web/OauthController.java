@@ -378,27 +378,31 @@ public class OauthController extends  BaseController{
                 modelAndView.addObject("ls",products);
                 modelAndView.addObject("phone",regphone);
             }else{
-                modelAndView.setViewName("buy_zhizun");
-                String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
-                //  String json= productInterface.findProduct(util.getBusinessKey());
-                List<Map<String,String>> mapZhiZun=JsonUtils.handlerNormalJson(json,"id","regexName");
-                modelAndView.addObject("regexs",mapZhiZun);
-                String productJson= productInterface.findRegexProduct(util.getBusinessKey(),mapZhiZun.get(0).get("key"));
-                List<wx_product>  ls=JsonUtils.handlerRegexJson(productJson);
-                modelAndView.addObject("products",ls);
-                String numberJson=productInterface.findSpeNumber(util.getBusinessKey(),mapZhiZun.get(0).get("key"),"");
-                List<Map<String,String>>  numbers=JsonUtils.handlerNumberJson(numberJson);
-                modelAndView.addObject("numbers",numbers);
-                Map<String,String> user=new HashMap<>();
-                user.put("openid",openId);
-                modelAndView.addObject("user",user);
-                modelAndView.addObject("phone",regphone);
+                //查看我的95号
+                modelAndView.setViewName("shareGift/my_safenumber");
+                BusinessCustomer  userInfo=businessCusRepository.findByOpenidEquals(openId);
+                String  url= userInfo.getHeadimgurl();
+                modelAndView.addObject("url",url);
+                modelAndView.addObject("phone",userInfo.getPhone());
+                Date now=DateUtils.addDay(new Date(),"-60");
+                List<BusinessNumberRecord>  ls=recordRepository.findAllByPrtmsEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),util.getBusinessKey(),now);
+                if(ls.size()>0) {
+                    handlerList(modelAndView, ls);
+                    modelAndView.addObject("ls", ls);
+                }
+                List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey(),now);
+                if(other.size()>0) {
+                    modelAndView.addObject("other", other);
+                    handlerOther(other);
+                }
+                String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+                List<wx_product> products=JsonUtils.handlerRegexJson(json);
+                modelAndView.addObject("products",products);
             }
         }else {
             //查看我的95号
             modelAndView.setViewName("shareGift/my_safenumber");
             BusinessCustomer  userInfo=businessCusRepository.findByOpenidEquals(openId);
-            //WxUserInfo userInfo=userRepository.findByOpenidEquals(openId);
             String  url= userInfo.getHeadimgurl();
             modelAndView.addObject("url",url);
             modelAndView.addObject("phone",userInfo.getPhone());
@@ -409,19 +413,10 @@ public class OauthController extends  BaseController{
             List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey(),now);
             modelAndView.addObject("other",other);
             handlerOther(other);
-            logger.info("businessKey"+util.getBusinessKey());
             String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
             List<wx_product> products=JsonUtils.handlerRegexJson(json);
-           /* String json= productInterface.findProduct(util.getBusinessKey());
-            JSONObject  obj=JSONObject.parseObject(json);
-            List<wx_product> products=new ArrayList<>();
-            if(obj.getIntValue("code")==200){
-                JsonUtils.handlerArgs(products,obj);
-            }*/
-            logger.info("[ouathAdminBase]products size is:"+products.size());
             modelAndView.addObject("products",products);
         }
-
         return modelAndView;
     }
     public  void  handlerOther(List<BusinessNumberRecord > records){

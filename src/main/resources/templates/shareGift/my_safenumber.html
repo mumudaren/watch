@@ -13,6 +13,8 @@
         <script type="text/javascript" th:src="@{/js/flexible.js}"></script>
         <script type="text/javascript" th:src="@{/js/flexible_css.js}"></script>
         <script type="text/javascript" th:src="@{/js/safenumber.js}" th:async="yes"  th:inline="javascript"></script>
+        <script type="text/javascript" th:src="@{/js/util.js}"></script>
+        <script type="text/javascript" th:src="@{/js/wexinPay.js}"></script>
        
     </head>
     <body>
@@ -78,7 +80,7 @@
             <ul class="f_mynumber_content">
               <li>
                 <div>
-                    <div class="f_mynumber_list" th:each="record:${ls}">
+                    <div class="f_mynumber_list" th:if="${ls}" th:each="record:${ls}">
                       <div class="z_mynumber_list">
                             <p>
                                 <span th:class="${record.isValid == 1?'z_imgkey z_imgkey_gray':'z_imgkey'}">
@@ -114,13 +116,13 @@
                   </div>
 
                   <!-- <p class="f_mynumber_time">显示在有效期内及已过期&nbsp;<span>60</span>&nbsp;天内的记录</p> -->
-                  <p class="f_bindsuc_share f_mynumberbtn">
+                  <p class="f_bindsuc_share f_mynumberbtn"  th:if="${ls}">
                       <a href="/oauth/base/getNumber.html">购买安全号</a>
                   </p>
-                  <p class="f_bindsuc_sharebj">&nbsp;</p>
+                  <p class="f_bindsuc_sharebj"  th:if="${ls}">&nbsp;</p>
                 </div>
                 <!--暂无安全号-->
-                <div class="f_notnumber" style="display: none;">
+                <div class="f_notnumber"  th:unless="${ls}">
                     <p class="z_notnumimg">
                         <img th:src="@{/images/notnumber_03.png}" />
                     </p>
@@ -134,21 +136,21 @@
               </li>
 
               <li style="display: none">
-                <!-- <div class="f_notnumber">
+                 <div class="f_notnumber" th:unless="${other}">
                     <p class="z_notnumimg">
-                      <img src="images/otherbuy_03.png">
+                        <img th:src="@{/images/otherbuy_03.png}" />
                     </p>
                     <p class="z_notnum_text">
                       保护别人隐私也很重要，赶紧为ta提供安全号。
-                    </p>                  
+                    </p>
                     <p class="f_bindsuc_share">
                       <a href="javascript:void(0);">购买安全号</a>
                     </p>
                     <p class="f_bindsuc_sharebj">&nbsp;</p>
-                </div> -->
+                </div>
                   <!--他人-->
                 <div>
-                    <div th:style="${other.size() gt 0?'':'display:none'}" class="f_mynumber_list" th:each="record:${other}">
+                    <div th:if="${other}" th:style="${other.size() gt 0?'':'display:none'}" class="f_mynumber_list" th:each="record:${other}">
                         <div class="z_mynumber_list">
                               <p>
                                   <span th:class="${record.isValid == 1?'z_imgkey  z_imgkey_gray':' z_imgkey'}">
@@ -167,24 +169,26 @@
                         </div>
   
                         <div class="f_delay_detail">
-                                <span class="z_number_dalay">
-                                    <a href="javascript:void(0);" class="number_delay">充留言/短信</a>
-                                </span>
-                                <span class="z_number_dalay">
+                                <!--<span class="z_number_dalay">-->
+                                   <!--<a href="javascript:void(0);" class="qrCode">二维码</a>-->
+                                <!--</span>-->
+                                <span class="z_number_dalay"  style="width:100% ">
                                     <a href="javascript:void(0);" class="number_delay">号码延期</a>
                                 </span>
-                                <span>
-                                    <a href="javascript:void(0);" class="number_detail">号码详情</a>
-                                </span>
+                                <!--<span>-->
+                                    <!--<a href="javascript:void(0);" class="number_detail">号码详情</a>-->
+                                <!--</span>-->
+                            <span class="numIndex" style="display: none" th:text="${record.regexId}">123</span>
+                            <span class="number95" style="display:none;" th:text="${record.smbms}">950135901234785</span>
                         </div>
                     </div>
 
   
                     <!-- <p class="f_mynumber_time">显示在有效期内及已过期&nbsp;<span>60</span>&nbsp;天内的记录</p> -->
-                    <p class="f_bindsuc_share f_mynumberbtn">
+                    <p class="f_bindsuc_share f_mynumberbtn" th:if="${other}">
                         <a href="/oauth/base/getNumber.html">购买安全号</a>
                     </p>
-                    <p class="f_bindsuc_sharebj" style="display: none">填充背景色</p>
+                    <p class="f_bindsuc_sharebj" style="display: none"  th:if="${other}">填充背景色</p>
                   </div>
                 
               </li>
@@ -337,19 +341,6 @@
                   }
               });
           }
-          // /** 微信支付  start **/
-          // function onBridgeReady(json){
-          //     WeixinJSBridge.invoke(
-          //         'getBrandWCPayRequest',json,
-          //         function(res){
-          //             if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-          //                 window.location.href="/oauth/admin/OwnerSafeNumber.html";
-          //             }else {
-          //                 //window.location.href="/oauth/admin/OwnerSafeNumber.html";
-          //             }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
-          //         }
-          //     );
-          // }
           /** 微信支付  start **/
           function onBridgeReady(json){
               WeixinJSBridge.invoke(
