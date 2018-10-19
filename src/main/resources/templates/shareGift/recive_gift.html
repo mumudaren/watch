@@ -87,6 +87,12 @@
           var giftCardId=[[${card.id}]];
           var pathSource="/receiveCardSuccess?giftCardRecordId="+giftCardRecordId+"&giftCardId="+giftCardId+"&openid="+openid;
           $(function(){
+              //点击领取我的靓号
+              $(".longpic").click(function(){
+                  //需要手机号验证码的功能屏蔽掉
+                  // $(".selectnumber_show").show();
+                  window.location.href=pathSource;
+              });
               $("#getcode").click(function(){
                   $(".z_successtext").text("test");
                   var  phone=$("input[name='phone']").val();
@@ -128,10 +134,7 @@
           });
       </script>
           <script type="text/javascript">
-               //点击选这个号之后的弹窗
-               $(".longpic").click(function(){
-                 $(".selectnumber_show").show();  
-               });
+
     
                $(".z_selectnum_img").click(function(){
                 $(".selectnumber_show").hide(); 

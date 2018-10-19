@@ -164,11 +164,6 @@
                 }
             })
         }
-
-
-
-    </script>
-    <script type="text/javascript">
            //顶部的几个号码选择
            $(".f_selectnumber_toplist ul li").click(function(){
                $(this).addClass("current");
@@ -176,15 +171,11 @@
            }) ;
 
            //点击选这个号之后的弹窗
-           // $(".z_numberbuy_selected").click(function(){
-           //   $(".selectnumber_show").show();
-           // });
-           //$(document).on('click', '.z_numberbuy_selected', function() {
                $(".f_searchnumber_list").on('click', '.z_numberbuy_selected', function() {
-                number= $(this).parent().parent().find(".z_numberlists_number").text();
-               $(".selectnumber_show").show();
-               //var chooseNumber =$(this).parent().parent().find(".z_numberlists_number").text();
-              // window.location.href="/testNumberRegex?chooseNumber="+chooseNumber+"&isHideOldDiv=true"+"&openid="+openid;
+                 number= $(this).parent().parent().find(".z_numberlists_number").text();
+               // $(".selectnumber_show").show();
+                   var pathSource="/receiveCardSuccess?giftCardRecordId="+giftCardRecordId+"&giftCardId="+giftCardId+"&openid="+openid+"&number="+number;
+                   window.location.href=pathSource;
            });
            $(".z_selectnum_img").click(function(){
             $(".selectnumber_show").hide(); 

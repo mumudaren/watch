@@ -325,7 +325,8 @@
                       console.log("pay" + JSON.stringify(pay));
                       var json = payUtil.payOrder(pay);//1表示延期
                       if (json.code != 200) {
-                          alert("fastPay");
+                          //alert("fastPay");
+                          console.log(json);
                           return;
                       } else {
                           json = json.data;
