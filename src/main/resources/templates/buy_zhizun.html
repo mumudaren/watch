@@ -41,6 +41,7 @@
                     <div class="f_zhizuntablist">
                         <p class="f_zhizuninput">
                             <input type="tel" placeholder="请输入需要查找的海牛助手号" style="width:97%"  class="searchNumber" name=""/>
+                            <input type="button" value="搜索" id="search" name="search" class="z_searchnumber_btn" style="border:none;color:#4c4c4c;font-size:.5rem;background:transparent;margin-left:.2rem">
                         </p>
                         <dl class="f_95013listnum">
                             <dd th:each="n:${numbers}" th:text="${n.number}">9501378110</dd>
@@ -137,11 +138,13 @@
                 })
             });
 
-            $(".searchNumber").bind("input propertychange", function () {
+            // $(".searchNumber").bind("input propertychange", function () {
+            $(".z_searchnumber_btn").click(function () {
                 var data = {};
                 var regexId = $(".f_zhizuntab ul").find(".z_actived").attr("value");
                 data.regexId = regexId;
-                data.number = $(this).val();
+                data.number = $(".searchNumber").val();
+                console.log("number:"+data.number);
                 $.ajax({
                     url: "/changeModule",
                     type: "POST",
