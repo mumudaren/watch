@@ -816,7 +816,7 @@ public class TestController extends  BaseController {
                 record2.setResult(1);
                 record2.setCallrestrict(0+"");
                 record2.setSubts(new Date());
-                record2.setUserPhone(user.getPhone());
+                record2.setUserPhone("01012345678");
                 record2.setValidTime(DateUtils.parse(resZhiZun.getString("validitytime")));
                 record2.setRegexId(Integer.parseInt(StringUtils.equals(regexId,"")?"0":regexId));
                 businessNumberRecordRepository.save(record2);
@@ -1004,6 +1004,7 @@ public class TestController extends  BaseController {
                                             @RequestParam(value = "number" ,defaultValue = "") String number,
                                             @RequestParam("openid") String openid){
         ModelAndView  model=new ModelAndView();
+        logger.info("openid:"+openid);
         //根据giftCardRecordId查找号码卡record，填写receiver和卡片领取时间。
         GiftCardRecord giftCardRecord = giftCardRecordRepository.findByIdEquals(giftCardRecordId);
         giftCardRecord.setReceiverOpenid(openid);
@@ -1066,11 +1067,13 @@ public class TestController extends  BaseController {
                     return model;
                 }
                 //修改record信息并更新数据库
+                logger.info("save record operation.");
                 record.setPrtms(userInfo.getPhone());
                 record.setUserPhone(userInfo.getPhone());
                 //BusinessNumberRecord 更新真实的95号
                 record.setSmbms(number);
                 recordRepository.saveAndFlush(record);
+                logger.info("save record operation over.");
             }
             //giftCard 更新真实的95号
             giftCard.setNumber(number);
@@ -1107,10 +1110,17 @@ public class TestController extends  BaseController {
                     }
                 }catch (Exception e){
                     e.printStackTrace();
-
                 }
+            //本地数据库修改userphone和phone更改成功后跳转。
+            //修改record信息并更新数据库
+            logger.info("save number record operation.");
+            record.setPrtms(userInfo.getPhone());
+            record.setUserPhone(userInfo.getPhone());
+            //BusinessNumberRecord 更新真实的95号
+            //record.setSmbms(number);
+            recordRepository.saveAndFlush(record);
         }
-        //本地数据库修改userphone和phone更改成功后跳转。
+        logger.info("save record operation over.");
         model.addObject("openid",openid);
         model.addObject("giftCard",giftCard);
         model.addObject("giftCardRecord",giftCardRecord);

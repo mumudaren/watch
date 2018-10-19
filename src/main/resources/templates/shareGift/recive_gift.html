@@ -80,9 +80,9 @@
         </div>
 
       <script th:inline="javascript">
-          //var openid=[[${openid}]];
+          var openid = [[${openid}]];
           //var pathSource=[[${path}]];
-          var openid=[[${giftCardRecord.senderOpenid}]];
+          //var openid=[[${giftCardRecord.senderOpenid}]];
           var giftCardRecordId=[[${giftCardRecord.id}]];
           var giftCardId=[[${card.id}]];
           var pathSource="/receiveCardSuccess?giftCardRecordId="+giftCardRecordId+"&giftCardId="+giftCardId+"&openid="+openid;

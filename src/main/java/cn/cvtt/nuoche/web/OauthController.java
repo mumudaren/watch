@@ -622,9 +622,10 @@ public class OauthController extends  BaseController{
             }else{
                 //加载分享页面所需要的数据。
                 modelAndView.addObject("card",giftCard);
-                BusinessCustomer user= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+                BusinessCustomer senderUser= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
+                modelAndView.addObject("openid",openid);
                 //senderUser
-                modelAndView.addObject("user",user);
+                modelAndView.addObject("user",senderUser);
                 modelAndView.addObject("giftCardRecord",giftCardRecord);
                 modelAndView.setViewName("shareGift/recive_gift");
             }
