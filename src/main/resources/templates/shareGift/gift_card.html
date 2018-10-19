@@ -119,13 +119,10 @@
           var uidNumber;
           var couponRecordId='';
           var cardId=[[${card.id}]];
-          var message = $(".write_message").val();
+          var message;
+
           var phone = userPhone;
           uidNumber =randomNum(100,999)+phone+randomNum(100,999);
-          if(message==''){
-              console.log("message:"+message);
-              message="大吉大利，今晚有靓号"
-          }
           $(function(){
               var oldPrice = $(".z_taocamnumber_price i").text();
               $(".z_write_moeny").find("b").text(oldPrice);
@@ -172,6 +169,11 @@
                 });
                 function pay () {
                     console.log("pay");
+                    message = $(".write_message").val();
+                    if(message==''){
+                        console.log("message:"+message);
+                        message="大吉大利，今晚有靓号"
+                    }
                     if(isHide==false){
                         alert("请选择号码卡。");
                     }else if(isHide==true&&totalPrice==0){

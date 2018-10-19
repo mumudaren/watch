@@ -110,12 +110,8 @@
               var isHide=[[${isHideOldDiv}]];
               var totalPrice;
               var couponRecordId='';
-              var message = $(".write_message").val();
               var number=[[${mapNumber.number}]];
-              if(message==''){
-                  console.log("message:"+message);
-                  message="大吉大利，今晚有靓号"
-              }
+              var message;
               var clicktag = 0;  //微信支付标志
               $(function(){
                   var oldPrice = $(".oldPrice").text();
@@ -160,6 +156,11 @@
 
           function pay() {
               console.log("pay");
+              message = $(".write_message").val();
+              if(message==''){
+                  console.log("message:"+message);
+                  message="大吉大利，今晚有靓号"
+              }
               if(isHide==false){
                   alert("请先选择靓号。");
               }else if(isHide==true&&totalPrice==0){
