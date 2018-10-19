@@ -736,7 +736,7 @@ public class OauthController extends  BaseController{
                     BusinessCustomer sender= businessCusRepository.findByOpenidEquals(giftCardRecord.getSenderOpenid());
                     Long cardId=giftCardRecord.getCardId();
                     GiftCard giftCard=giftCardRepository.findByIdEquals(cardId);
-                    if(giftCard.getCardType()==0){
+                    if(giftCard.getCardType()==2){
                         //号码卡
                         Map<String,Object>receiveMap1=new HashedMap();
                         receiveMap1.put("id",giftCardRecord.getId());
