@@ -1404,7 +1404,7 @@ public class TestController extends  BaseController {
                 logger.info("userPoints-usePoints:"+userPoints+"-"+usePoints);
                 userPoints=userPoints-usePoints;
                 logger.info("setPointTotal:"+userPoints);
-                userPointsInfo.setPointTotal(userPoints);
+                //userPointsInfo.setPointTotal(userPoints);
                 logger.info("save userPointsInfo id:"+userPointsInfo.getId());
                 giftPointRepository.saveAndFlush(userPointsInfo);
                 //用户积分历史记录表变更。
@@ -1414,13 +1414,15 @@ public class TestController extends  BaseController {
                 userPointsRecord.setResource(3);
                 userPointsRecord.setUpdateTime(new Date());
                 giftPointRecordRepository.saveAndFlush(userPointsRecord);
+                //最新用户总积分
+                int userPointsFinal=giftPointRepository.findByOpenidEquals(openid).getPointTotal()-giftPointRepository.findByOpenidEquals(openid).getPointUsed();
                 //剩余可抽奖次数
                 times=times-1;
                 //返回前台数据
                 Map<String,Object> map=new HashMap<>();
                 map.put("resultIndex",resultIndex);
                 map.put("times",times);
-                map.put("userPoints",userPoints);
+                map.put("userPoints",userPointsFinal);
                 return  new Result(ResultMsg.OPERATESUCEESS,map);
             }else{
                 resultIndex=0;
