@@ -544,7 +544,10 @@ public class PageController extends  BaseController{
                         temp.setResourceName("好友扫码领取现金券");
                         break;
                     case 2:
-                        temp.setResourceName("每日分享给好友/朋友圈");
+                        temp.setResourceName("每日分享到朋友圈");
+                        break;
+                    case 4:
+                        temp.setResourceName("每日分享给好友");
                         break;
                 }
                 String datePrase2=DateUtils.format(temp.getUpdateTime());
