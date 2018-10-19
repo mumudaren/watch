@@ -1198,7 +1198,7 @@ public class TestController extends  BaseController {
                     SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
                     String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
                     haveMap1.put("buyTime",buyTime);
-                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
                     String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
                     haveMap1.put("getTime",getTime);
                     haveMap1.put("receiverImg",receiver.getHeadimgurl());
@@ -1213,7 +1213,7 @@ public class TestController extends  BaseController {
                     SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
                     String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
                     haveMap2.put("buyTime",buyTime);
-                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
                     String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
                     haveMap2.put("getTime",getTime);
                    logger.info("receiver size is:"+receiver.toString());
@@ -1246,7 +1246,7 @@ public class TestController extends  BaseController {
                         String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
                         receiveMap1.put("buyTime",buyTime);
                     }catch(Exception e){}
-                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
                     String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
                     receiveMap1.put("getTime",getTime);
                     receiveMap1.put("receiverImg",sender.getHeadimgurl());
@@ -1264,7 +1264,7 @@ public class TestController extends  BaseController {
                         String buyTime=simpleFormat.format(giftCardRecord.getBuyTime());
                         receiveMap2.put("buyTime",buyTime);
                     }catch(Exception e){}
-                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+                    SimpleDateFormat simpleFormat2 = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
                     String getTime=simpleFormat2.format(giftCardRecord.getGetTime());
                     receiveMap2.put("getTime",getTime);
                     logger.info("receiver size is:"+sender.toString());

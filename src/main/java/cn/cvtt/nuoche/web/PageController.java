@@ -147,7 +147,7 @@ public class PageController extends  BaseController{
             re.put("recordNumber",temp.substring(0,3)+"****"+temp.substring(7));
             re.put("nox",child.getString("x"));
             re.put("recordTime",DateUtils.format(child.getDate("ringTime")));
-            SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String durationRecord="0";
             try {
                 String releaseTime=simpleFormat.format(child.getDate("releaseTime"));
@@ -191,7 +191,7 @@ public class PageController extends  BaseController{
             re.put("voiceNox",child.getString("a"));
             re.put("voiceNumber",child.getString("x"));
             re.put("recordTime",DateUtils.format(child.getDate("ringTime")));
-            SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String durationRecord="0";
             try {
                 String releaseTime=simpleFormat.format(child.getDate("releaseTime"));
@@ -251,7 +251,7 @@ public class PageController extends  BaseController{
                children.put("childNumber",temp.substring(0,3)+"****"+temp.substring(7));
                children.put("recordDate",DateUtils.formatString(o.getDate("ringTime"),Constant.DATETEMPLATE));
                children.put("recordTime",DateUtils.formatTime(o.getDate("ringTime")));
-                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String durationRecord="0";
                 try {
                     String releaseTime=simpleFormat.format(o.getDate("releaseTime"));
@@ -304,7 +304,7 @@ public class PageController extends  BaseController{
                 Map<String,String>  maps= JsonUtils.handlerJson(param);
                 children.put("voicePath",maps.get("APPLICATION_VOICE_PATH")+dbVoicePath);
                 /**end*/
-                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String durationRecord="0";
                 try {
                     String releaseTime=simpleFormat.format(o.getDate("releaseTime"));
