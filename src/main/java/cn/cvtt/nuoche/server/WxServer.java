@@ -140,13 +140,13 @@ public class WxServer {
                     textMessage.setToUserName(fromUserName);
                     textMessage.setFromUserName(toUserName);
                     textMessage.setCreateTime(new Date().getTime());
-                    String content="感谢您关注“95013安全号”官方微信\n" +
-                            "95013安全号是您真实联系方式的忠诚保护伞\n" +
+                    String content="感谢您关注“海牛助手”官方微信\n" +
+                            "海牛助手是您真实联系方式的忠诚保护伞\n" +
                             "代替真实号码实现通信功能\n" +
                             "避免号码泄露防止各种骚扰\n" +
-                           "\uD83D\uDC4D"+ "<a href=\"http://i.95013.com/wechatsite/helpcenter/help\">如何使用安全号？</a>\n" +
-                            "\uD83C\uDFDD"+"<a href=\"http://i.95013.com/wechatsite/helpcenter/scene\">生活中哪些情况需要安全号？</a>\n" +
-                           "\uD83C\uDFC5"+ "<a href=\"http://i.95013.com/oauth/base/getNumber.html\">申请安全号</a>";
+                           "\uD83D\uDC4D"+ "<a href=\"http://testcar.95013.com/wechatsite/helpcenter/help\">如何使用海牛助手？</a>\n" +
+                            "\uD83C\uDFDD"+"<a href=\"http://testcar.95013.com/wechatsite/helpcenter/scene\">生活中哪些情况需要海牛助手？</a>\n" +
+                           "\uD83C\uDFC5"+ "<a href=\"http://testcar.95013.com/oauth/base/getNumber.html\">申请海牛助手号码</a>";
                     textMessage.setContent(content);
                     textMessage.setMsgType(MessageUtils.RESP_MESSAGE_TYPE_TEXT);
                     // 将文本消息对象转换成xml

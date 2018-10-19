@@ -339,7 +339,8 @@ public class TestController extends  BaseController {
     //当日分享给好友或朋友圈后领取积分奖励
     @RequestMapping("/testReceivePoint")
     public  void  testReceivePoint(@RequestParam(value = "couponId" ,defaultValue = "1") Long couponId,
-                                   @RequestParam(value = "openid" ,defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid){
+                                   @RequestParam(value = "openid" ,defaultValue = "oIFn90393PZMsIt-kprqw0GWmVko") String openid,
+                                   @RequestParam(value = "resource") Integer resource){
         //如当天未分享过，则该用户增加一次积分。（查询积分变更表中是否存在resource=2的当天的记录。）
         Date today=new Date();
         Calendar cal1 = Calendar.getInstance();
@@ -355,9 +356,9 @@ public class TestController extends  BaseController {
         cal1.set(Calendar.SECOND, 0);
         cal1.set(Calendar.MILLISECOND, 0);
         Date todayPlusReset = cal1.getTime();
+        logger.info("resource is:"+resource);
         logger.info("testReceivePoint date are:"+todayReset+","+todayPlusReset);
-
-        GiftPointRecord couponRecord=giftPointRecordRepository.findByResourceEqualsAndUpdateTimeGreaterThanEqualAndUpdateTimeLessThanOrderByUpdateTimeDesc(2,todayReset,todayPlusReset);
+        GiftPointRecord couponRecord=giftPointRecordRepository.findByResourceEqualsAndUpdateTimeGreaterThanEqualAndUpdateTimeLessThanAndOpenidEqualsOrderByUpdateTimeDesc(resource,todayReset,todayPlusReset,openid);
         if(couponRecord==null) {
             GiftCoupon couponItem = giftCouponRepository.findByIdEquals(couponId);
             //积分变更表增加sender的记录
@@ -673,6 +674,8 @@ public class TestController extends  BaseController {
             Object key=eachGiftArray.get(name);
             regex.put("value",value);
             regex.put("key",key);
+            //根据regexId寻找套餐图标
+
             logger.info("[testChooseNumberRegex]map is:"+regex);
             regexs.add(regex);
         }

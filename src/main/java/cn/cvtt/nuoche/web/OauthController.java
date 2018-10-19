@@ -543,7 +543,7 @@ public class OauthController extends  BaseController{
             modelAndView.addObject("openid",openId);
             return  modelAndView;
         }
-        /***==> 分享代金券页面*/
+        /***==> 分享现金券页面*/
         if(StringUtils.equals(state,"giftShareNumber")){
             BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openId);
             modelAndView.addObject("user",userInfo);

@@ -545,10 +545,11 @@ public class businessController extends  BaseController{
         return  model;
     }
 
-    //当日分享给好友或朋友圈后领取积分奖励
+    //当日分享给好友后领取积分奖励
     @RequestMapping("/receivePoint")
     public  void  receivePoint(@RequestParam(value = "couponId") Long couponId,
-                                   @RequestParam(value = "openid") String openid){
+                                   @RequestParam(value = "openid") String openid,
+                                   @RequestParam(value = "resource") Integer resource){
         //如当天未分享过，则该用户增加一次积分。（查询积分变更表中是否存在resource=2的当天的记录。）
         Date today=new Date();
         Calendar cal1 = Calendar.getInstance();
@@ -565,15 +566,15 @@ public class businessController extends  BaseController{
         cal1.set(Calendar.MILLISECOND, 0);
         Date todayPlusReset = cal1.getTime();
         logger.info("testReceivePoint date are:"+todayReset+","+todayPlusReset);
-
-        GiftPointRecord couponRecord=giftPointRecordRepository.findByResourceEqualsAndUpdateTimeGreaterThanEqualAndUpdateTimeLessThanOrderByUpdateTimeDesc(2,todayReset,todayPlusReset);
+        logger.info("resource is:"+resource);
+        GiftPointRecord couponRecord=giftPointRecordRepository.findByResourceEqualsAndUpdateTimeGreaterThanEqualAndUpdateTimeLessThanAndOpenidEqualsOrderByUpdateTimeDesc(resource,todayReset,todayPlusReset,openid);
         if(couponRecord==null) {
             GiftCoupon couponItem = giftCouponRepository.findByIdEquals(couponId);
             //积分变更表增加sender的记录
             GiftPointRecord pointSenderRecord = new GiftPointRecord();
             pointSenderRecord.setChangePoint(couponItem.getPoint());
             pointSenderRecord.setOpenid(openid);
-            pointSenderRecord.setResource(2);
+            pointSenderRecord.setResource(resource);
             pointSenderRecord.setUpdateTime(new Date());
             giftPointRecordRepository.saveAndFlush(pointSenderRecord);
             //积分表修改sender的积分
@@ -591,10 +592,10 @@ public class businessController extends  BaseController{
                 giftPointRepository.saveAndFlush(senderPointSearch);
             }
         }else{
+            logger.info("couponRecord"+couponRecord.getUpdateTime());
             logger.info("you have share before.");
         }
     }
-
 
     public static void main(String[] args) {
         CallReleaseVo  vo=new CallReleaseVo();

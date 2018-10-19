@@ -179,7 +179,8 @@
            // $(".z_numberbuy_selected").click(function(){
            //   $(".selectnumber_show").show();
            // });
-           $(document).on('click', '.z_numberbuy_selected', function() {
+           //$(document).on('click', '.z_numberbuy_selected', function() {
+               $(".f_searchnumber_list").on('click', '.z_numberbuy_selected', function() {
                 number= $(this).parent().parent().find(".z_numberlists_number").text();
                $(".selectnumber_show").show();
                //var chooseNumber =$(this).parent().parent().find(".z_numberlists_number").text();
@@ -263,8 +264,7 @@
             slidesPerView: 5,
             centeredSlides: true,
             paginationClickable: true,
-            spaceBetween: 30,
-            loop: true
+            spaceBetween: 30
         });
     </script>
 

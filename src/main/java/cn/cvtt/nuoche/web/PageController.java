@@ -541,7 +541,7 @@ public class PageController extends  BaseController{
             for(GiftPointRecord temp:moreThanZeroRecord){
                 switch(temp.getResource()){
                     case 1:
-                        temp.setResourceName("好友扫码领取代金券");
+                        temp.setResourceName("好友扫码领取现金券");
                         break;
                     case 2:
                         temp.setResourceName("每日分享给好友/朋友圈");

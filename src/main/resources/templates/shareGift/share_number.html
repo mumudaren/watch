@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
-        <meta name="Description" content="95号送朋友" />
-        <title>95号送朋友</title>       
+        <meta name="Description" content="分享有礼" />
+        <title>分享有礼</title>
         <meta content="yes" name="apple-mobile-web-app-capable">
         <meta content="yes" name="apple-touch-fullscreen">
         <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
@@ -27,7 +27,7 @@
                 <div class="z_givefriend_listcontent">
                     <span class="z_gumi" th:text="${user.nickname}">咪咕虾分享给朋友</span>
                     <span class="z_gumi" style="padding-top:0;">分享给朋友</span>
-                    <span class="z_choicethree"  th:text="'朋友将获得'+(${coupon.amount}/100)+'元代金券'">朋友将获得30元代金券</span>
+                    <span class="z_choicethree"  th:text="'朋友将获得'+(${coupon.amount}/100)+'元现金券'">朋友将获得30元现金券</span>
                     <span class="z_gumi" style="padding-top:0;"  th:text="'你也将获得'+${coupon.point}+'积分'">你也将获得10积分</span>
                     <span class="z_choice_goodnumber" style="padding-top:0;">我的福利码</span>
                     <span class="z_friend_giveimg z_friend_erweima">
@@ -38,7 +38,7 @@
                     <!--<div class="longpic" >-->
                             <!--<span>长按图片保存到相册</span>-->
                     <!--</div>-->
-                    <span class="z_saoyisao">扫一扫，获取代金券</span>
+                    <span class="z_saoyisao">扫一扫，获取现金券</span>
                     <span class="z_sharenumber">立即分享</span>   
                     <span class="z_shareproduce">
                         <a href="/activity_description.html">活动说明</a>
@@ -103,7 +103,7 @@
             console.log("wx.ready method");
             console.log("getHostPath:"+getHostPath()+'/oauth/gift/giftReturn?couponId='+couponId+'&senderId='+openid);
             wx.onMenuShareAppMessage({
-                title: title, // 分享标题
+                title: title, // 朋友圈分享标题
                 desc: message, // 分享描述
                 link: getHostPath()+'/oauth/gift/giftReturn/'+couponId+'/'+openid,
                 imgUrl: getHostPath()+'/images/wechatShareLogo.png', // 分享图标
@@ -113,6 +113,7 @@
                     var data = {};
                     data.couponId = couponId;
                     data.openid = openid;
+                    data.resource = 4;
                     $.ajax({
                         url: "/receivePoint",
                         type: "POST",
@@ -137,6 +138,7 @@
                     var data = {};
                     data.couponId = couponId;
                     data.openid = openid;
+                    data.resource = 2;
                     $.ajax({
                         url: "/receivePoint",
                         type: "POST",
