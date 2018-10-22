@@ -47,6 +47,13 @@
               <img src="images/share_03.png">
           </div>
       </div>
+      <script language="javascript">
+          //stop backup
+          history.pushState(null, null, document.URL);
+          window.addEventListener('popstate', function () {
+              history.pushState(null, null, document.URL);
+          });
+      </script>
       <script th:inline="javascript">
           var cardId=[[${card.id}]];
           var openid=[[${user.openid}]];
