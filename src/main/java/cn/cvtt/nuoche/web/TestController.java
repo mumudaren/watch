@@ -140,7 +140,7 @@ public class TestController extends  BaseController {
         List<Map<String,String>>  numbers=JsonUtils.handlerNumberJson(numberJson);
         modelAndView.addObject("numbers",numbers);
         Map<String,String> user=new HashMap<>();
-        user.put("openid","oIFn90xXM4M-zUayrLI4hxLGZNKA");
+        user.put("openid","oIFn90393PZMsIt-kprqw0GWmVko");
         BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
         modelAndView.addObject("phone",userInfo.getPhone());
         modelAndView.addObject("user",user);

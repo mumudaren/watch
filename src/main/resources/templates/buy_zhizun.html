@@ -75,7 +75,7 @@
                         <span class="z_casharrow">></span>
                     </p>
                     <p class="f_bindsuc_share f_fastpay" style="margin-left: .22rem;margin-top: 1rem;">
-                        <a href="javascript:justPay()">立即支付（<em>¥1</em>）</a>
+                        <a href="javascript:pay()">立即支付（<em>¥1</em>）</a>
                     </p>
                     <p class="f_bindsuc_sharebj f_fastpay" style="margin-left: .22rem;display: none" >填充背景色</p>
                 </li>
@@ -86,7 +86,7 @@
             <div class="tb_overflay"></div>
             <div class="f_cashcontent">
                 <div class="f_cashclose">
-                    <span>现金券</span><img src="images/giftImage/close.png">
+                    <span>现金券</span><img th:src="@{/images/giftImage/close.png}">
                 </div>
                 <div class="cash_list">
                     <ul>
@@ -177,6 +177,36 @@
                 });
             });
         });
+        function pay(){
+            if(totalPrice==0){
+                var pay = {};
+                var days = $("#tab1 dd p:eq(2)").text();
+                var productId = $("#tab1 dd p:eq(5)").text();
+                var phone = $("input[name='myNumber']").val();
+                var uidNumber = $(".f_95013listnum").find(".z_current").text();
+                pay.openid = openid;
+                pay.totalFee = 0;
+                pay.phone = phone;
+                pay.extend = 0;
+                pay.days = days;
+                pay.uidNumber = uidNumber;
+                pay.productId = productId;
+                $.ajax({
+                    url:"/bindNumberZZ",
+                    type:"POST",
+                    data:pay,
+                    dataType:"JSON"
+                }).done(function(result){
+                    if(result.code!=200){
+                        //util.showText(result.msg,$(".z_successtext"));
+                        alert("购买失败，请联系客服。");
+                    }
+                });
+                form.submit();
+            }else{
+                justPay();
+            }
+        }
         function justPay(){
             if (clicktag == 0) {  //判断标志
                 clicktag = 1;   //进行标志，防止多次点击

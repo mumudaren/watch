@@ -11,6 +11,7 @@ import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.ISystemParamInterface;
 import cn.cvtt.nuoche.reponsitory.*;
+import cn.cvtt.nuoche.server.impl.NumberServiceImpl;
 import cn.cvtt.nuoche.service.QrcodeService;
 import cn.cvtt.nuoche.util.*;
 import com.alibaba.fastjson.JSON;
@@ -29,7 +30,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.*;
 
 import static cn.cvtt.nuoche.util.WechatSignGenerator.jsapiSign;
@@ -73,6 +76,8 @@ public class businessController extends  BaseController{
     IGiftCardRepository giftCardRepository;
     @Autowired
     IGiftAwardsRulesRepository giftAwardsRulesRepository;
+    @Autowired  private IBusinessNumberRecordRepository  businessNumberRecordRepository;
+    @Autowired  private NumberServiceImpl numberService;
     @Resource
     private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(businessController.class);
@@ -595,6 +600,57 @@ public class businessController extends  BaseController{
             logger.info("couponRecord"+couponRecord.getUpdateTime());
             logger.info("you have share before.");
         }
+    }
+    //使用优惠券0元购买至尊号
+    @RequestMapping("/bindNumberZZ")
+    public  Result   bindNumberZZMethod(String couponRecordId ,String uidNumber,String days,String openid) throws ParseException {
+        logger.info("[bindNumberZZMethod]receive prams:couponRecordId,uidNumber,days,phone:"+couponRecordId+","+uidNumber+","+days+","+openid);
+        //支付成功后删除优惠券，即isUsed设置为1.
+        if(!StringUtils.isEmpty(couponRecordId)) {
+            logger.info("[card_give.html]couponRecordId is:"+couponRecordId);
+            GiftCouponRecord giftCouponRecord = giftCouponRecordRepository.findGiftCouponRecordByIdEquals(Long.parseLong(couponRecordId));
+            giftCouponRecord.setIsUsed(1);
+            giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        }
+        //根据openid查找用户信息
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(openid);
+        //绑定数据信息
+        BindVo bindVo = new BindVo();
+        bindVo.setUidnumber(uidNumber);
+        bindVo.setRegphone(user.getPhone());
+        bindVo.setExpiretime(days);
+        //绑定95号、删除号码池数据、numberRecord写入数据
+        Result result = null;
+        try {
+            result=numberService.bindZhiZun(bindVo);
+        } catch (IOException e) {
+            //调用绑定接口失败
+            return  new Result(ResultMsg.OPERATEXCEPTIN);
+        }
+        if(result.getCode()==200){
+                    //删除号码池中的号码。
+                    String  json=productInterface.deleteSpeNumber(util.getBusinessKey(),uidNumber);
+                    String regexId=JsonUtils.handlerNumberReturnRegexJson(json);
+                    //获取返回结果。
+                    JSONObject jobjZhiZun = JSONObject.parseObject(result.getData().toString());
+                    JSONObject resZhiZun = jobjZhiZun.getJSONObject("binding_Relation_response");
+                    if (null == resZhiZun) {
+                        return  new Result(ResultMsg.OPERATEXCEPTIN);
+                    }
+                    //保存记录
+                    BusinessNumberRecord  record2=new BusinessNumberRecord();
+                    record2.setBusinessId(util.getBusinessKey());
+                    record2.setPrtms(resZhiZun.getString("prtms"));
+                    record2.setSmbms(resZhiZun.getString("smbms"));
+                    record2.setResult(1);
+                    record2.setCallrestrict(0+"");
+                    record2.setSubts(new Date());
+                    record2.setUserPhone(user.getPhone());
+                    record2.setValidTime(DateUtils.parse(resZhiZun.getString("validitytime")));
+                    record2.setRegexId(Integer.parseInt(StringUtils.equals(regexId,"")?"0":regexId));
+                    businessNumberRecordRepository.save(record2);
+                }
+        return  new Result(ResultMsg.OPERATESUCEESS);
     }
 
     public static void main(String[] args) {
