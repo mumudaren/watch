@@ -127,6 +127,7 @@ public class TestController extends  BaseController {
     @RequestMapping("/testRegex")
     public  ModelAndView  testRegex(){
         ModelAndView  modelAndView=new ModelAndView();
+        String openid="oIFn90393PZMsIt-kprqw0GWmVko";
         modelAndView.setViewName("buy_zhizun");
         String json=regexInterface.findRegexByBusiness(util.getBusinessKey());
         //  String json= productInterface.findProduct(util.getBusinessKey());
@@ -140,9 +141,18 @@ public class TestController extends  BaseController {
         modelAndView.addObject("numbers",numbers);
         Map<String,String> user=new HashMap<>();
         user.put("openid","oIFn90xXM4M-zUayrLI4hxLGZNKA");
-        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals("oIFn90xXM4M-zUayrLI4hxLGZNKA");
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
         modelAndView.addObject("phone",userInfo.getPhone());
         modelAndView.addObject("user",user);
+        //查找该用户所有未使用过的并且在有效期内的优惠券。
+        List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEqualsAndIsUsedEqualsOrderByGetTimeDesc(openid,0);
+        for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
+        {
+            Long couponId=eachGiftCouponRecord.getCouponId();
+            GiftCoupon giftCoupon=giftCouponRepository.findByIdEquals(couponId);
+            eachGiftCouponRecord.setGiftCoupon(giftCoupon);
+        }
+        modelAndView.addObject("giftRecord",giftRecordList);
         return  modelAndView;
     }
 
