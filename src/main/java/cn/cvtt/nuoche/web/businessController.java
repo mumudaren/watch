@@ -340,7 +340,7 @@ public class businessController extends  BaseController{
     }
 
     @RequestMapping("/changeModule")
-    public  Result  changeModule(String regexId,String number){
+    public  Result  changeModule(String regexId,String number,int page,int size){
         JSONArray  arr=new JSONArray();
         //查找号码
         if(StringUtils.isNotEmpty(number)){
@@ -348,10 +348,10 @@ public class businessController extends  BaseController{
             //String  str=productInterface.findSpeNumber(util.getBusinessKey(),regexId,number);
             //查找top10
             String  str=null;
-            try{str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number);}
+            try{str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number,page,size);}
             catch (FeignException e){
                 logger.info("FeignException so try again");
-                str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number);
+                str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number,page,size);
             }
               logger.info("[changeModule]number... is:"+str);
               List<Map<String,String>> map=JsonUtils.handlerNumberJson(str);
@@ -359,11 +359,11 @@ public class businessController extends  BaseController{
               return  new Result(ResultMsg.OPERATESUCEESS,arr);
         }else {
             String  str=null;
-            try{str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"");
+            try{str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"",page,size);
             }catch (FeignException e)
             {
                 logger.info("FeignException so try again");
-                str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"");
+                str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"",page,size);
             }
             List<Map<String,String>> map=JsonUtils.handlerNumberJson(str);
             logger.info("[changeModule]json map is:"+map.toString());

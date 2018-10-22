@@ -114,6 +114,7 @@
         var totalPrice;
         var  price=$("#tab1 dd:eq(0)").find("p:eq(1)").text();
         var couponRecordId='';
+        var clickPage=0;
         var clicktag = 0;  //微信支付标志
         $(function() {
             $(".f_zhizuntab ul li:eq(0)").addClass("z_actived");
@@ -130,6 +131,8 @@
                 var data = {};
                 data.regexId = regexId;
                 data.number = '';
+                data.page = 0;
+                data.size = 10;
                 $.ajax({
                     url: "/changeModule",
                     type: "POST",
@@ -166,6 +169,8 @@
                 var regexId = $(".f_zhizuntab ul").find(".z_actived").attr("value");
                 data.regexId = regexId;
                 data.number = $(".searchNumber").val();
+                data.page = 0;
+                data.size = 10;
                 console.log("number:"+data.number);
                 $.ajax({
                     url: "/changeModule",
