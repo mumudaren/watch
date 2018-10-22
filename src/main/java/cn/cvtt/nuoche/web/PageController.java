@@ -8,6 +8,7 @@ import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.wx_product;
 import cn.cvtt.nuoche.entity.gift.GiftCard;
 import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
+import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
 import cn.cvtt.nuoche.entity.gift.GiftNumberQRcode;
 import cn.cvtt.nuoche.entity.gift.GiftPoint;
 import cn.cvtt.nuoche.entity.gift.GiftPointRecord;
@@ -18,6 +19,7 @@ import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCardRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCardRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftNumberQRcodeRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftPointRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftPointRepository;
@@ -74,6 +76,8 @@ public class PageController extends  BaseController{
     IGiftCardRepository giftCardRepository;
     @Autowired
     IGiftCardRecordRepository giftCardRecordRepository;
+    @Autowired
+    IGiftCouponRecordRepository giftCouponRecordRepository;
     private static final Logger logger = LoggerFactory.getLogger(PageController.class);
      @SuppressWarnings("all")
      @RequestMapping("/getNumber")
@@ -377,7 +381,17 @@ public class PageController extends  BaseController{
     }
     //判断延期、购买、解冻等是否成功。
     @RequestMapping("/findStatus.html")
-    public  String  findStatusMethod(@RequestParam("myNumber") String number,@RequestParam("phoneType") String type) throws IOException {
+    public  String  findStatusMethod(@RequestParam("myNumber") String number,
+                                     @RequestParam("phoneType") String type,
+                                     @RequestParam(value ="couponRecordId",defaultValue ="") String couponRecordId) throws IOException {
+         logger.info("[findStatus.html]this is findStatusMethod");
+        //支付成功后删除优惠券，即isUsed设置为1.
+        if(!StringUtils.isEmpty(couponRecordId)) {
+            logger.info("[card_give.html]couponRecordId is:"+couponRecordId);
+            GiftCouponRecord giftCouponRecord = giftCouponRecordRepository.findGiftCouponRecordByIdEquals(Long.parseLong(couponRecordId));
+            giftCouponRecord.setIsUsed(1);
+            giftCouponRecordRepository.saveAndFlush(giftCouponRecord);
+        }
         BindVo bind=new BindVo();
         bind.setUidnumber(number);
         Result result=null;
@@ -406,7 +420,6 @@ public class PageController extends  BaseController{
                         if(dateRecent.getTime()>dateTemp.getTime()){
                             dateTemp=dateRecent;
                             buyTime = job;
-                            logger.info("[findStatusMethod]foreach buyTime is:" + buyTime.get("subts"));
                         }
                     }
                 }

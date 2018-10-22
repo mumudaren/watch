@@ -9,6 +9,7 @@
     <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"/>
     <meta content="telephone=no" name="format-detection"/>
     <link rel="stylesheet" type="text/css" href="../css/safenumber.css" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/gift.css}" />
     <script type="text/javascript" src="../js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="../js/flexible.js"></script>
     <script type="text/javascript" src="../js/flexible_css.js"></script>
@@ -25,6 +26,8 @@
         <!--<input type="tel" placeholder="请输入需要安全号的手机号码"   name="myNumber" style="width:92%"/>-->
         <input type="tel"  th:value="${phone}" placeholder="请输入需要海牛助手的手机号码" style="width:92%" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
         <input style="display:none" id="phoneType" name="phoneType" value="ZhiZun" />
+        <input style="display:none" id="couponRecordId" name="couponRecordId" />
+        <input style="display:none"  id="refreshed" value="no">
         <br/>
         海牛助手将与输入的手机号进行绑定，呼叫海牛助手手机号将接听来电
     </p>
@@ -66,24 +69,11 @@
                             <img src="../images/weixin.png"/>微信支付
                         </p>
                     </div>
-                    <!--可接受多少条留言等信息-->
-                    <!--<div class="f_messagewrap" style="display: inline-block;width: 92%">-->
-                        <!--<div class="z_messagenum">-->
-                            <!--<span class="z_messagemoney">￥1</span>-->
-                            <!--<span class="z_messagebox">留言箱</span>-->
-                            <!--<span class="z_messagebox">短信</span><br/>-->
-                            <!--<span class="z_messagenumbers">可接受<b class="leaveMessage">5</b>条留言和<b class="message">5</b>条短信</span>-->
-                        <!--</div>-->
-                        <!--<div class="z_messageimg">-->
-                            <!--<img th:src="@{/images/right_03.png}"/>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!-- <div class="f_addtelphone" style="padding-top: 0;">
-                         <p class="f_weixin">
-                           <img src="images/weixin_03.png"/>微信支付
-                             <span class="f_arrowleft">></span>
-                         </p>
-                     </div>-->
+                    <p class="wirte_casher">
+                        <span class="z_cashjuan">现金券</span>
+                        <span class="z_cashselect"></span>
+                        <span class="z_casharrow">></span>
+                    </p>
                     <p class="f_bindsuc_share f_fastpay" style="margin-left: .22rem;margin-top: 1rem;">
                         <a href="javascript:justPay()">立即支付（<em>¥1</em>）</a>
                     </p>
@@ -91,14 +81,38 @@
                 </li>
             </ul>
         </div>
+        <!--点击现金券弹窗-->
+        <div class="f_cashshow" >
+            <div class="tb_overflay"></div>
+            <div class="f_cashcontent">
+                <div class="f_cashclose">
+                    <span>现金券</span><img src="images/giftImage/close.png">
+                </div>
+                <div class="cash_list">
+                    <ul>
+                        <li th:each="p:${giftRecord}">
+                            <span>￥<em th:text="${p.giftCoupon.amount/100}">10</em></span>
+                            <span th:text="${'有效期'+#dates.format(p.giftCoupon.effectiveTime,'yyyy.MM.dd')+'-'+#dates.format(p.giftCoupon.endTime,'yyyy.MM.dd')}">有效期：2019.08.22—2020.08.22</span>
+                            <span class="giftRecordId" th:text="${p.id}" style="display: none"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
     <script th:inline="javascript">
         var openid=[[${user.openid}]];
         var form = document.getElementById('sendPhone');
+        var totalPrice;
+        var  price=$("#tab1 dd:eq(0)").find("p:eq(1)").text();
+        var couponRecordId='';
         var clicktag = 0;  //微信支付标志
         $(function() {
             $(".f_zhizuntab ul li:eq(0)").addClass("z_actived");
             initClick();
+            var e=document.getElementById("refreshed");
+            if(e.value=="no"){e.value="yes";}
+            else{e.value="no";location.reload();}
             $(".f_zhizuntab ul").find("li").click(function () {
                 $(".f_zhizuntab ul").find("li").removeClass("z_actived");
                 $(this).addClass("z_actived");
@@ -233,12 +247,8 @@
                 'getBrandWCPayRequest',json,
                 function(res){
                     if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                        //window.location.href="/oauth/admin/OwnerSafeNumber.html?"+Math.random()*10;
                         form.submit();
                     }else {
-                        //console.log(res.err_msg);
-                        //alert("res.err_msg is:"+res.err_msg);
-                         //window.location.href="/oauth/regex/buy_zhizun.html?"+Math.random()*10;
                     }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
                 }
             );
@@ -253,13 +263,16 @@
             $("#tab1 dd:eq(0)").find("p:eq(0)").addClass("z_requiredays_active");
             $("#tab1 dd:eq(0)").find("p:eq(1)").addClass("z_requiredays_active");
             $("#tab1 dd:eq(0)").find("p:eq(3)").addClass("z_limits3_active");
-            var  price=$("#tab1 dd:eq(0)").find("p:eq(1)").text();
             var  message=$("#tab1 dd:eq(0)").find("p:eq(4)").attr("title");
             var  leaveMessage=$("#tab1 dd:eq(0)").find("p:eq(4)").text();
             $(".leaveMessage").text(leaveMessage);
             $(".message").text(message);
             $(".f_fastpay em").text(price);
             $(".z_messagemoney").text(price);
+            //couponToNull
+            $(".z_cashselect").text("");
+            couponRecordId='';
+            $("#couponRecordId").val(couponRecordId);
             $("#tab1 dd:last").removeAttr("style");
             $("#tab1 dd").click(function(){
                 console.log("init....");
@@ -289,29 +302,42 @@
                     $("#tab1 dd:eq(1)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
                     $("#tab1 dd:eq(2)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
                 }
-                // if($(this).is(obj.get(2))){
-                //     $(this).addClass('f_sales_active');
-                //     $(this).find("p:eq(0)").addClass("z_requiredays_active");
-                //     $(this).find("p:eq(1)").addClass("z_requiredays_active");
-                //     $(this).find("p:eq(3)").addClass("z_limits3_active");
-                //     $("#tab1 dd").removeClass("f_tiyan_active").removeClass("f_discount_active");
-                // }else if($(this).is(obj.get(1))){
-                //     $(this).addClass('f_discount_active');
-                //     $(this).find("p:eq(0)").addClass("z_requiredays_active");
-                //     $(this).find("p:eq(1)").addClass("z_requiredays_active");
-                //     $(this).find("p:eq(3)").addClass("z_limits3_active");
-                //     $("#tab1 dd").removeClass("f_sales_active").removeClass("f_tiyan_active");
-                // }else {
-                //     $(this).addClass('f_tiyan_active');
-                //     $(this).find("p:eq(0)").addClass("z_requiredays_active");
-                //     $(this).find("p:eq(1)").addClass("z_requiredays_active");
-                //     $(this).find("p:eq(3)").addClass("z_limits3_active");
-                //     $("#tab1 dd").removeClass("f_discount_active").removeClass("f_sales_active");
-                // }
             });
             $(".f_95013listnum dd").click(function(){
                 $(".f_95013listnum dd").removeClass("z_current");
                 $(this).addClass("z_current");
+            });
+
+            //点击现金券弹窗js
+            $(".wirte_casher").click(function(){
+                $(".f_cashshow").show();
+            });
+            $(".cash_list ul li").click(function(){
+                var normalFirst=$(".f_fastpay em").text()+"";
+                console.log("normalFirst:"+normalFirst);
+                var normalPrice = normalFirst.substring(1);  //默认的套餐价格
+                console.log("normalPrice:"+normalPrice);
+                //var normalPrice1 = $(".f_fastpay em").text(price);
+                var selCash= $(this).find("span em").text();
+                //var selCshe1 = $(this).find("span:eq(0)").text();
+                couponRecordId=$(this).find(".giftRecordId").text();
+                console.log("normalPrice - selCash:"+normalPrice+"-"+selCash);
+                totalPrice = (normalPrice - selCash).toFixed(2);
+                $(".z_cashselect").text("已选择：￥" + selCash);
+                $(".f_cashshow").hide();
+                if(totalPrice<0){
+                    totalPrice=0;
+                }
+                $(".f_fastpay em").text("￥"+totalPrice);
+                $("#couponRecordId").val(couponRecordId);
+               // var salePrice= "=" + normalPrice1 + "-" + "现金券" + selCshe1;
+               // $(".z_price").text(salePrice);
+            });
+            $(".f_cashclose").click(function(){
+                $(".f_cashshow").hide();
+            });
+            $(".tb_overflay").click(function(){
+                $(".f_cashshow").hide();
             });
         }
 

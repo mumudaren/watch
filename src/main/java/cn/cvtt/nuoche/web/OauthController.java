@@ -13,6 +13,7 @@ import cn.cvtt.nuoche.entity.gift.GiftCard;
 import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
 import cn.cvtt.nuoche.entity.gift.GiftCoupon;
 import cn.cvtt.nuoche.entity.gift.GiftCouponQrcode;
+import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
 import cn.cvtt.nuoche.entity.gift.GiftPoint;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.IRegexInterface;
@@ -71,6 +72,8 @@ public class OauthController extends  BaseController{
     IGiftPointRepository giftPointRepository;
     @Resource
     private QrcodeService qrcodeService;
+    @Autowired
+    IGiftCouponRecordRepository giftCouponRecordRepository;
     private static final Logger logger = LoggerFactory.getLogger(OauthController.class);
     /**
      * 获取网页授权用户信息
@@ -313,6 +316,15 @@ public class OauthController extends  BaseController{
             List<Map<String,String>>  numbers=JsonUtils.handlerNumberJson(numberJson);
             modelAndView.addObject("numbers",numbers);
             modelAndView.addObject("phone",customer.getPhone());
+            //查找该用户所有未使用过的并且在有效期内的优惠券。
+            List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findAllByReceiverOpenidEqualsAndIsUsedEqualsOrderByGetTimeDesc(openId,0);
+            for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
+            {
+                Long couponId=eachGiftCouponRecord.getCouponId();
+                GiftCoupon giftCoupon=giftCouponRepository.findByIdEquals(couponId);
+                eachGiftCouponRecord.setGiftCoupon(giftCoupon);
+            }
+            modelAndView.addObject("giftRecord",giftRecordList);
         }
         /****===>>**/
         Map<String, String> map = new HashMap<>();
