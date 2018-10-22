@@ -102,6 +102,7 @@
           <input name="number"  id="number"/>
           <input name="message"   id="message"/>
           <input name="couponRecordId"   id="couponRecordId"/>
+          <input  id="refreshed" value="no">
       </form>
     </body>
     <script th:inline="javascript">
@@ -116,6 +117,9 @@
               $(function(){
                   var oldPrice = $(".oldPrice").text();
                   $(".z_write_moeny").find("b").text(oldPrice);
+                  var e=document.getElementById("refreshed");
+                  if(e.value=="no"){e.value="yes";}
+                  else{e.value="no";location.reload();}
               });
               //送朋友
               $(".z_givefriend").click(function(){

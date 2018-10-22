@@ -108,6 +108,7 @@
           <input name="message"   id="message"/>
           <input name="uidNumber"   id="uidNumber"/>
           <input name="couponRecordId"   id="couponRecordId"/>
+          <input  id="refreshed" value="no">
       </form>
     </body>
     <script th:inline="javascript">
@@ -120,12 +121,14 @@
           var couponRecordId='';
           var cardId=[[${card.id}]];
           var message;
-
           var phone = userPhone;
           uidNumber =randomNum(100,999)+phone+randomNum(100,999);
           $(function(){
               var oldPrice = $(".z_taocamnumber_price i").text();
               $(".z_write_moeny").find("b").text(oldPrice);
+              var e=document.getElementById("refreshed");
+              if(e.value=="no"){e.value="yes";}
+              else{e.value="no";location.reload();}
           });
           //挑选，送朋友
           $(".toFriend").click(function(){
