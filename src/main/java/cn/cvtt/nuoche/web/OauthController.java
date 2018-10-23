@@ -312,7 +312,7 @@ public class OauthController extends  BaseController{
             String productJson= productInterface.findRegexProduct(util.getBusinessKey(),map.get(0).get("key"));
             List<wx_product>  ls=JsonUtils.handlerRegexJson(productJson);
             modelAndView.addObject("products",ls);
-            String numberJson=productInterface.findSpeNumber(util.getBusinessKey(),map.get(0).get("key"),"");
+            String numberJson=productInterface.findSpeNumberTop10(util.getBusinessKey(),map.get(0).get("key"),"",0,10,UUID.randomUUID().toString());
             List<Map<String,String>>  numbers=JsonUtils.handlerNumberJson(numberJson);
             modelAndView.addObject("numbers",numbers);
             modelAndView.addObject("phone",customer.getPhone());
