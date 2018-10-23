@@ -1,6 +1,7 @@
 package cn.cvtt.nuoche.web;
 
 import cn.cvtt.nuoche.common.Constant;
+import cn.cvtt.nuoche.entity.AccessToken;
 import cn.cvtt.nuoche.entity.RegisterVo;
 import cn.cvtt.nuoche.entity.SNSUserInfo;
 import cn.cvtt.nuoche.entity.WeixinOauth2Token;
@@ -36,6 +37,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static cn.cvtt.nuoche.server.WxServer.getAccessToken;
 
 /**
  * @decription OauthController
@@ -527,6 +530,27 @@ public class OauthController extends  BaseController{
         logger.info("[redirectGift]requestUrl:::"+requestUrl);
         return "redirect:" + requestUrl;
     }
+
+    public  void  loadUserInfo(BusinessCustomer  user){
+        String  token=getAccessToken();
+        if(StringUtils.isEmpty(token)){
+            AccessToken at = WxUtils.getAccessToken();
+            token=at.getAccessToken();
+        }
+        String  url= Constant.userInfoUrl;
+        Map<String,String>  map=new HashMap<>();
+        map.put("access_token",token);
+        map.put("openid",user.getOpenid());
+        map.put("lang","zh_CN");
+        String  result=HttpClientUtil.doGet(url,map);
+        logger.info("user Info "+result);
+        JSONObject obj=JSONObject.parseObject(result);
+        user.setNickname(obj.getString("nickname"));
+        user.setHeadimgurl(obj.getString("headimgurl"));
+        user.setSex(obj.getIntValue("sex"));
+        user.setSubscribe(obj.getIntValue("subscribe"));
+        user.setSubscribeTime(new Date());
+    }
     /**
      * gift页面需要基本授权的请求(需要验证是否存在手机号。)
      * @param code
@@ -535,7 +559,7 @@ public class OauthController extends  BaseController{
      */
     @SuppressWarnings("all")
     @RequestMapping("/oauth/gift")
-    public ModelAndView ouathGift(@RequestParam String code, @RequestParam String state,RedirectAttributes attr) {
+    public ModelAndView ouathGift(@RequestParam String code, @RequestParam String state,RedirectAttributes attr) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         // 获取网页授权access_token
         WeixinOauth2Token weixinOauth2Token = WxUtils.getOauth2AccessToken(code);
@@ -548,12 +572,24 @@ public class OauthController extends  BaseController{
             modelAndView.setViewName("redirect:/oauth/gift/" + state);
             return modelAndView;
         }
-        /***==> 先判断当前用户是否绑定手机号,如果没有则跳转绑定页面*/
+        /***==> 先判断当前用户是否绑定手机号,如果没有则写入数据*/
         BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openId);
         if(customer==null||StringUtils.isEmpty(customer.getPhone())){
-            modelAndView.setViewName("validate_tel");
-            modelAndView.addObject("openid",openId);
-            return  modelAndView;
+            //跳转绑定页面
+//            modelAndView.setViewName("validate_tel");
+//            modelAndView.addObject("openid",openId);
+//            return  modelAndView;
+            /**  先删除 已经存在的用户 再保存**/
+            if(customer!=null) {
+                businessCusRepository.delete(customer);
+            }
+            BusinessCustomer  cus=new BusinessCustomer();
+            cus.setOpenid(openId);
+            cus.setCreateTime(new Date());
+            cus.setIsAble(1);
+            cus.setPassword(ApiSignUtils.getMessageMD5("123456"));
+            loadUserInfo(cus);
+            businessCusRepository.save(cus);
         }
         /***==> 分享现金券页面*/
         if(StringUtils.equals(state,"giftShareNumber")){
