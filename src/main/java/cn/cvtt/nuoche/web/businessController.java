@@ -655,7 +655,7 @@ public class businessController extends  BaseController{
         bindVo.setUidnumber(uidNumber);
         bindVo.setRegphone(user.getPhone());
         bindVo.setExpiretime(days);
-        //绑定95号、删除号码池数据、numberRecord写入数据
+        //绑定海牛助手、删除号码池数据、numberRecord写入数据
         Result result = null;
         try {
             result=numberService.bindZhiZun(bindVo);

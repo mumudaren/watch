@@ -555,7 +555,7 @@ public class TestController extends  BaseController {
         BusinessNumberRecord  record2=new BusinessNumberRecord();
         record2.setBusinessId(util.getBusinessKey());
         record2.setPrtms("010123456");
-        //临时95号
+        //临时海牛助手
         record2.setSmbms(uidNumber);
         record2.setResult(1);
         record2.setCallrestrict(0+"");
@@ -886,7 +886,7 @@ public class TestController extends  BaseController {
             return  "redirect:"+"/oauth/gift/qrcodeAfter/"+cardRecordId;
             //return  "redirect:"+"qrcodeAfter?cardRecordId="+cardRecordId;
         }else if(StringUtils.equals(type,"call")){
-            //识别二维码显示95号码页面
+            //识别二维码显示海牛助手页面
             return  "redirect:"+"/showNumber95?qrcode="+realId;
         } else if(StringUtils.equals(type,"coupon")){
             //优惠券
@@ -1045,7 +1045,7 @@ public class TestController extends  BaseController {
                 String realTime=record.getValidTime().toString();
                 logger.info("[receiveCardSuccess]bind realTime is:"+realTime);
                 bindVo.setExpiretime(realTime);
-                //使用真实的95号调用绑定接口
+                //使用真实的海牛助手调用绑定接口
                 try {
                     Result result = numberService.bindZhiZun(bindVo);
                     logger.info("[receiveCardSuccess]bind result======" + result.getMsg());
@@ -1080,12 +1080,12 @@ public class TestController extends  BaseController {
                 logger.info("save record operation.");
                 record.setPrtms(userInfo.getPhone());
                 record.setUserPhone(userInfo.getPhone());
-                //BusinessNumberRecord 更新真实的95号
+                //BusinessNumberRecord 更新真实的海牛助手
                 record.setSmbms(number);
                 recordRepository.saveAndFlush(record);
                 logger.info("save record operation over.");
             }
-            //giftCard 更新真实的95号
+            //giftCard 更新真实的海牛助手
             giftCard.setNumber(number);
             giftCardRepository.saveAndFlush(giftCard);
         }else{
@@ -1126,7 +1126,7 @@ public class TestController extends  BaseController {
             logger.info("save number record operation.");
             record.setPrtms(userInfo.getPhone());
             record.setUserPhone(userInfo.getPhone());
-            //BusinessNumberRecord 更新真实的95号
+            //BusinessNumberRecord 更新真实的海牛助手
             //record.setSmbms(number);
             recordRepository.saveAndFlush(record);
         }

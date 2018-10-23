@@ -602,7 +602,7 @@ public class PageController extends  BaseController{
         ModelAndView  model=new ModelAndView();
         //根据qrcodeId查找相应的信息(GiftNumberQRcode表)。
         GiftNumberQRcode qrcodeMsg=giftNumberQRcodeRepository.findByQrcodeEquals(qrcode);
-        //根据讯息查找95号码是否过期，如果过期则跳转到无法拨打页面。没过期跳转到拨打95号码页面。
+        //根据讯息查找海牛助手是否过期，如果过期则跳转到无法拨打页面。没过期跳转到拨打海牛助手页面。
         String number=qrcodeMsg.getNumber95();
         BusinessNumberRecord  record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(number,util.getBusinessKey());
         if(record.getValidTime().getTime()<System.currentTimeMillis()){

@@ -405,7 +405,7 @@ public class OauthController extends  BaseController{
                 modelAndView.addObject("ls",products);
                 modelAndView.addObject("phone",regphone);
             }else{
-                //查看我的95号
+                //查看我的海牛助手
                 modelAndView.setViewName("shareGift/my_safenumber");
                 BusinessCustomer  userInfo=businessCusRepository.findByOpenidEquals(openId);
                 String  url= userInfo.getHeadimgurl();
@@ -427,7 +427,7 @@ public class OauthController extends  BaseController{
                 modelAndView.addObject("products",products);
             }
         }else {
-            //查看我的95号
+            //查看我的海牛助手
             modelAndView.setViewName("shareGift/my_safenumber");
             BusinessCustomer  userInfo=businessCusRepository.findByOpenidEquals(openId);
             String  url= userInfo.getHeadimgurl();
