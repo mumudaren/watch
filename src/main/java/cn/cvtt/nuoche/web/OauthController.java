@@ -129,7 +129,7 @@ public class OauthController extends  BaseController{
      */
     @SuppressWarnings("all")
     @RequestMapping("/oauth/base")
-    public ModelAndView ouathBase(@RequestParam String code, @RequestParam String state,RedirectAttributes attr) {
+    public ModelAndView ouathBase(@RequestParam String code, @RequestParam String state,RedirectAttributes attr) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         // 获取网页授权access_token
         WeixinOauth2Token weixinOauth2Token = WxUtils.getOauth2AccessToken(code);
@@ -197,7 +197,7 @@ public class OauthController extends  BaseController{
      */
     @SuppressWarnings("all")
     @RequestMapping("/oauth/other")
-    public ModelAndView ouathOther(@RequestParam String code, @RequestParam String state,RedirectAttributes attr) {
+    public ModelAndView ouathOther(@RequestParam String code, @RequestParam String state,RedirectAttributes attr) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         // 获取网页授权access_token
         WeixinOauth2Token weixinOauth2Token = WxUtils.getOauth2AccessToken(code);
@@ -284,7 +284,7 @@ public class OauthController extends  BaseController{
      */
     @SuppressWarnings("all")
     @RequestMapping("/oauth/regex")
-    public ModelAndView ouathRegexBase(@RequestParam String code, @RequestParam String state) {
+    public ModelAndView ouathRegexBase(@RequestParam String code, @RequestParam String state) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         // 获取网页授权access_token
         WeixinOauth2Token weixinOauth2Token = WxUtils.getOauth2AccessToken(code);
@@ -349,7 +349,7 @@ public class OauthController extends  BaseController{
      */
     @SuppressWarnings("all")
     @RequestMapping("/oauth/admin")
-    public ModelAndView ouathAdminBase(@RequestParam String code, @RequestParam String state) {
+    public ModelAndView ouathAdminBase(@RequestParam String code, @RequestParam String state) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName(state);
         // 获取网页授权access_token
@@ -359,6 +359,7 @@ public class OauthController extends  BaseController{
         // 判断如果openid为空，则引导用户重新授权
         if (StringUtils.isBlank(openId)) {
             logger.info("openid is empty,error code is :", code);
+
             modelAndView.setViewName("redirect:/oauth/admin/" + state);
             return modelAndView;
         }
@@ -367,6 +368,17 @@ public class OauthController extends  BaseController{
         if(customer==null||StringUtils.isEmpty(customer.getPhone())){
             modelAndView.setViewName("validate_tel");
             modelAndView.addObject("openid",openId);
+            /**  先删除 已经存在的用户 再保存**/
+//            if(customer!=null) {
+//                businessCusRepository.delete(customer);
+//            }
+//            BusinessCustomer  cus=new BusinessCustomer();
+//            cus.setOpenid(openId);
+//            cus.setCreateTime(new Date());
+//            cus.setIsAble(1);
+//            cus.setPassword(ApiSignUtils.getMessageMD5("123456"));
+//            loadUserInfo(cus);
+//            businessCusRepository.save(cus);
             return  modelAndView;
         }
         /****===>>**/
@@ -581,6 +593,7 @@ public class OauthController extends  BaseController{
 //            return  modelAndView;
             /**  先删除 已经存在的用户 再保存**/
             if(customer!=null) {
+                logger.info("user name is"+customer.getNickname());
                 businessCusRepository.delete(customer);
             }
             BusinessCustomer  cus=new BusinessCustomer();
@@ -640,6 +653,15 @@ public class OauthController extends  BaseController{
             modelAndView.addObject("openid",openId);
             modelAndView.setViewName("shareGift/share_number_info");
         }else if(StringUtils.equals(StringUtils.substringBefore(state,"_"),"qrcodeAfter")){
+            /***==> 先判断当前用户是否绑定手机号,如果没有则跳转绑定页面*/
+            BusinessCustomer  customerFirst=businessCusRepository.findByOpenidEquals(openId);
+            if(customerFirst==null||StringUtils.isEmpty(customerFirst.getPhone())){
+                modelAndView.setViewName("validate_tel");
+                modelAndView.addObject("openid",openId);
+                modelAndView.addObject("path","qrcodeAfter");
+                modelAndView.addObject("cardRecordId",StringUtils.substringAfterLast(state,"_"));
+                return  modelAndView;
+            }
             /***==> gift扫描二维码后领取套餐卡、号码卡的页面*/
             String cardRecordId=StringUtils.substringAfterLast(state,"_");
             logger.info("[ouath qrcodeAfter]receive pram cardRecordId is:"+cardRecordId);

@@ -445,7 +445,7 @@ public class TestController extends  BaseController {
         model.addObject("giftRecord",giftRecordList);
         model.addObject("openid",openid);
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(openid);
-        model.addObject("userPhone",user.getPhone());
+        //model.addObject("userPhone",user.getPhone());
         model.setViewName("shareGift/gift_card");
         return  model;
     }
@@ -730,7 +730,7 @@ public class TestController extends  BaseController {
         }
         model.addObject("openid",openid);
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(openid);
-        model.addObject("userPhone",user.getPhone());
+//        model.addObject("userPhone",user.getPhone());
         model.addObject("isHideOldDiv",isHideOldDiv);
         model.setViewName("shareGift/gift_number");
         return  model;

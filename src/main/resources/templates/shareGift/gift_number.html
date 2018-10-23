@@ -107,7 +107,7 @@
     </body>
     <script th:inline="javascript">
               var openid = [[${openid}]];
-              var userPhone = [[${userPhone}]];
+              var userPhone = 123456;
               var isHide=[[${isHideOldDiv}]];
               var totalPrice;
               var couponRecordId='';
@@ -189,11 +189,6 @@
                       }, 4000);
                       var phone =userPhone;
                       var uidNumber =[[${mapNumber.number}]];
-                      if (!util.validPhone(phone)) {
-                          //util.showText("不是有效的手机号码!",$(".z_successtext"));
-                          alert("不是有效的手机号码!");
-                          return;
-                      }
                       if (uidNumber == "" || uidNumber == null) {
                           alert("当前套餐中没有可以绑定的号码!");
                           return;

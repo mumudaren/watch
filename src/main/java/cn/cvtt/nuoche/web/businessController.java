@@ -4,6 +4,7 @@ import cn.cvtt.nuoche.common.Constant;
 import cn.cvtt.nuoche.common.aop.LogManager;
 import cn.cvtt.nuoche.common.result.Result;
 import cn.cvtt.nuoche.common.result.ResultMsg;
+import cn.cvtt.nuoche.entity.AccessToken;
 import cn.cvtt.nuoche.entity.business.*;
 import cn.cvtt.nuoche.entity.gift.*;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
@@ -35,6 +36,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
 
+import static cn.cvtt.nuoche.server.WxServer.getAccessToken;
 import static cn.cvtt.nuoche.util.WechatSignGenerator.jsapiSign;
 
 @RestController
@@ -111,12 +113,31 @@ public class businessController extends  BaseController{
         }
         return result;
     }
-
+    public  void  loadUserInfo(BusinessCustomer  user){
+        String  token=getAccessToken();
+        if(StringUtils.isEmpty(token)){
+            AccessToken at = WxUtils.getAccessToken();
+            token=at.getAccessToken();
+        }
+        String  url= Constant.userInfoUrl;
+        Map<String,String>  map=new HashMap<>();
+        map.put("access_token",token);
+        map.put("openid",user.getOpenid());
+        map.put("lang","zh_CN");
+        String  result=HttpClientUtil.doGet(url,map);
+        logger.info("user Info "+result);
+        JSONObject obj=JSONObject.parseObject(result);
+        user.setNickname(obj.getString("nickname"));
+        user.setHeadimgurl(obj.getString("headimgurl"));
+        user.setSex(obj.getIntValue("sex"));
+        user.setSubscribe(obj.getIntValue("subscribe"));
+        user.setSubscribeTime(new Date());
+    }
 
     @RequestMapping("/validPhone")
     @ResponseBody
     @LogManager(description ="validPhone")
-    public  Result   validPhone(String openid,String  code,String phone){
+    public  Result   validPhone(String openid,String  code,String phone) throws Exception {
         if(StringUtils.isEmpty(code)||StringUtils.isEmpty(phone)){
             logger.info("validPhone method:code or phone is empty.So ResultMsg is:"+ResultMsg.REQUESTPARAMEXCEPTION);
             return  Result.error("验证码不能为空。");
@@ -130,11 +151,22 @@ public class businessController extends  BaseController{
         try {
             BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openid);
             customer.setPhone(phone);
+            loadUserInfo(customer);
             businessCusRepository.saveAndFlush(customer);
         }catch (Exception  e){
             e.printStackTrace();
-            logger.info("validPhone method:There is an error when find customer by openid.So ResultMsg:"+ResultMsg.WXUSERNOTFOUND);
-            return new Result(ResultMsg.WXUSERNOTFOUND);
+//            logger.info("validPhone method:There is an error when find customer by openid.So ResultMsg:"+ResultMsg.WXUSERNOTFOUND);
+//            return new Result(ResultMsg.WXUSERNOTFOUND);
+            /**  先删除 已经存在的用户 再保存**/
+            BusinessCustomer  cus=new BusinessCustomer();
+            cus.setOpenid(openid);
+            cus.setCreateTime(new Date());
+            cus.setIsAble(1);
+            cus.setPhone(phone);
+            cus.setPassword(ApiSignUtils.getMessageMD5("123456"));
+            loadUserInfo(cus);
+            businessCusRepository.saveAndFlush(cus);
+
         }
         return  Result.ok();
     }
@@ -617,6 +649,7 @@ public class businessController extends  BaseController{
         }
         //根据openid查找用户信息
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(openid);
+
         //绑定数据信息
         BindVo bindVo = new BindVo();
         bindVo.setUidnumber(uidNumber);

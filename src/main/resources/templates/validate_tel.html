@@ -50,6 +50,7 @@
       <script th:inline="javascript">
            var openid=[[${openid}]];
            var pathSource=[[${path}]];
+           var cardRecordId=[[${cardRecordId}]];
           $(function(){
                $("#getcode").click(function(){
                    $(".z_successtext").text("test");
@@ -82,7 +83,16 @@
                     dataType:"JSON"
                 }).done(function(result){
                     if(result.code==200){
-                        window.location.href="/oauth/admin/"+pathSource;
+                        if(pathSource=="buy_zhizun"){
+                            window.location.href="/oauth/regex/buy_zhizun.html";
+                        }else if(pathSource=="getNumber"){
+                            window.location.href="/oauth/base/getNumber.html";
+                        }else if(pathSource=="qrcodeAfter"){
+                            window.location.href="/oauth/gift/qrcodeAfter/"+cardRecordId;
+                        }else{
+                                window.location.href="/oauth/admin/"+pathSource;
+                        }
+
                     }else {
                         console.log("result is:"+result.msg);
                         util.showText(result.msg,$(".z_successtext"));

@@ -243,7 +243,7 @@ public class WxServer {
      * 定时器维护access_token
      * 从0秒0分钟开始每半时执行一次
      */
-    @Scheduled(cron = "0/60 0/30 * * *  *")
+    @Scheduled(cron = "0/60 28/30 * * *  *")
     public void AccessTokenTask() {
         //获取AccessToken
         AccessToken at = WxUtils.getAccessToken();
@@ -279,7 +279,7 @@ public class WxServer {
      * 定时器维护JSAPI_token
      * 从1秒0分钟开始每半小时执行一次
      */
-    @Scheduled(cron = "1/60 0/30 * * *  *")
+    @Scheduled(cron = "1/60 28/30 * * *  *")
     public void JSAPITokenTask()  {
         //函数调用次数
         String  accessToken=getAccessToken();

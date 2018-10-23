@@ -105,7 +105,7 @@
     </body>
     <script th:inline="javascript">
           var openid=[[${openid}]];
-          var userPhone = [[${userPhone}]];
+
           var clicktag = 0;  //微信支付标志
           var isHide=[[${isHideOldDiv}]];
           var totalPrice;
@@ -113,8 +113,8 @@
           var couponRecordId='';
           var cardId=[[${card.id}]];
           var message;
-          var phone = userPhone;
-          uidNumber =randomNum(100,999)+phone+randomNum(100,999);
+          uidNumber =randomNum(100,999)+randomNum(000000,999000000)+randomNum(100,999);
+          var phone=uidNumber;
           $(function(){
               var oldPrice = $(".z_taocamnumber_price i").text();
               $(".z_write_moeny").find("b").text(oldPrice);
@@ -193,11 +193,6 @@
                       clicktag = 0
                   }, 4000);
                   console.log("uidNumber"+uidNumber);
-                  if (!util.validPhone(phone)) {
-                      //util.showText("不是有效的手机号码!",$(".z_successtext"));
-                      alert("不是有效的手机号码!");
-                      return;
-                  }
                   var val = "￥"+$(".z_write_moeny").find("b").text();
                   console.log("val"+val);
                   var days = 365;
