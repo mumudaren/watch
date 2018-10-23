@@ -347,23 +347,26 @@ public class businessController extends  BaseController{
             //查找所有号码
             //String  str=productInterface.findSpeNumber(util.getBusinessKey(),regexId,number);
             //查找top10
+            logger.info("[changeModule]isNotEmpty(number)"+page+size);
             String  str=null;
-            try{str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number,page,size);}
+            try{str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number,page,size,UUID.randomUUID().toString());}
             catch (FeignException e){
                 logger.info("FeignException so try again");
-                str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number,page,size);
+                str=productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,number,page,size,UUID.randomUUID().toString());
             }
               logger.info("[changeModule]number... is:"+str);
               List<Map<String,String>> map=JsonUtils.handlerNumberJson(str);
               arr.add(map);
               return  new Result(ResultMsg.OPERATESUCEESS,arr);
         }else {
+            logger.info("[changeModule]isEmpty(number),page,size:"+page+size);
             String  str=null;
-            try{str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"",page,size);
+            try{str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"",page,size,UUID.randomUUID().toString());
+                logger.info("[changeModule]str:"+str);
             }catch (FeignException e)
             {
                 logger.info("FeignException so try again");
-                str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"",page,size);
+                str= productInterface.findSpeNumberTop10(util.getBusinessKey(),regexId,"",page,size,UUID.randomUUID().toString());
             }
             List<Map<String,String>> map=JsonUtils.handlerNumberJson(str);
             logger.info("[changeModule]json map is:"+map.toString());

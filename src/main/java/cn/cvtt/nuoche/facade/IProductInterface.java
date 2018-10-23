@@ -14,11 +14,11 @@ public interface IProductInterface {
     @RequestMapping("/business/findRegexProduct")
     String    findRegexProduct(@RequestParam("business") String business,@RequestParam("regex") String regex);
 
-    @RequestMapping("/business/findSpeNumber")
-    String  findSpeNumber(@RequestParam("business") String  business,@RequestParam("regex") String  regex,@RequestParam("number") String number);
+//    @RequestMapping("/business/findSpeNumber")
+//    String  findSpeNumber(@RequestParam("business") String  business,@RequestParam("regex") String  regex,@RequestParam("number") String number);
     //同上，分页查询top10
     @RequestMapping("/business/findSpeNumberTop10")
-    String  findSpeNumberTop10(@RequestParam("business") String  business,@RequestParam("regex") String  regex,@RequestParam("number") String number,@RequestParam("page") int page,@RequestParam("size") int size);
+    String  findSpeNumberTop10(@RequestParam("business") String  business,@RequestParam("regex") String  regex,@RequestParam("number") String number,@RequestParam("page") int page,@RequestParam("size") int size,@RequestParam("rad") String rad);
 
     @RequestMapping("/business/deleteSpeNumber")
     String  deleteSpeNumber(@RequestParam("business") String business,@RequestParam("smbms") String number);
