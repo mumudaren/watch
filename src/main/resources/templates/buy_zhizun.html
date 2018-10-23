@@ -51,7 +51,7 @@
                         <dl class="f_95013listnum" style="overflow:hidden;">
                             <dd th:each="n:${numbers}" th:text="${n.number}">9501378110</dd>
                         </dl>
-                        <p style="color:#4c4c4c;font-size:.45rem;text-align: center;">加载更多</p>
+                        <p id="showMore" style="color:#4c4c4c;font-size:.45rem;text-align: center;">加载更多</p>
                     </div>
                     <div class="f_dayscontent f_buysafenumber_content" style="margin-left: 0;padding: 0 .4rem;">
                         <dl id="tab1">
@@ -123,6 +123,8 @@
             if(e.value=="no"){e.value="yes";}
             else{e.value="no";location.reload();}
             $(".f_zhizuntab ul").find("li").click(function () {
+                //format page
+                clickPage=0;
                 $(".f_zhizuntab ul").find("li").removeClass("z_actived");
                 $(this).addClass("z_actived");
                 /** 加载 该套餐号码**/
@@ -132,9 +134,10 @@
                 data.regexId = regexId;
                 data.number = '';
                 data.page = 0;
-                data.size = 10;
+                var s=Math.random()*10;
+                data.size = 6;
                 $.ajax({
-                    url: "/changeModule",
+                    url: "/changeModule?rnd="+s,
                     type: "POST",
                     data: data,
                     dataType: "JSON"
@@ -170,10 +173,11 @@
                 data.regexId = regexId;
                 data.number = $(".searchNumber").val();
                 data.page = 0;
-                data.size = 10;
+                data.size = 6;
+                var s=Math.random()*10;
                 console.log("number:"+data.number);
                 $.ajax({
-                    url: "/changeModule",
+                    url: "/changeModule?rnd="+s,
                     type: "POST",
                     data: data,
                     dataType: "JSON"
@@ -182,6 +186,32 @@
                         var arr = response.data;
                         var numberModule = arr[0];
                         $(".f_95013listnum").text("");
+                        $.each(numberModule, function (index, item) {
+                            $(".f_95013listnum").append($("<dd></dd>").text(item.number));
+                        });
+                        initClick();
+                    }
+                });
+            });
+            $("#showMore").click(function () {
+                var data = {};
+                var regexId = $(".f_zhizuntab ul").find(".z_actived").attr("value");
+                data.regexId = regexId;
+                data.number = '';
+                clickPage= clickPage+1;
+                data.page = clickPage;
+                data.size = 6;
+                var s=Math.random()*10;
+                console.log("clickPage:"+clickPage);
+                $.ajax({
+                    url: "/changeModule?rnd="+s,
+                    type: "POST",
+                    data: data,
+                    dataType: "JSON"
+                }).done(function (response) {
+                    if (response.code == 200) {
+                        var arr = response.data;
+                        var numberModule = arr[0];
                         $.each(numberModule, function (index, item) {
                             $(".f_95013listnum").append($("<dd></dd>").text(item.number));
                         });
