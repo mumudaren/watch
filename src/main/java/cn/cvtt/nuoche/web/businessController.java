@@ -274,23 +274,23 @@ public class businessController extends  BaseController{
     public Result createGiftOrder(@RequestParam("openid") String openid, @RequestParam("totalFee") String totalFee,@RequestParam("phone") String  phone,@RequestParam("uidNumber")  String uidNumber, @RequestParam("extend") String extend,@RequestParam("days") String days,HttpServletRequest request){
         logger.info("you are in createGiftOrder method: "+"\n");
         /** 查看该用户绑定是否超过后台配置的最大绑定次数,超过则不让绑定*/
-        String  json=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
-        logger.info("[createGiftOrder method]:received RequestParam extend is:"+extend+"\n");
-        Map<String,String>  map=JsonUtils.handlerJson(json);
-        String  str=map.get("NUMBER_BIND_LIMIT");
-        if(StringUtils.isNotEmpty(str)){
-            logger.info("[createGiftOrder method]:NUMBER_BIND_LIMIT is:"+str+"\n");
-            BusinessCustomer  bcs=businessCusRepository.findByOpenidEquals(openid);
-            String countJson=callRecordInterface.CountBindNumber(util.getBusinessKey(),bcs.getPhone());
-            logger.info("[createGiftOrder method]:countJson is:"+countJson+"\n");
-            JSONObject  childObj=JSONObject.parseObject(countJson);
-            if(childObj.getIntValue("code")==200){
-                int  size=JSONObject.parseObject(childObj.getString("data")).getIntValue("size");
-                if(size>Integer.parseInt(str)){
-                    return  new Result(ResultMsg.MORETHANBINDNUMBER);
-                }
-            }
-        }
+//        String  json=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
+//        logger.info("[createGiftOrder method]:received RequestParam extend is:"+extend+"\n");
+//        Map<String,String>  map=JsonUtils.handlerJson(json);
+//        String  str=map.get("NUMBER_BIND_LIMIT");
+//        if(StringUtils.isNotEmpty(str)){
+//            logger.info("[createGiftOrder method]:NUMBER_BIND_LIMIT is:"+str+"\n");
+//            BusinessCustomer  bcs=businessCusRepository.findByOpenidEquals(openid);
+//            String countJson=callRecordInterface.CountBindNumber(util.getBusinessKey(),bcs.getPhone());
+//            logger.info("[createGiftOrder method]:countJson is:"+countJson+"\n");
+//            JSONObject  childObj=JSONObject.parseObject(countJson);
+//            if(childObj.getIntValue("code")==200){
+//                int  size=JSONObject.parseObject(childObj.getString("data")).getIntValue("size");
+//                if(size>Integer.parseInt(str)){
+//                    return  new Result(ResultMsg.MORETHANBINDNUMBER);
+//                }
+//            }
+//        }
         /**  判断结束 **/
         String  bill_ip=  WechatSignGenerator.getIpAddr(request);
         totalFee=totalFee.substring(1);

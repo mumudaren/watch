@@ -439,8 +439,7 @@ public class PageController extends  BaseController{
             Calendar cal1 = Calendar.getInstance();
             cal1.setTime(nowTime);
             // 将分钟、秒、毫秒域清零
-            cal1.set(Calendar.SECOND, 0);
-            cal1.set(Calendar.MILLISECOND, 0);
+            cal1.add(Calendar.SECOND, -59);
             Date nowReset = cal1.getTime();
             logger.info("[findStatusMethod]nowReset SECOND  is:" + nowReset);
             //购买时间小于当前时间，说明接口调用失败。

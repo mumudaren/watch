@@ -94,7 +94,7 @@ opacity: .5;
 .f_gift_content span:nth-child(1){background-color:#fff;border-radius:.5rem;text-align: center;color:#2b6bef;}
 .f_gift_content span:nth-child(2){color:#fff;margin-top:.2rem;line-height:.6rem;}
 .f_gift_number{background:url(../images/giftImage/gift_06.jpg) no-repeat;width: 10rem;height:3.59rem;background-size: contain;margin-top:0;}
-.f_gift_number span:nth-child(1){width:4rem;color:#0ab8a9;}
+.f_gift_number span:nth-child(1){width:5rem;color:#0ab8a9;}
 
 /*幸运抽奖样式*/
 .lottery_wrap{min-height: 18rem;

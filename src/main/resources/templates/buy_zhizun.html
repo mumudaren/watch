@@ -267,7 +267,9 @@
                     alert("当前套餐中没有可以绑定的号码!");
                     return;
                 }
-                var val = $("#tab1 dd p:eq(1)").text();
+                //var val = $("#tab1 dd p:eq(1)").text();
+                var val =$(".f_fastpay em").text();
+                console.log("val:"+val);
                 var days = $("#tab1 dd p:eq(2)").text();
                 var productId = $("#tab1 dd p:eq(5)").text();
                 var pay = {};
@@ -380,39 +382,39 @@
                 $(".f_95013listnum dd").removeClass("z_current");
                 $(this).addClass("z_current");
             });
-
-            //点击现金券弹窗js
-            $(".wirte_casher").click(function(){
-                $(".f_cashshow").show();
-            });
-            $(".cash_list ul li").click(function(){
-                var normalFirst=$(".f_fastpay em").text()+"";
-                console.log("normalFirst:"+normalFirst);
-                var normalPrice = normalFirst.substring(1);  //默认的套餐价格
-                console.log("normalPrice:"+normalPrice);
-                //var normalPrice1 = $(".f_fastpay em").text(price);
-                var selCash= $(this).find("span em").text();
-                //var selCshe1 = $(this).find("span:eq(0)").text();
-                couponRecordId=$(this).find(".giftRecordId").text();
-                console.log("normalPrice - selCash:"+normalPrice+"-"+selCash);
-                totalPrice = (normalPrice - selCash).toFixed(2);
-                $(".z_cashselect").text("已选择：￥" + selCash);
-                $(".f_cashshow").hide();
-                if(totalPrice<0){
-                    totalPrice=0;
-                }
-                $(".f_fastpay em").text("￥"+totalPrice);
-                $("#couponRecordId").val(couponRecordId);
-               // var salePrice= "=" + normalPrice1 + "-" + "现金券" + selCshe1;
-               // $(".z_price").text(salePrice);
-            });
-            $(".f_cashclose").click(function(){
-                $(".f_cashshow").hide();
-            });
-            $(".tb_overflay").click(function(){
-                $(".f_cashshow").hide();
-            });
         }
+
+        //点击现金券弹窗js
+        $(".wirte_casher").click(function(){
+            $(".f_cashshow").show();
+        });
+        $(".cash_list ul li").click(function(){
+            var normalFirst=$(".f_fastpay em").text()+"";
+            console.log("normalFirst:"+normalFirst);
+            var normalPrice = normalFirst.substring(1);  //默认的套餐价格
+            console.log("normalPrice:"+normalPrice);
+            //var normalPrice1 = $(".f_fastpay em").text(price);
+            var selCash= $(this).find("span em").text();
+            //var selCshe1 = $(this).find("span:eq(0)").text();
+            couponRecordId=$(this).find(".giftRecordId").text();
+            console.log("normalPrice - selCash:"+normalPrice+"-"+selCash);
+            totalPrice = (normalPrice - selCash).toFixed(2);
+            $(".z_cashselect").text("已选择：￥" + selCash);
+            $(".f_cashshow").hide();
+            if(totalPrice<0){
+                totalPrice=0;
+            }
+            $(".f_fastpay em").text("￥"+totalPrice);
+            $("#couponRecordId").val(couponRecordId);
+            // var salePrice= "=" + normalPrice1 + "-" + "现金券" + selCshe1;
+            // $(".z_price").text(salePrice);
+        });
+        $(".f_cashclose").click(function(){
+            $(".f_cashshow").hide();
+        });
+        $(".tb_overflay").click(function(){
+            $(".f_cashshow").hide();
+        });
 
     </script>
 
