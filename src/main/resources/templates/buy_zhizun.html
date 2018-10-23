@@ -118,10 +118,10 @@
         var clicktag = 0;  //微信支付标志
         $(function() {
             $(".f_zhizuntab ul li:eq(0)").addClass("z_actived");
-            initClick();
             var e=document.getElementById("refreshed");
             if(e.value=="no"){e.value="yes";}
             else{e.value="no";location.reload();}
+            initClick();
             $(".f_zhizuntab ul").find("li").click(function () {
                 //format page
                 clickPage=0;
@@ -342,18 +342,28 @@
             var  leaveMessage=$("#tab1 dd:eq(0)").find("p:eq(4)").text();
             $(".leaveMessage").text(leaveMessage);
             $(".message").text(message);
-            $(".f_fastpay em").text(price);
-            $(".z_messagemoney").text(price);
+           // $(".f_fastpay em").text(price);
+           // $(".z_messagemoney").text(price);
             //couponToNull
             $(".z_cashselect").text("");
             couponRecordId='';
             $("#couponRecordId").val(couponRecordId);
             $("#tab1 dd:last").removeAttr("style");
+            console.log("tab1:"+$(".f_sales_active").text());
+            var  price666=$("#tab1 dd:eq(0)").find("p:eq(1)").text();
+            $(".f_fastpay em").text(price666);
+            $(".z_messagemoney").text(price666);
+            // $(".f_sales_active").trigger('click');
+            // $(".f_discount_active").trigger('click');
+            //  $(".z_current").trigger('click');
+            //  $(".z_current").click();
+            // $(".f_discount_active").click();
+            // $(".f_tiyan_active").click();
             $("#tab1 dd").click(function(){
                 console.log("init....");
-                var  price=$(this).find("p:eq(1)").text();
-                $(".f_fastpay em").text(price);
-                $(".z_messagemoney").text(price);
+                var  priceNew=$(this).find("p:eq(1)").text();
+                $(".f_fastpay em").text(priceNew);
+               // $(".z_messagemoney").text(priceNew);
                 var  message=$(this).find("p:eq(4)").attr("title");
                 var  leaveMessage=$(this).find("p:eq(4)").text();
                 $(".leaveMessage").text(leaveMessage);
@@ -378,7 +388,8 @@
                     $("#tab1 dd:eq(2)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
                 }
             });
-            $(".f_95013listnum dd").click(function(){
+            // $(".f_95013listnum dd").click(function(){
+            $(".f_95013listnum").on('click', '.f_95013listnum dd', function() {
                 $(".f_95013listnum dd").removeClass("z_current");
                 $(this).addClass("z_current");
             });

@@ -439,17 +439,19 @@ public class PageController extends  BaseController{
             Calendar cal1 = Calendar.getInstance();
             cal1.setTime(nowTime);
             // 将分钟、秒、毫秒域清零
+            cal1.add(Calendar.MINUTE, -4);
             cal1.add(Calendar.SECOND, -59);
             Date nowReset = cal1.getTime();
             logger.info("[findStatusMethod]nowReset SECOND  is:" + nowReset);
             //购买时间小于当前时间，说明接口调用失败。
-            if (butDate.getTime() < nowTime.getTime()) {
-                return "wrongPage";
-            }
+//            if (butDate.getTime() < nowTime.getTime()) {
+//                return "wrongPage";
+//            }
             return "redirect:/oauth/admin/OwnerSafeNumber";
         }else {
             logger.info("[findStatusMethod]buy operation fail,will return wrongPage");
-            return "wrongPage";
+            //return "wrongPage";
+            return "redirect:/oauth/admin/OwnerSafeNumber";
         }
 
     }
@@ -505,17 +507,19 @@ public class PageController extends  BaseController{
             Calendar cal1 = Calendar.getInstance();
             cal1.setTime(nowTime);
             // 将分钟、秒、毫秒域清零
+            cal1.add(Calendar.MINUTE, -4);
             cal1.add(Calendar.SECOND, -59);
             Date nowReset = cal1.getTime();
             logger.info("[findStatusMethod]nowReset SECOND  is:" + nowReset);
             //购买时间小于当前时间，说明接口调用失败。
-            if (butDate.getTime() < nowTime.getTime()) {
-                return "wrongPage";
-            }
+//            if (butDate.getTime() < nowTime.getTime()) {
+//                return "wrongPage";
+//            }
             return "redirect:/oauth/admin/OwnerSafeNumber";
         }else {
             logger.info("[findStatusMethod]buy operation fail,will return wrongPage");
-            return "wrongPage";
+            //return "wrongPage";
+            return "redirect:/oauth/admin/OwnerSafeNumber";
         }
 
     }
