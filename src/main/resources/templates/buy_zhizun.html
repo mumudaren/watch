@@ -115,6 +115,7 @@
         var  price=$("#tab1 dd:eq(0)").find("p:eq(1)").text();
         var couponRecordId='';
         var clickPage=0;
+        var ddIndex=0;
         var clicktag = 0;  //微信支付标志
         $(function() {
             $(".f_zhizuntab ul li:eq(0)").addClass("z_actived");
@@ -125,6 +126,7 @@
             $(".f_zhizuntab ul").find("li").click(function () {
                 //format page
                 clickPage=0;
+                $("#showMore").show();
                 $(".f_zhizuntab ul").find("li").removeClass("z_actived");
                 $(this).addClass("z_actived");
                 /** 加载 该套餐号码**/
@@ -167,7 +169,9 @@
             });
 
             // $(".searchNumber").bind("input propertychange", function () {
+            /** 点击搜索**/
             $("#search").click(function () {
+                $("#showMore").hide();
                 var data = {};
                 var regexId = $(".f_zhizuntab ul").find(".z_actived").attr("value");
                 data.regexId = regexId;
@@ -223,8 +227,8 @@
         function pay(){
             if(totalPrice==0){
                 var pay = {};
-                var days = $("#tab1 dd p:eq(2)").text();
-                var productId = $("#tab1 dd p:eq(5)").text();
+                var days = $("#tab1 dd").eq(ddIndex).find("p").eq(2).text();
+                var productId = $("#tab1 dd").eq(ddIndex).find("p").eq(5).text();
                 var phone = $("input[name='myNumber']").val();
                 var uidNumber = $(".f_95013listnum").find(".z_current").text();
                 pay.openid = openid;
@@ -270,8 +274,8 @@
                 //var val = $("#tab1 dd p:eq(1)").text();
                 var val =$(".f_fastpay em").text();
                 console.log("val:"+val);
-                var days = $("#tab1 dd p:eq(2)").text();
-                var productId = $("#tab1 dd p:eq(5)").text();
+                var days = $("#tab1 dd").eq(ddIndex).find("p").eq(2).text();
+                var productId = $("#tab1 dd").eq(ddIndex).find("p").eq(5).text();
                 var pay = {};
                 pay.openid = openid;
                 pay.totalFee = val;
@@ -349,7 +353,6 @@
             couponRecordId='';
             $("#couponRecordId").val(couponRecordId);
             $("#tab1 dd:last").removeAttr("style");
-            console.log("tab1:"+$(".f_sales_active").text());
             var  price666=$("#tab1 dd:eq(0)").find("p:eq(1)").text();
             $(".f_fastpay em").text(price666);
             $(".z_messagemoney").text(price666);
@@ -360,7 +363,8 @@
             // $(".f_discount_active").click();
             // $(".f_tiyan_active").click();
             $("#tab1 dd").click(function(){
-                console.log("init....");
+                console.log("init $(this).index()："+$(this).index());
+                ddIndex=$(this).index();
                 var  priceNew=$(this).find("p:eq(1)").text();
                 $(".f_fastpay em").text(priceNew);
                // $(".z_messagemoney").text(priceNew);
