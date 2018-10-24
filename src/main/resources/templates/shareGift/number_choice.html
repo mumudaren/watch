@@ -26,18 +26,6 @@
                         <li  class="swiper-slide" th:each="reg:${regex}">
                             <img th:src="${reg.imgUrl}"><br  th:text="${reg.value}" th:value="${reg.key}" />
                         </li>
-                        <!--<li>-->
-                            <!--<img src="images/giftImage/icon2.png"><br>纪念日-->
-                        <!--</li>-->
-                        <!--<li>-->
-                            <!--<img src="images/giftImage/icon3.png"><br>恋爱-->
-                        <!--</li>-->
-                        <!--<li>-->
-                            <!--<img src="images/giftImage/icon4.png"><br>老板号-->
-                        <!--</li>-->
-                        <!--<li>-->
-                            <!--<img src="images/giftImage/icon5.png"><br>连号-->
-                        <!--</li>-->
                     </ul>
                     <div class="f_searchinput">
                         <input type="text" placeholder="输入您想要的号码" value="" id="" name="" class="z_searchnumber">
@@ -47,24 +35,35 @@
           </div>
 
           <div class="f_searchnumber_list">
-            <ul>
-                <!--<li>-->
-                    <!--<div class="z_numberlists">-->
-                        <!--<p class="z_numberlists_number"></p>-->
-                        <!--<p class="z_numberlist_content">-->
-                            <!--<span class="z_number_price"></span>-->
-                            <!--<span class="z_number_selected z_numberbuy_selected"></span>-->
-                        <!--</p>-->
-                    <!--</div>-->
-                <!--</li>-->
+            <ul >
             </ul>
           </div>
       </div>
 
 
       <script th:inline="javascript">
+          var clickPage=0;
         $(function(){
             var openid = [[${openid}]];
+            /** show more**/
+            $(window).scroll(function(){
+                console.log("下拉刷新,clickPage:"+clickPage);
+                    var scrollTop = $(this).scrollTop();
+                    var scrollHeight = $(document).height();
+                    var windowHeight = $(this).height();
+                    if (scrollTop + windowHeight == scrollHeight) {
+                            clickPage=clickPage+1;
+                            console.log("clickPage:"+clickPage);
+                            var MoreRegex=$(".current").find("br").attr("value");
+                            var dataMore = {};
+                            dataMore.regexId = MoreRegex;
+                            dataMore.number = '';
+                            dataMore.page =clickPage;
+                            dataMore.size = 6;
+                            console.log("dataMore");
+                            initNumber(dataMore);
+                    }
+            });
             /** 加载默认套餐号码**/
             var initRegex=$(".f_selectnumber_toplist ul li:eq(0)");
             initRegex.addClass("current");
@@ -75,6 +74,7 @@
             dataInit.number ='';
             dataInit.page = 0;
             dataInit.size = 6;
+            clickPage=0;
             initNumber(dataInit);
             //点击选好了
             $(".f_searchnumber_list").on('click', '.z_numberbuy_selected', function() {
@@ -94,6 +94,9 @@
                 data.number = '';
                 data.page = 0;
                 data.size = 6;
+                clickPage=0;
+                //原号码清空。
+                $(".f_searchnumber_list").find("li").remove();
                 initNumber(data);
                 $(".z_searchnumber").val('');
             });
@@ -104,8 +107,17 @@
             var dataSearch = {};
             dataSearch.regexId = regexSearch;
             dataSearch.number = $(".z_searchnumber").val();
-            console.log("dataSearch:"+dataSearch.regexId+","+dataSearch.number);
-            initNumber(dataSearch);
+            dataSearch.page = 0;
+            dataSearch.size =6;
+            //search input value is empty
+            var  searchValue=$(".z_searchnumber").val();
+            if(searchValue==''){
+                alert("请输入想要查找的海牛助手号。");
+            }else{
+                //原号码清空。
+                $(".f_searchnumber_list").find("li").remove();
+                initNumber(dataSearch);
+            }
         });
 
             //加载号码
@@ -119,8 +131,6 @@
                         if (response.code == 200) {
                             var arr = response.data;
                             var numberModule = arr[0];
-                            //原号码清空。
-                            $(".f_searchnumber_list").find("li").remove();
                             //加载新号码。
                             var html='';
                             var itemNumber='';

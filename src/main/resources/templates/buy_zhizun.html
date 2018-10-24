@@ -172,7 +172,6 @@
             // $(".searchNumber").bind("input propertychange", function () {
             /** 点击搜索**/
             $("#search").click(function () {
-                $("#showMore").hide();
                 var data = {};
                 var regexId = $(".f_zhizuntab ul").find(".z_actived").attr("value");
                 data.regexId = regexId;
@@ -184,24 +183,25 @@
                 var  searchValue=$(".searchNumber").val();
                 if(searchValue==''){
                     alert("请输入想要查找的海牛助手号。");
-                    data.number ="sss";
+                }else{
+                    $("#showMore").hide();
+                    $.ajax({
+                        url: "/changeModule?rnd="+s,
+                        type: "POST",
+                        data: data,
+                        dataType: "JSON"
+                    }).done(function (response) {
+                        if (response.code == 200) {
+                            var arr = response.data;
+                            var numberModule = arr[0];
+                            $(".f_95013listnum").text("");
+                            $.each(numberModule, function (index, item) {
+                                $(".f_95013listnum").append($("<dd></dd>").text(item.number));
+                            });
+                            initClick();
+                        }
+                    });
                 }
-                $.ajax({
-                    url: "/changeModule?rnd="+s,
-                    type: "POST",
-                    data: data,
-                    dataType: "JSON"
-                }).done(function (response) {
-                    if (response.code == 200) {
-                        var arr = response.data;
-                        var numberModule = arr[0];
-                        $(".f_95013listnum").text("");
-                        $.each(numberModule, function (index, item) {
-                            $(".f_95013listnum").append($("<dd></dd>").text(item.number));
-                        });
-                        initClick();
-                    }
-                });
             });
             $("#showMore").click(function () {
                 var data = {};
