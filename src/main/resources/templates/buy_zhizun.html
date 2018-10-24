@@ -99,7 +99,8 @@
                 <div class="cash_list">
                     <ul>
                         <li th:each="p:${giftRecord}">
-                            <span>￥<em th:text="${p.giftCoupon.amount/100}">10</em></span>
+                            <span>￥<em th:text="${#numbers.formatDecimal(p.giftCoupon.amount/100.0,0,2)}">10</em></span>
+                            <!--<span>￥<em th:text="${p.giftCoupon.amount/100}">10</em></span>-->
                             <span th:text="${'有效期'+#dates.format(p.giftCoupon.effectiveTime,'yyyy.MM.dd')+'-'+#dates.format(p.giftCoupon.endTime,'yyyy.MM.dd')}">有效期：2019.08.22—2020.08.22</span>
                             <span class="giftRecordId" th:text="${p.id}" style="display: none"></span>
                         </li>
@@ -180,6 +181,11 @@
                 data.size = 6;
                 var s=Math.random()*10;
                 console.log("number:"+data.number);
+                var  searchValue=$(".searchNumber").val();
+                if(searchValue==''){
+                    alert("请输入想要查找的海牛助手号。");
+                    data.number ="sss";
+                }
                 $.ajax({
                     url: "/changeModule?rnd="+s,
                     type: "POST",
