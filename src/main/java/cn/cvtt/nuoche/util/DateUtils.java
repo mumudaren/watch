@@ -71,7 +71,7 @@ public class DateUtils {
     }
 
     public   static  String   orderFormat(Date date){
-        local.set(new SimpleDateFormat("yyyyMMddHHmmss"));
+        local.set(new SimpleDateFormat("yyyyMMdd"));
         return local.get().format(date);
     }
 
