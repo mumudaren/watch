@@ -93,4 +93,8 @@ public class GiftCouponRecord {
     public void setIsUsed(Integer isUsed) {
         this.isUsed = isUsed;
     }
+//    @Override
+//    public String toString() {
+//        return String.format("GiftCouponRecord [id=%d, senderOpenid=%s, receiverOpenid=%s, couponId=%s, getTime=%s]", id, senderOpenid, receiverOpenid, couponId, getTime);
+//    }
 }

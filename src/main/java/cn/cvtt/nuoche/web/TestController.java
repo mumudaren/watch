@@ -1485,9 +1485,13 @@ public class TestController extends  BaseController {
         model.setViewName("shareGift/my_safenumber");
         return model;
     }
-
-
-
+//    //测试领取功能
+//    @RequestMapping("/testCoupon")
+//    public String  testCoupon(){
+//    List<GiftCouponRecord> giftRecordList=giftCouponRecordRepository.findByNamedParam("oIFn90393PZMsIt-kprqw0GWmVko",0,new Date());
+//    logger.info("testCoupon:"+giftRecordList.toString());
+//    return "validate_tel";
+//    }
     public  void  handlerOther(List<BusinessNumberRecord > records){
            for(BusinessNumberRecord  record:records){
                record.setTime(DateUtils.format(record.getValidTime(),"yyyy-MM-dd"));
