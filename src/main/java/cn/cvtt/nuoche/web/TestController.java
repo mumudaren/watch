@@ -439,7 +439,7 @@ public class TestController extends  BaseController {
         for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
         {
             Long couponId=eachGiftCouponRecord.getCouponId();
-            GiftCoupon giftCoupon=giftCouponRepository.findByIdEquals(couponId);
+            GiftCoupon giftCoupon=giftCouponRepository.findByIdEqualsAndEndTimeGreaterThanEqual(couponId,new Date());
             eachGiftCouponRecord.setGiftCoupon(giftCoupon);
         }
         model.addObject("giftRecord",giftRecordList);
@@ -710,7 +710,7 @@ public class TestController extends  BaseController {
         for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
         {
             Long couponId=eachGiftCouponRecord.getCouponId();
-            GiftCoupon giftCoupon=giftCouponRepository.findByIdEquals(couponId);
+            GiftCoupon giftCoupon=giftCouponRepository.findByIdEqualsAndEndTimeGreaterThanEqual(couponId,new Date());
             eachGiftCouponRecord.setGiftCoupon(giftCoupon);
         }
         model.addObject("giftRecord",giftRecordList);
@@ -758,16 +758,16 @@ public class TestController extends  BaseController {
         //有效期一年。
         giftCard.setValidTimeNumber(1);
         giftCard.setValidTimeUnit(1);
-        GiftCard Cardid=giftCardRepository.save(giftCard);
+        GiftCard cardId=giftCardRepository.save(giftCard);
         //支付成功后将套餐卡信息保存数据库中
         GiftCardRecord giftCardRecord=new GiftCardRecord();
         giftCardRecord.setSenderOpenid(SenderOpenid);
         giftCardRecord.setMessage(message);
         giftCardRecord.setGetStatus(0);
-        giftCardRecord.setCardId(Cardid.getId());
+        giftCardRecord.setCardId(cardId.getId());
         giftCardRecord.setBuyTime(new Date());
         //加载分享页面所需要的数据。
-        GiftCard card=giftCardRepository.findByIdEquals(Cardid.getId());
+        GiftCard card=giftCardRepository.findByIdEquals(cardId.getId());
         model.addObject("card",card);
         model.addObject("cardRecordId",giftCardRecordRepository.saveAndFlush(giftCardRecord).getId());
         BusinessCustomer user= businessCusRepository.findByOpenidEquals(SenderOpenid);

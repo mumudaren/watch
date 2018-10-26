@@ -98,7 +98,7 @@
                 </div>
                 <div class="cash_list">
                     <ul>
-                        <li th:each="p:${giftRecord}">
+                        <li  th:if="${p.giftCoupon}" th:each="p:${giftRecord}">
                             <span>￥<em th:text="${#numbers.formatDecimal(p.giftCoupon.amount/100.0,0,2)}">10</em></span>
                             <!--<span>￥<em th:text="${p.giftCoupon.amount/100}">10</em></span>-->
                             <span th:text="${'有效期'+#dates.format(p.giftCoupon.effectiveTime,'yyyy.MM.dd')+'-'+#dates.format(p.giftCoupon.endTime,'yyyy.MM.dd')}">有效期：2019.08.22—2020.08.22</span>

@@ -324,7 +324,7 @@ public class OauthController extends  BaseController{
             for(GiftCouponRecord eachGiftCouponRecord :giftRecordList)
             {
                 Long couponId=eachGiftCouponRecord.getCouponId();
-                GiftCoupon giftCoupon=giftCouponRepository.findByIdEquals(couponId);
+                GiftCoupon giftCoupon=giftCouponRepository.findByIdEqualsAndEndTimeGreaterThanEqual(couponId,new Date());
                 eachGiftCouponRecord.setGiftCoupon(giftCoupon);
             }
             modelAndView.addObject("giftRecord",giftRecordList);
