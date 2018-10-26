@@ -529,34 +529,35 @@ public class businessController extends  BaseController{
             GiftCoupon couponItem=giftCouponRepository.findByIdEquals(coupon);
             model.addObject("coupon",couponItem);
             //积分变更表增加receiver的记录
-            GiftPointRecord pointRecord= new GiftPointRecord();
-            pointRecord.setChangePoint(couponItem.getPoint());
-            pointRecord.setOpenid(receiveUser);
-            pointRecord.setResource(1);
-            pointRecord.setUpdateTime(new Date());
-            giftPointRecordRepository.saveAndFlush(pointRecord);
+//            GiftPointRecord pointRecord= new GiftPointRecord();
+//            pointRecord.setChangePoint(couponItem.getPoint());
+//            pointRecord.setOpenid(receiveUser);
+//            pointRecord.setResource(1);
+//            pointRecord.setUpdateTime(new Date());
+//            giftPointRecordRepository.saveAndFlush(pointRecord);
             //积分变更表增加sender的记录
             GiftPointRecord pointSenderRecord= new GiftPointRecord();
             pointSenderRecord.setChangePoint(couponItem.getPoint());
             pointSenderRecord.setOpenid(senderUser);
             pointSenderRecord.setResource(1);
+            pointSenderRecord.setRecordId(couponRecordNew.getId());
             pointSenderRecord.setUpdateTime(new Date());
             giftPointRecordRepository.saveAndFlush(pointSenderRecord);
             //积分表修改receiver的积分
-            GiftPoint userPointSearch=giftPointRepository.findByOpenidEquals(receiveUser);
-            if(userPointSearch==null) {
-                //从未得到过积分。
-                GiftPoint userPoint = new GiftPoint();
-                userPoint.setOpenid(receiveUser);
-                userPoint.setPointTotal(couponItem.getPoint());
-                userPoint.setPointUsed(0);
-                giftPointRepository.saveAndFlush(userPoint);
-            }else{
-                //曾有积分，则增加本次分享所得积分。
-                int oldUserPoint=userPointSearch.getPointTotal();
-                userPointSearch.setPointTotal(oldUserPoint+couponItem.getPoint());
-                giftPointRepository.saveAndFlush(userPointSearch);
-            }
+//            GiftPoint userPointSearch=giftPointRepository.findByOpenidEquals(receiveUser);
+//            if(userPointSearch==null) {
+//                //从未得到过积分。
+//                GiftPoint userPoint = new GiftPoint();
+//                userPoint.setOpenid(receiveUser);
+//                userPoint.setPointTotal(couponItem.getPoint());
+//                userPoint.setPointUsed(0);
+//                giftPointRepository.saveAndFlush(userPoint);
+//            }else{
+//                //曾有积分，则增加本次分享所得积分。
+//                int oldUserPoint=userPointSearch.getPointTotal();
+//                userPointSearch.setPointTotal(oldUserPoint+couponItem.getPoint());
+//                giftPointRepository.saveAndFlush(userPointSearch);
+//            }
             //积分表修改sender的积分
             GiftPoint senderPointSearch=giftPointRepository.findByOpenidEquals(senderUser);
             if(senderPointSearch==null) {

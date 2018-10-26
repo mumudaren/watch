@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface IGiftPointRecordRepository extends JpaRepository<GiftPointRecord,Long> {
     GiftPointRecord findByResourceEqualsAndUpdateTimeGreaterThanEqualAndUpdateTimeLessThanAndOpenidEqualsOrderByUpdateTimeDesc(int resource, Date startTime, Date endTime,String openid);
-    List<GiftPointRecord> findByOpenidEqualsAndChangePointLessThanOrderByUpdateTimeDesc(String openid,int lessThanVal);
-    List<GiftPointRecord> findByOpenidEqualsAndChangePointGreaterThanOrderByUpdateTimeDesc(String openid,int MoreThanVal);
+    List<GiftPointRecord> findByOpenidEqualsAndChangePointLessThanAndUpdateTimeGreaterThanOrderByUpdateTimeDesc(String openid,int lessThanVal,Date nowBefore30);
+    List<GiftPointRecord> findByOpenidEqualsAndChangePointGreaterThanAndUpdateTimeGreaterThanOrderByUpdateTimeDesc(String openid,int MoreThanVal,Date nowBefore30);
 }

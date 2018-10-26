@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface IGiftAwardsRecordRepository extends JpaRepository<GiftAwardsRecords,Long> {
     //List<GiftAwardsRecords> findByRulesIdOrderByIndexOrder(Long rulesId);
+    GiftAwardsRecords findByIdEquals(Long id);
 }

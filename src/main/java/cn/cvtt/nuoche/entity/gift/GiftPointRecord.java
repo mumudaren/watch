@@ -25,6 +25,9 @@ public class GiftPointRecord {
     private   Integer  changePoint;
     @Column(name="update_time")
     private Date updateTime;
+    //奖品表或优惠券领取表Id
+    @Column(name="recordId")
+    private Long recordId;
     @Transient
     private String resourceName;
     @Transient
@@ -33,7 +36,7 @@ public class GiftPointRecord {
     public GiftPointRecord() {
     }
 
-    public GiftPointRecord(Long id, String openid, Integer resource, Integer changePoint, Date updateTime,String resourceName,String datePrase) {
+    public GiftPointRecord(Long id, String openid, Integer resource, Integer changePoint, Date updateTime,String resourceName,String datePrase,Long recordId) {
         this.id = id;
         this.openid = openid;
         this.resource = resource;
@@ -41,6 +44,7 @@ public class GiftPointRecord {
         this.updateTime = updateTime;
         this.resourceName = resourceName;
         this.datePrase = datePrase;
+        this.recordId = recordId;
     }
 
     public Long getId() {
@@ -97,5 +101,13 @@ public class GiftPointRecord {
 
     public void setDatePrase(String datePrase) {
         this.datePrase = datePrase;
+    }
+
+    public Long getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(Long recordId) {
+        this.recordId = recordId;
     }
 }

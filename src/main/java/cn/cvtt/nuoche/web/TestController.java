@@ -1423,6 +1423,7 @@ public class TestController extends  BaseController {
                 userPointsRecord.setOpenid(openid);
                 userPointsRecord.setResource(3);
                 userPointsRecord.setUpdateTime(new Date());
+                userPointsRecord.setRecordId(awardsRecords.getId());
                 giftPointRecordRepository.saveAndFlush(userPointsRecord);
                 //最新用户总积分
                 int userPointsFinal=giftPointRepository.findByOpenidEquals(openid).getPointTotal()-giftPointRepository.findByOpenidEquals(openid).getPointUsed();

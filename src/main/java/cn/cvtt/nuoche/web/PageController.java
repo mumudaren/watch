@@ -6,6 +6,8 @@ import cn.cvtt.nuoche.entity.business.BindVo;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
 import cn.cvtt.nuoche.entity.business.wx_product;
+import cn.cvtt.nuoche.entity.gift.GiftAwards;
+import cn.cvtt.nuoche.entity.gift.GiftAwardsRecords;
 import cn.cvtt.nuoche.entity.gift.GiftCard;
 import cn.cvtt.nuoche.entity.gift.GiftCardRecord;
 import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
@@ -17,6 +19,7 @@ import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.ISystemParamInterface;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftAwardsRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCardRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCardRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftCouponRecordRepository;
@@ -78,6 +81,8 @@ public class PageController extends  BaseController{
     IGiftCardRecordRepository giftCardRecordRepository;
     @Autowired
     IGiftCouponRecordRepository giftCouponRecordRepository;
+    @Autowired
+    IGiftAwardsRecordRepository giftAwardsRecordRepository;
     private static final Logger logger = LoggerFactory.getLogger(PageController.class);
      @SuppressWarnings("all")
      @RequestMapping("/getNumber")
@@ -538,13 +543,22 @@ public class PageController extends  BaseController{
         }else{
             points=0;
         }
+        Date nowBefore30=DateUtils.addDay(new Date(),"-30");
+        logger.info("[myPoints]nowBefore30 is:"+nowBefore30);
         //查找用户的积分消耗记录
-        List<GiftPointRecord> lessThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointLessThanOrderByUpdateTimeDesc(openid,0);
+        List<GiftPointRecord> lessThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointLessThanAndUpdateTimeGreaterThanOrderByUpdateTimeDesc(openid,0,nowBefore30);
         if(lessThanZeroRecord!=null){
             for(GiftPointRecord res:lessThanZeroRecord){
                 switch(res.getResource()){
                     case 3:
-                        res.setResourceName("幸运大抽奖");
+                        String name="";
+                        //查找中奖奖品名称。
+                        if(res.getRecordId()!=null){
+
+                            GiftAwardsRecords giftAwardsRecord=giftAwardsRecordRepository.findByIdEquals(res.getRecordId());
+                            name = ",奖品："+giftAwardsRecord.getAwardsName();
+                        }
+                        res.setResourceName("幸运大抽奖"+name);
                         break;
                 }
                 String datePrase=DateUtils.format(res.getUpdateTime());
@@ -552,13 +566,22 @@ public class PageController extends  BaseController{
             }
         }
         //查找用户的积分增长记录
-        List<GiftPointRecord> moreThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointGreaterThanOrderByUpdateTimeDesc(openid,0);
+        List<GiftPointRecord> moreThanZeroRecord=giftPointRecordRepository.findByOpenidEqualsAndChangePointGreaterThanAndUpdateTimeGreaterThanOrderByUpdateTimeDesc(openid,0,nowBefore30);
         if(moreThanZeroRecord!=null){
             logger.info("[myPoints]moreThanZeroRecord is not null.");
             for(GiftPointRecord temp:moreThanZeroRecord){
                 switch(temp.getResource()){
                     case 1:
-                        temp.setResourceName("好友扫码领取现金券");
+                        //查找领取现金券的好友名称
+                        String name="";
+                        if(temp.getRecordId()!=null){
+                            GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(temp.getRecordId());
+                            BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(giftCouponRecord.getReceiverOpenid());
+                            if(userInfo!=null) {
+                                name = userInfo.getNickname();
+                            }
+                        }
+                        temp.setResourceName(name+"扫码领取现金券");
                         break;
                     case 2:
                         temp.setResourceName("每日分享到朋友圈");
