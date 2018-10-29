@@ -95,12 +95,6 @@ public class WechatSignGenerator {
         // TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		MessageDigest md = null;
-//		String sha = null;
-//		md = MessageDigest.getInstance("SHA-1");
-//		// 3. 将拼接后的字串进行SHA1加密
-//		byte[] digest = md.digest(content.toString().getBytes());
-//		sha = SignUtil.byteToStr(digest);
 		return  str+"_"+Constant.NONCE_STR+"_"+timeStamp.substring(0,timeStamp.length()-3);
 	}
 	 
