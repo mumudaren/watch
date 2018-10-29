@@ -876,7 +876,7 @@ public class PageController extends  BaseController{
                                             @RequestParam(value = "number" ,defaultValue = "") String number,
                                             @RequestParam("openid") String openid){
         ModelAndView  model=new ModelAndView();
-        logger.info("openid:"+openid);
+        logger.info("[receiveCardSuccess]openid:"+openid);
         //根据giftCardRecordId查找号码卡record，填写receiver和卡片领取时间。
         GiftCardRecord giftCardRecord = giftCardRecordRepository.findByIdEquals(giftCardRecordId);
         giftCardRecord.setReceiverOpenid(openid);
