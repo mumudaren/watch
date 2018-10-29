@@ -36,7 +36,7 @@ public class WxServer {
      @Resource
      private  JedisUtils jedisUtils;
     @Value("${redis.nuonuo:jsapiToken}")
-    private String JSAPI_TOKEN_KEY;
+     private  String JSAPI_TOKEN_KEY;
      private static final Logger logger = LoggerFactory.getLogger(WxServer.class);
      @Autowired
      private IBusinessCusRepository cusRespository;
@@ -44,12 +44,13 @@ public class WxServer {
     //     private   String ACCESS_TOKEN_KEY;
     // 维护一个本类的静态变量
     private static WxServer switchUtil;
-
     // 初始化的时候，将本类中的sysConfigManager赋值给静态的本类变量
     @PostConstruct
     public void init() {
         switchUtil = this;
         switchUtil.jedisUtils = this.jedisUtils;
+        switchUtil.JSAPI_TOKEN_KEY=this.JSAPI_TOKEN_KEY;
+        switchUtil.jedisUtils=this.jedisUtils;
     }
     //accesstoken,key
 
@@ -243,8 +244,8 @@ public class WxServer {
      * 定时器维护access_token
      * 从0秒0分钟开始每半时执行一次
      */
-    @Scheduled(cron = "0/60 28/30 * * *  *")
-    public void AccessTokenTask() {
+    @Scheduled(cron = "0/60 0/30 * * *  *")
+    public static void AccessTokenTask() {
         //获取AccessToken
         AccessToken at = WxUtils.getAccessToken();
         //进入死循环
@@ -256,7 +257,7 @@ public class WxServer {
                     at = WxUtils.getAccessToken();
                     at.setCreateTime(DateUtils.format(new Date()));
                     // 将access_token更新到redis
-                    jedisUtils.set(ACCESS_TOKEN_KEY, at.getAccessToken());
+                    switchUtil.jedisUtils.set(ACCESS_TOKEN_KEY, at.getAccessToken());
                     logger.info("[AccessTokenTask]get access_token success，有效时长{}秒 token:{}", at.getExpiresIn(), at.getAccessToken());
                     //引起函数的强制结束
                     return;
@@ -279,8 +280,8 @@ public class WxServer {
      * 定时器维护JSAPI_token
      * 从1秒0分钟开始每半小时执行一次
      */
-    @Scheduled(cron = "1/60 28/30 * * *  *")
-    public void JSAPITokenTask()  {
+    @Scheduled(cron = "1/60 0/30 * * *  *")
+    public static void JSAPITokenTask()  {
         //函数调用次数
         String  accessToken=getAccessToken();
         for(int totalTimes=0;totalTimes<300;totalTimes++){
@@ -297,7 +298,7 @@ public class WxServer {
                         // 存储到redis数据库
                         String jsapiKey= atJSAPI.getJSAPIToken();
                         logger.info("atJSAPI is:"+atJSAPI.toString());
-                        jedisUtils.set(JSAPI_TOKEN_KEY,jsapiKey);
+                        switchUtil.jedisUtils.set(switchUtil.JSAPI_TOKEN_KEY,jsapiKey);
                         logger.info("[JSAPITokenTask]set JSAPIToken success，validTime{}'s , token is:{}", atJSAPI.getExpiresIn(), atJSAPI.getJSAPIToken());
                         break;
                     }catch (Exception e){

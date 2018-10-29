@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import static cn.cvtt.nuoche.server.WxServer.AccessTokenTask;
+import static cn.cvtt.nuoche.server.WxServer.JSAPITokenTask;
+
 /**
  * @decription WxUtils
  * <p>微信工具</p>
@@ -129,20 +132,35 @@ public class WxUtils {
         map.put("access_token", accessToken);
         map.put("type", "jsapi");
         String sResult = HttpClientUtil.doGet(URL_JSAPITOKEN, map);
-
         if (StringUtils.equals("504", sResult)) {
             return null;
         }
         JSONObject jObj = JSONObject.parseObject(sResult);
         JSAPIToken at = null;
         if (null != jObj) {
-            try {
-                at = new JSAPIToken();
-                at.setJSAPIToken(jObj.getString("ticket"));
-                at.setExpiresIn(jObj.getIntValue("expires_in"));
-            } catch (Exception e) {
-                log.error("[getJSAPIToken]access JSAPIToken fail");
-                at = null;
+            if(jObj.getIntValue("errcode")!=0){
+                //重新获取AccessTokenTask
+                AccessTokenTask();
+                Map<String, String> map2 = new HashMap<>();
+                map2.put("access_token", WxServer.getAccessToken());
+                map2.put("type", "jsapi");
+                String sResult2 = HttpClientUtil.doGet(URL_JSAPITOKEN, map2);
+                JSONObject jObj2 = JSONObject.parseObject(sResult2);
+                JSAPIToken at2 = null;
+                at2 = new JSAPIToken();
+                at2.setJSAPIToken(jObj2.getString("ticket"));
+                at2.setExpiresIn(jObj2.getIntValue("expires_in"));
+                return at2;
+            }else {
+                //token正常
+                try {
+                    at = new JSAPIToken();
+                    at.setJSAPIToken(jObj.getString("ticket"));
+                    at.setExpiresIn(jObj.getIntValue("expires_in"));
+                } catch (Exception e) {
+                    log.error("[getJSAPIToken]access JSAPIToken fail");
+                    at = null;
+                }
             }
         }
         return at;
