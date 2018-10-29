@@ -588,15 +588,17 @@ public class PageController extends  BaseController{
                 switch(temp.getResource()){
                     case 1:
                         //查找领取现金券的好友名称
-                        String name="";
+                        String name="好友";
                         if(temp.getRecordId()!=null){
                             GiftCouponRecord giftCouponRecord=giftCouponRecordRepository.findGiftCouponRecordByIdEquals(temp.getRecordId());
                             BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(giftCouponRecord.getReceiverOpenid());
-                            if(userInfo.getNickname()!=null) {
-                                name = userInfo.getNickname();
+                            if(userInfo!=null) {
+                                if(!StringUtils.isEmpty(userInfo.getNickname())) {
+                                    name = userInfo.getNickname();
+                                }
                             }
                         }
-                        temp.setResourceName(name+"扫码领取现金券");
+                        temp.setResourceName(name+"领取现金券");
                         break;
                     case 2:
                         temp.setResourceName("每日分享到朋友圈");
