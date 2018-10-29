@@ -80,6 +80,9 @@ public class businessController extends  BaseController{
     IGiftAwardsRulesRepository giftAwardsRulesRepository;
     @Autowired  private IBusinessNumberRecordRepository  businessNumberRecordRepository;
     @Autowired  private NumberServiceImpl numberService;
+    @Autowired IGiftAwardsRecordRepository giftAwardsRecordRepository;
+    @Autowired
+    IGiftAwardsRepository giftAwardsRepository;
     @Resource
     private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(businessController.class);
@@ -688,6 +691,124 @@ public class businessController extends  BaseController{
                     businessNumberRecordRepository.save(record2);
                 }
         return  new Result(ResultMsg.OPERATESUCEESS);
+    }
+    /**
+     * 抽奖
+     *
+     * @return
+     */
+    @RequestMapping("/lottery")
+    @ResponseBody
+    public  Result  lotteryMethod(String openid){
+        BusinessCustomer userInfo= businessCusRepository.findByOpenidEquals(openid);
+        //查询当前九宫格所使用的活动。
+        GiftAwardsRules activeNow=giftAwardsRulesRepository.findByIsAbleEquals(1);
+        //当前活动抽一次奖消耗的积分。
+        int usePoints=activeNow.getPoints();
+        //根据openid查找用户当前积分情况。
+        GiftPoint userPointsInfo=giftPointRepository.findByOpenidEquals(openid);
+        //抽奖次数,当前积分，奖品index。
+        int times;
+        int userPoints=userPointsInfo.getPointTotal();
+        int userPointsJS;
+        int resultIndex;
+        if(userPointsInfo!=null){
+            userPointsJS=userPointsInfo.getPointTotal()-userPointsInfo.getPointUsed();
+            //计算可抽奖次数
+            double a=userPointsJS;
+            double b=usePoints;
+            double c = a/b;
+            times=(int)Math.floor(c);
+            logger.info("[lottery]userPoints/usePoints=times:"+a+"/"+b+"="+times);
+            if(times>0){
+                //当前活动的所有活动奖品。
+                List<GiftAwards> awards=giftAwardsRepository.findByRulesIdOrderByIndexOrder(activeNow.getId());
+                //得到各奖品的概率列表
+                List<Double> orignalRates = new ArrayList<Double>(awards.size());
+                for (GiftAwards award : awards) {
+                    logger.info("[lottery]awards now:"+award.getGiftName());
+                    //库存
+                    Integer remainNumer = award.getStock();
+                    //概率
+                    Double probability = award.getProbability();
+                    if (remainNumer==null||remainNumer <= 0) {//剩余数量为零，需使它不能被抽到
+                        probability = new Double(0);
+                    }
+                    if(probability==null){
+                        probability = new Double(0);
+                    }
+                    orignalRates.add(probability);
+                }
+                //根据概率等计算奖品结果。
+                //根据概率产生奖品
+                GiftAwards tuple = new GiftAwards();
+                int orignalRatesIndex = LotteryUtil.lottery(orignalRates);
+                logger.info("[lottery]orignalRatesIndex:"+orignalRatesIndex);
+                if (orignalRatesIndex>=0) {//中奖啦
+                    logger.info("[lottery]awards name:"+tuple.getGiftName());
+                    tuple= awards.get(orignalRatesIndex);
+                }else{
+                    //未中奖时，默认中奖产品为index为0的奖品。
+                    tuple=giftAwardsRepository.findByRulesIdEqualsAndIndexOrderEquals(activeNow.getId(),0);
+                }
+                //生成用户的抽奖记录。
+                GiftAwardsRecords awardsRecords=new GiftAwardsRecords();
+                awardsRecords.setAwardsId(tuple.getId());
+                awardsRecords.setAwardsName(tuple.getGiftName());
+                awardsRecords.setGetTime(new Date() );
+                awardsRecords.setNickname(userInfo.getNickname());
+                awardsRecords.setOpenid(openid);
+                awardsRecords.setPhone(userInfo.getPhone());
+                giftAwardsRecordRepository.saveAndFlush(awardsRecords);
+                //返回前台的奖品顺序（indexOrder）
+                resultIndex=tuple.getIndexOrder();
+                //减少奖品的库存。
+                tuple.setStock(tuple.getStock()-1);
+                giftAwardsRepository.saveAndFlush(tuple);
+                //修改用户已使用的积分。
+                logger.info("a+b=c"+userPointsInfo.getPointUsed()+"+"+usePoints+"="+(userPointsInfo.getPointUsed()+usePoints));
+                userPointsInfo.setPointUsed(userPointsInfo.getPointUsed()+usePoints);
+                //修改用户总积分，抽奖后的剩余积分
+                logger.info("userPoints-usePoints:"+userPoints+"-"+usePoints);
+                userPoints=userPoints-usePoints;
+                logger.info("setPointTotal:"+userPoints);
+                //userPointsInfo.setPointTotal(userPoints);
+                logger.info("save userPointsInfo id:"+userPointsInfo.getId());
+                giftPointRepository.saveAndFlush(userPointsInfo);
+                //用户积分历史记录表变更。
+                GiftPointRecord userPointsRecord=new GiftPointRecord();
+                userPointsRecord.setChangePoint(-usePoints);
+                userPointsRecord.setOpenid(openid);
+                userPointsRecord.setResource(3);
+                userPointsRecord.setUpdateTime(new Date());
+                userPointsRecord.setRecordId(awardsRecords.getId());
+                giftPointRecordRepository.saveAndFlush(userPointsRecord);
+                //最新用户总积分
+                int userPointsFinal=giftPointRepository.findByOpenidEquals(openid).getPointTotal()-giftPointRepository.findByOpenidEquals(openid).getPointUsed();
+                //剩余可抽奖次数
+                times=times-1;
+                //返回前台数据
+                Map<String,Object> map=new HashMap<>();
+                map.put("resultIndex",resultIndex);
+                map.put("times",times);
+                map.put("userPoints",userPointsFinal);
+                return  new Result(ResultMsg.OPERATESUCEESS,map);
+            }else{
+                resultIndex=0;
+                times=0;
+            }
+        }else{
+            //用户未获得过积分
+            resultIndex=0;
+            times=0;
+            userPoints=0;
+        }
+        //返回前台数据
+        Map<String,Object> map=new HashMap<>();
+        map.put("resultIndex",resultIndex);
+        map.put("times",times);
+        map.put("userPoints",userPoints);
+        return  new Result(ResultMsg.OPERATEXCEPTIN,map);
     }
 
     public static void main(String[] args) {

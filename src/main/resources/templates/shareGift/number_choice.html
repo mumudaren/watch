@@ -79,7 +79,7 @@
             //点击选好了
             $(".f_searchnumber_list").on('click', '.z_numberbuy_selected', function() {
                 var chooseNumber =$(this).parent().parent().find(".z_numberlists_number").text();
-                window.location.href="/testNumberRegex?chooseNumber="+chooseNumber+"&isHideOldDiv=true"+"&openid="+openid;
+                window.location.href="/numberRegex?chooseNumber="+chooseNumber+"&isHideOldDiv=true"+"&openid="+openid;
             });
         });
         //tab change
