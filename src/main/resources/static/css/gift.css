@@ -428,8 +428,6 @@ opacity: .5;
 .f_tiyan,.f_sales,.f_discount{background: url(../images/giftImage/tiyan.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
 .f_discount{background: url(../images/giftImage/discount.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
 .f_sales{background: url(../images/giftImage/sales.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
-.f_tiyan p,
-.f_sales p,
 .f_tiyan p{text-align: center;color:#fa609c;font-size: .4rem;}
 .f_sales p{text-align: center;color: #ee87fa;font-size: .4rem;}
 .f_discount p{text-align: center;color:#42a3f5 ;font-size: .4rem;}
