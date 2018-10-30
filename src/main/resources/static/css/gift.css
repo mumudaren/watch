@@ -423,26 +423,29 @@ opacity: .5;
 .f_dayscontent ul li,.f_dayscontent dl dd{float: left;margin-right: .37rem;}{float: left;margin-right: .37rem;}
 .f_buysafenumber_content ul li{margin-right: .28rem;}
 .f_dayscontent ul li:last-child,.f_dayscontent dl dd:last-child{margin-right: 0;}
-.f_tiyan,.f_sales,.f_discount{background: url(../images/giftImage/days_03.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
-.f_tiyan p,.f_sales p,.f_discount p{text-align: center;color: #fff;font-size: .4rem;}
 .f_tiyan p.z_requiredays,.f_sales p.z_requiredays,.f_discount p.z_requiredays{padding-top: .5rem;}
 .f_tiyan p.z_limits3,.f_sales p.z_limits3,.f_discount p.z_limits3{font-size: .3rem;}
-.f_discount{background: url(../images/giftImage/days_05.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
-.f_sales{background: url(../images/giftImage/days_07.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
+.f_tiyan,.f_sales,.f_discount{background: url(../images/giftImage/tiyan.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
+.f_discount{background: url(../images/giftImage/discount.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
+.f_sales{background: url(../images/giftImage/sales.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
+.f_tiyan p,
+.f_sales p,
+.f_tiyan p{text-align: center;color:#fa609c;font-size: .4rem;}
+.f_sales p{text-align: center;color: #ee87fa;font-size: .4rem;}
+.f_discount p{text-align: center;color:#42a3f5 ;font-size: .4rem;}
 
 
+.f_tiyan_active{background: url(../images/giftImage/days_03.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
+.f_tiyan_active p.z_requiredays_active{color: #fff;}
+.f_tiyan_active p.z_limits3_active{color: #fff;}
 
-.f_tiyan_active{background: url(../images/giftImage/tiyan.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
-.f_tiyan_active p.z_requiredays_active{color: #fa609c;}
-.f_tiyan_active p.z_limits3_active{color: #fda472;}
+.f_discount_active{background: url(../images/giftImage/days_05.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
+.f_discount_active p.z_requiredays_active{color: #fff;}
+.f_discount_active p.z_limits3_active{color: #fff;}
 
-.f_discount_active{background: url(../images/giftImage/discount.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
-.f_discount_active p.z_requiredays_active{color: #42a3f5;}
-.f_discount_active p.z_limits3_active{color: #64c7ef;}
-
-.f_sales_active{background: url(../images/giftImage/sales.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
-.f_sales_active p.z_requiredays_active{color: #b989f8;}
-.f_sales_active p.z_limits3_active{color: #ee87fa;}
+.f_sales_active{background: url(../images/giftImage/days_07.png) no-repeat;width: 2.907rem;height: 2.08rem;background-size: 2.907rem 2.08rem;}
+.f_sales_active p.z_requiredays_active{color: #fff;}
+.f_sales_active p.z_limits3_active{color: #fff;}
 
 /*暂无安全号*/
 .f_notnumber{margin: 0 auto;text-align: center;background: #f2f7fc;padding-bottom: 1rem;}
