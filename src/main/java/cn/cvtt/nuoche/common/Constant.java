@@ -33,8 +33,8 @@ public class Constant {
     public  static  final String  MCH_ID="1398897702"; //商户号
     public  static  final String  NOTIFY_URL="http://i.95013.com/paySuccess";
     public  static  final String  TRADE_TYPE="JSAPI";
-    public  static  final String  ATTACH="天舟通信安全号支付";
-    public  static  final String  SENDBODY="天舟-安全号";
+    public  static  final String  ATTACH="天舟通信海牛助手支付";
+    public  static  final String  SENDBODY="天舟-海牛助手";
     public  static  final String  NONCE_STR="tianzhoutongxingCommunication";
     public  static  final String  KEY="sjzljr7571jdjjjxjjgjg14881186111";
     public  static  final String  ORDERURL="https://api.mch.weixin.qq.com/pay/unifiedorder";

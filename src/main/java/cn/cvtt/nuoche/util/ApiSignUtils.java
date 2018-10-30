@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * @decription ApiSignUtils
- * <p>安全号api调用接口签名计算</p>
+ * <p>海牛助手api调用接口签名计算</p>
  * @author Yampery
  * @date 2018/3/12 9:20
  */

@@ -19,8 +19,8 @@ public enum ResultMsg {
     REQUESTPARAMEXCEPTION("2000","请求参数无效或者不存在!"),
     LOGINSUCCESS("2048","登陆成功"),
     PHONEREGISTERED("2049","该手机号已经注册,请登陆!"),
-    MORETHANBINDNUMBER("2050","超过安全号码绑定次数!"),
-    MORETHANBUYNUMBER("2051","超过安全号码限购次数!");
+    MORETHANBINDNUMBER("2050","超过海牛助手码绑定次数!"),
+    MORETHANBUYNUMBER("2051","超过海牛助手码限购次数!");
 
 
 

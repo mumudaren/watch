@@ -712,7 +712,7 @@ public class TestController extends  BaseController {
                     record.setIsValid(1);
                 }
                 record.setTime(DateUtils.format(record.getValidTime(),"yyyy-MM-dd"));
-                System.out.println("自己的安全号:"+record.getRegexId().toString()+"record.prtms:"+record.getPrtms().toString()+"record.smbms:"+record.getSmbms().toString());
+                System.out.println("自己的海牛助手:"+record.getRegexId().toString()+"record.prtms:"+record.getPrtms().toString()+"record.smbms:"+record.getSmbms().toString());
             }
             model.addObject("will",will);
             model.addObject("expired",expired);

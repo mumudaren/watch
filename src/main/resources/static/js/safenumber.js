@@ -1,7 +1,7 @@
 
 $(function(){
 
-			//我的安全号页面选项卡
+			//我的海牛助手页面选项卡
 			$(".f_mynumber_nav li:eq(0)").click(function(){
 				$(this).addClass("active");
 				$(this).siblings().removeClass("active");
