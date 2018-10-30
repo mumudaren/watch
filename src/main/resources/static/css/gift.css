@@ -375,7 +375,7 @@ opacity: .5;
 .z_telphone b{color: #007eda;}
 .z_telphone a{color: #007eda;font-size: .4rem;float: right;text-decoration: underline;}
 .z_mynumlist{margin-top: .2rem;}
-.z_mynumlist ul li{float: left;color: #6a7388;border-right: 1px solid #d8dae0;padding: 0 .7rem;}
+.z_mynumlist ul li{float: left;color: #6a7388;border-right: 1px solid #d8dae0;padding: 0 .68rem;}
 .z_mynumlist ul li span{display: block;}
 .z_mynumlist ul li span.z_number{color: #000;font-weight: bold;text-align: center;}
 .z_mynumlist ul li span.z_number.z_f31e66{color: #f31e66;}
