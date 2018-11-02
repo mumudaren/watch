@@ -29,11 +29,14 @@ public class GiftAwardsRules {
     //当前活动每次抽奖需要消耗的积分数
     @Column(name="points")
     private  Integer  points;
+    @Column(name="business_id")
+    private  String  businessID;
 
     public GiftAwardsRules() {
     }
 
-    public GiftAwardsRules(Long id, String name, String createBy, String description, Date createTime, Integer isAble,Integer  points) {
+    public GiftAwardsRules(Long id, String name, String createBy, String description, Date createTime
+            , Integer isAble,Integer  points,String businessID) {
         this.id = id;
         this.name = name;
         this.createBy = createBy;
@@ -41,7 +44,7 @@ public class GiftAwardsRules {
         this.createTime = createTime;
         this.isAble = isAble;
         this.points = points;
-
+        this.businessID = businessID;
     }
 
     public Long getId() {
@@ -98,5 +101,13 @@ public class GiftAwardsRules {
 
     public void setPoints(Integer points) {
         this.points = points;
+    }
+
+    public String getBusinessID() {
+        return businessID;
+    }
+
+    public void setBusinessID(String businessID) {
+        this.businessID = businessID;
     }
 }

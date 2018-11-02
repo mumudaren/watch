@@ -28,19 +28,21 @@ public class GiftCardRules {
 
     @Column(name="price")
     private  Integer  price;
-
+    @Column(name="business_id")
+    private  String  businessID;
 
     @Transient
     private String regexName;
 
     public GiftCardRules() {
     }
-    public GiftCardRules(Long id, Integer cardType, String regexId, String cardName, Integer price) {
+    public GiftCardRules(Long id, Integer cardType, String regexId, String cardName, Integer price,String businessID) {
         this.id = id;
         this.regexId = regexId;
         this.cardType = cardType;
         this.cardName = cardName;
         this.price = price;
+        this.businessID = businessID;
     }
 
     public Long getId() {
@@ -92,4 +94,11 @@ public class GiftCardRules {
         this.regexName = regexName;
     }
 
+    public String getBusinessID() {
+        return businessID;
+    }
+
+    public void setBusinessID(String businessID) {
+        this.businessID = businessID;
+    }
 }

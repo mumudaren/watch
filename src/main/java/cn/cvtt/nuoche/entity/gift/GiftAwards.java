@@ -29,12 +29,14 @@ public class GiftAwards {
     //库存
     @Column(name="stock")
     private  Integer  stock;
+    @Column(name="business_id")
+    private  String  businessID;
 
     public GiftAwards() {
     }
 
     public GiftAwards(Long id, Long rulesId, String imgurl, String giftName,
-                      Double probability, Integer indexOrder,Integer stock) {
+                      Double probability, Integer indexOrder,Integer stock,String businessID) {
         this.id = id;
         this.rulesId = rulesId;
         this.imgurl = imgurl;
@@ -42,6 +44,7 @@ public class GiftAwards {
         this.probability = probability;
         this.indexOrder = indexOrder;
         this.stock = stock;
+        this.businessID = businessID;
     }
 
     public Long getId() {
@@ -98,5 +101,13 @@ public class GiftAwards {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    public String getBusinessID() {
+        return businessID;
+    }
+
+    public void setBusinessID(String businessID) {
+        this.businessID = businessID;
     }
 }

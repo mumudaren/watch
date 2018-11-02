@@ -34,10 +34,13 @@ public class GiftCoupon {
     private  Date  endTime;
     @Column(name="is_able")
     private  Integer  isAble;
+    @Column(name="business_id")
+    private  String  businessID;
     public GiftCoupon() {
     }
 
-    public GiftCoupon(Long id, String name, Integer amount, Integer point, String creator, Date createAt, Date effectiveTime, Date endTime, Integer isAble) {
+    public GiftCoupon(Long id, String name, Integer amount, Integer point, String creator, Date createAt
+            , Date effectiveTime, Date endTime, Integer isAble,String businessID) {
         this.id = id;
         this.name = name;
         this.amount = amount;
@@ -47,7 +50,7 @@ public class GiftCoupon {
         this.effectiveTime = effectiveTime;
         this.endTime = endTime;
         this.isAble = isAble;
-
+        this.businessID = businessID;
     }
 
     public Long getId() {
@@ -120,5 +123,13 @@ public class GiftCoupon {
 
     public void setIsAble(Integer isAble) {
         this.isAble = isAble;
+    }
+
+    public String getBusinessID() {
+        return businessID;
+    }
+
+    public void setBusinessID(String businessID) {
+        this.businessID = businessID;
     }
 }
