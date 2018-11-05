@@ -150,7 +150,7 @@
                             <p class="z_requiredays" th:text="${'有效期'+p.validDay+'天'}"></p>
                             <p th:text="${'￥'+p.productPrice/(100*1.0)}"></p>
                             <p style="display: none;" th:text="${p.validDay}"></p>
-                            <p class="z_limits3 z_limits3_active"><del th:text="${'￥'+p.initPrice/(100*1.0)}"></del><span th:text="${p.productLimit==0?'不限次数':'限购'+p.productLimit+'次'}">限购3次</span></p>
+                            <p class="z_limits3 z_limits3_active"><del th:text="${'￥'+p.initPrice/(100*1.0)}"></del><span th:text="${p.productLimit==0?'不限次数':'每日限购'+p.productLimit+'次'}">限购3次</span></p>
                             <p class="productId" th:text="${p.id}" style="display: none"></p>
                         </li>
                     </ul>
