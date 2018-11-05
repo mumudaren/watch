@@ -99,9 +99,9 @@
                          pay.productId = productId;
                          console.log("productId:"+productId);
                          var json = payUtil.payOrder(pay);
+                         console.log("json:"+json);
                          if (json.code != 200) {
                              alert(json.msg);
-                             console.log("json is："+json.data)
                              return;
                          } else {
                              json = json.data;

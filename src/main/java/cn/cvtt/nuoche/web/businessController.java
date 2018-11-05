@@ -187,7 +187,13 @@ public class businessController extends  BaseController{
     @RequestMapping("/createOrder")
     @ResponseBody
     @LogManager(description = "createOrder")
-    public Result createGenerateOrder(@RequestParam("openid") String openid, @RequestParam("totalFee") String totalFee,@RequestParam("phone") String  phone,@RequestParam("uidNumber")  String uidNumber, @RequestParam("extend") String extend,@RequestParam("days") String days,@RequestParam("productId") Integer productId, HttpServletRequest request){
+    public Result createGenerateOrder(@RequestParam("openid") String openid,
+                                      @RequestParam("totalFee") String totalFee,
+                                      @RequestParam("phone") String  phone,
+                                      @RequestParam("uidNumber")  String uidNumber,
+                                      @RequestParam("extend") String extend,
+                                      @RequestParam("days") String days,
+                                      @RequestParam("productId") Integer productId, HttpServletRequest request){
         logger.info("create Wechat Order method: "+"\n");
         /** 查看该用户绑定是否超过后台配置的最大绑定次数,超过则不让绑定*/
         String  json=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
@@ -209,17 +215,40 @@ public class businessController extends  BaseController{
         }
         /**  判断结束 **/
         /**
-         * 判断是否超过限购的次数
+         * 判断是否超过当天限购的次数
          *
          * */
-        List<businessPayNotify>  ls=payRepository.findAllByOpenidEqualsAndPhoneEqualsAndProductIdEquals(util.getBusinessKey(),phone,productId);
+        Date today=new Date();
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(today);
+        // 将分钟、秒、毫秒域清零
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        Date todayReset = cal1.getTime();
+        cal1.setTime(DateUtils.addDay(today,"1"));
+        // 将分钟、秒、毫秒域清零
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        Date todayPlusReset = cal1.getTime();
+        logger.info("[createGenerateOrder]businessPayNotify search prams are:"+util.getBusinessKey()+","+phone+","+productId+","+todayReset+","+todayPlusReset);
+        List<businessPayNotify>  ls=payRepository.findAllByBusinessEqualsAndPhoneEqualsAndProductIdEqualsAndCreateTimeGreaterThanEqualAndCreateTimeLessThan
+                (util.getBusinessKey(),phone,productId,todayReset,todayPlusReset);
+        logger.info("[createGenerateOrder]businessPayNotify list size is:"+ls.size());
         String BusinessJson=productInterface.findProductById(productId);
         JSONObject  productObj=JSONObject.parseObject(BusinessJson);
+        logger.info("[createGenerateOrder]productObj  is:"+productObj);
         if(productObj.getIntValue("code")==200){
             JSONObject product=JSONObject.parseObject(productObj.getString("data"));
             String  limit=product.getString("productLimit");
+            logger.info("[createGenerateOrder]limit  is:"+limit);
             if(StringUtils.isNotEmpty(product.getString("productLimit"))){
-                if(Integer.parseInt(limit)<ls.size()){
+                //当天查询的限购次数记录>=后台设置的限购次数
+                if(ls.size()>=Integer.parseInt(limit)){
+                    logger.info("[createGenerateOrder]limit record is:"+ls.size());
                     return new Result(ResultMsg.MORETHANBUYNUMBER);
                 }
             }
@@ -243,7 +272,9 @@ public class businessController extends  BaseController{
         logger.info("[createOrder method] WechatSignGenerator's json response is:"+obj+"\n");
         if(!(Boolean)obj.get("status")){
             pojo.setCode(500);
-            pojo.error(obj.get("msg").toString());
+            pojo.error("支付失败，请重新支付。");
+            logger.info("[createOrder method]:pojo is:"+pojo.toString()+"\n");
+            /** 根据生成的订单信息返回wexin支付的对象  */
             return pojo;
         }
         pojo.setCode(200);
@@ -255,12 +286,12 @@ public class businessController extends  BaseController{
         pay.setOperateType(extend);
         pay.setDays(days);
         pay.setUidNumber(uidNumber);
+        pay.setProductId(productId);
         payRepository.save(pay);
         pojo.setData(obj);
         logger.info("[createOrder method]just payRepository.save(pay),fianlly return pojo Result is:"+pojo.toString()+"\n");
         return   pojo;
     }
-
     /**
      * 创建订单支付
      * @param   openid  微信支付ID
@@ -274,7 +305,12 @@ public class businessController extends  BaseController{
     @RequestMapping("/createGiftOrder")
     @ResponseBody
     @LogManager(description = "createGiftOrder")
-    public Result createGiftOrder(@RequestParam("openid") String openid, @RequestParam("totalFee") String totalFee,@RequestParam("phone") String  phone,@RequestParam("uidNumber")  String uidNumber, @RequestParam("extend") String extend,@RequestParam("days") String days,HttpServletRequest request){
+    public Result createGiftOrder(@RequestParam("openid") String openid,
+                                  @RequestParam("totalFee") String totalFee,
+                                  @RequestParam("phone") String  phone,
+                                  @RequestParam("uidNumber")  String uidNumber,
+                                  @RequestParam("extend") String extend,
+                                  @RequestParam("days") String days,HttpServletRequest request){
         logger.info("you are in createGiftOrder method: "+"\n");
         /** 查看该用户绑定是否超过后台配置的最大绑定次数,超过则不让绑定*/
 //        String  json=systemParamInterface.getSystemConfigByArgs(2,util.getBusinessKey());
@@ -599,13 +635,15 @@ public class businessController extends  BaseController{
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(today);
         // 将分钟、秒、毫秒域清零
-        cal1.set(Calendar.HOUR, 0);
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
         cal1.set(Calendar.SECOND, 0);
         cal1.set(Calendar.MILLISECOND, 0);
         Date todayReset = cal1.getTime();
         cal1.setTime(DateUtils.addDay(today,"1"));
         // 将分钟、秒、毫秒域清零
-        cal1.set(Calendar.HOUR, 0);
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
         cal1.set(Calendar.SECOND, 0);
         cal1.set(Calendar.MILLISECOND, 0);
         Date todayPlusReset = cal1.getTime();
