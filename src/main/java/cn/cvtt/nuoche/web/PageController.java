@@ -372,6 +372,10 @@ public class PageController extends  BaseController{
 
         return  "gift/wrongPage";
     }
+    @RequestMapping("/hainiu.html")
+    public  String  hainiuIndex(){
+        return  "shareGift/hainiu";
+    }
     //使用说明页面
     @RequestMapping("/activity_description.html")
     public  String  activityDescription(){

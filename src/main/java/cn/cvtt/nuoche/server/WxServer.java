@@ -100,7 +100,7 @@ public class WxServer {
                 textMessage.setFromUserName(toUserName);
                 textMessage.setCreateTime(new Date().getTime());
                 textMessage.setMsgType(MessageUtils.RESP_MESSAGE_TYPE_TEXT);
-                respContent = "有什么问题都可以直接在这里问我哦，我们会尽快为您解答！";
+                respContent = "海牛助手关注每一位用户的咨询，您的咨询问题对我们非常重要，已转至专员进行处理，稍后会与您回复，请您耐心等候。";
                 // 设置文本消息的内容
                 textMessage.setContent(respContent);
                 // 将文本消息对象转换成xml
