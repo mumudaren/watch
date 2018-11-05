@@ -96,7 +96,7 @@ $(function(){
         $(".sessionPhone").text(phone);
 		//获取套餐
         $.ajax({
-			url:"/findOrder"
+			url:"/findRegexOrder"
             ,data:{
                 orderIndex: orderIndex
             }

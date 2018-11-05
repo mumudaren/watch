@@ -444,7 +444,7 @@ public class businessController extends  BaseController{
             arr.add(map);
         }
         //查找套餐
-        String json= productInterface.findRegexProduct(util.getBusinessKey(),regexId);
+        String json= productInterface.findRegexProductByType(util.getBusinessKey(),regexId,"1");
         List<wx_product>  ls=JsonUtils.handlerRegexJson(json);
         arr.add(ls);
         return  new Result(ResultMsg.OPERATESUCEESS,arr);
@@ -517,13 +517,13 @@ public class businessController extends  BaseController{
             return  new Result(ResultMsg.OPERATEXCEPTIN);
         }
     }
-
+    //根据原来号码查询原号码的套餐。
     @RequestMapping("/findOrder")
     @ResponseBody
     public JSONObject findOrder(@RequestParam("orderIndex") String orderIndex){
         JSONObject  obj=new JSONObject();
-        logger.info("[findOrder]receive pram orderIndex is: "+orderIndex+"\n");
-        String json= productInterface.findRegexProduct(util.getBusinessKey(),orderIndex);
+        logger.info("[findOrder]receive pram regexId is: "+orderIndex+"\n");
+        String json= productInterface.findRegexProductByType(util.getBusinessKey(),orderIndex,"1");
         List<wx_product> products=JsonUtils.handlerRegexJson(json);
         products.forEach((wx_product item) -> {
             switch (item.getProductType()) {
@@ -544,7 +544,33 @@ public class businessController extends  BaseController{
         logger.info("[findOrder]return result is :"+obj+"\n");
         return obj;
     }
-
+    //根据regexId分别普通号和靓号查询相应套餐
+    @RequestMapping("/findRegexOrder")
+    @ResponseBody
+    public JSONObject findRegexOrder(@RequestParam("orderIndex") String regexId){
+        JSONObject  obj=new JSONObject();
+        logger.info("[findRegexOrder]receive pram regexId is: "+regexId+"\n");
+            String json= productInterface.findRegexProductByType(util.getBusinessKey(),regexId,"4");
+            List<wx_product> products=JsonUtils.handlerRegexJson(json);
+            products.forEach((wx_product item) -> {
+                switch (item.getProductType()) {
+                    case "1":
+                        item.setProductType("f_tiyan");
+                        break;
+                    case "2":
+                        item.setProductType("f_discount");
+                        break;
+                    case "3":
+                        item.setProductType("f_sales");
+                        break;
+                }
+            });
+            obj.put("products",products);
+            Map<String,String> map=new HashMap<>();
+            obj.put("user",map);
+            logger.info("[findOrder]return result is :"+obj+"\n");
+        return obj;
+    }
 
 
     //领取优惠券

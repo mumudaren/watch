@@ -14,6 +14,9 @@ public interface IProductInterface {
     @RequestMapping("/business/findRegexProduct")
     String    findRegexProduct(@RequestParam("business") String business,@RequestParam("regex") String regex);
 
+    @RequestMapping("/business/findRegexProductByType")
+    String    findRegexProductByType(@RequestParam("business") String business,@RequestParam("regex") String regex,@RequestParam("type") String type);
+
 //    @RequestMapping("/business/findSpeNumber")
 //    String  findSpeNumber(@RequestParam("business") String  business,@RequestParam("regex") String  regex,@RequestParam("number") String number);
     //同上，分页查询top10

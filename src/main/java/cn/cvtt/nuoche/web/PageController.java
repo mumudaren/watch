@@ -96,7 +96,7 @@ public class PageController extends  BaseController{
          BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openid);
          if(customer!=null){
              model.setViewName("buy_safenumber");
-             String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+             String json= productInterface.findRegexProductByType(util.getBusinessKey(),"0","1");
              List<wx_product> products=JsonUtils.handlerRegexJson(json);
             /* List<wx_product> products=new ArrayList<>();
              if(obj.getIntValue("code")==200){
@@ -228,7 +228,7 @@ public class PageController extends  BaseController{
             /**end*/
         }
         model.addObject("voice",re);
-        String productJson= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+        String productJson= productInterface.findRegexProductByType(util.getBusinessKey(),"0","1");
         List<wx_product> products=JsonUtils.handlerRegexJson(productJson);
 //        //通话记录size
 //        String recordSize=callRecordInterface.findCallRecordCount(util.getBusinessKey(),smbms);

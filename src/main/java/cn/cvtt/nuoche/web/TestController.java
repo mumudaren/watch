@@ -133,7 +133,7 @@ public class TestController extends  BaseController {
         //  String json= productInterface.findProduct(util.getBusinessKey());
         List<Map<String,String>> map=JsonUtils.handlerNormalJson(json,"id","regexName");
         modelAndView.addObject("regexs",map);
-        String productJson= productInterface.findRegexProduct(util.getBusinessKey(),map.get(0).get("key"));
+        String productJson= productInterface.findRegexProductByType(util.getBusinessKey(),map.get(0).get("key"),"1");
         List<wx_product>  ls=JsonUtils.handlerRegexJson(productJson);
         modelAndView.addObject("products",ls);
         String numberJson=productInterface.findSpeNumberTop10(util.getBusinessKey(),map.get(0).get("key"),"",0,10,UUID.randomUUID().toString());
@@ -160,7 +160,7 @@ public class TestController extends  BaseController {
     public  ModelAndView  testSafeNumber(){
         ModelAndView  modelAndView=new ModelAndView();
         modelAndView.setViewName("buy_safenumber");
-        String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+        String json= productInterface.findRegexProductByType(util.getBusinessKey(),"0","1");
         List<wx_product> products=JsonUtils.handlerRegexJson(json);
                /* JSONObject  obj=JSONObject.parseObject(json);
                 List<wx_product> products=new ArrayList<>();
@@ -671,7 +671,7 @@ public class TestController extends  BaseController {
         }
         String businessId=util.getBusinessKey();
         logger.info("bussinessId is:"+businessId);
-        String json= productInterface.findRegexProduct(businessId,"0");
+        String json= productInterface.findRegexProductByType(businessId,"0","1");
         List<wx_product> products=JsonUtils.handlerRegexJson(json);
         model.addObject("products",products);
         Map<String,String> map=new HashMap<>();

@@ -149,7 +149,7 @@ public class OauthController extends  BaseController{
             return  modelAndView;
         }else {
             modelAndView.setViewName("buy_safenumber");
-            String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+            String json= productInterface.findRegexProductByType(util.getBusinessKey(),"0","1");
             List<wx_product>  products=JsonUtils.handlerRegexJson(json);
          /*   List<wx_product> products=new ArrayList<>();
             if(obj.getIntValue("code")==200){
@@ -312,7 +312,7 @@ public class OauthController extends  BaseController{
             //  String json= productInterface.findProduct(util.getBusinessKey());
             List<Map<String,String>> map=JsonUtils.handlerNormalJson(json,"id","regexName");
             modelAndView.addObject("regexs",map);
-            String productJson= productInterface.findRegexProduct(util.getBusinessKey(),map.get(0).get("key"));
+            String productJson= productInterface.findRegexProductByType(util.getBusinessKey(),map.get(0).get("key"),"1");
             List<wx_product>  ls=JsonUtils.handlerRegexJson(productJson);
             modelAndView.addObject("products",ls);
             String numberJson=productInterface.findSpeNumberTop10(util.getBusinessKey(),map.get(0).get("key"),"",0,10,UUID.randomUUID().toString());
@@ -395,7 +395,7 @@ public class OauthController extends  BaseController{
         if(records.size()<1){
             if(StringUtils.equals(state,"buy_safenumber")){
                 modelAndView.setViewName("buy_safenumber");
-                String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+                String json= productInterface.findRegexProductByType(util.getBusinessKey(),"0","1");
                 List<wx_product> products=JsonUtils.handlerRegexJson(json);
                /* JSONObject  obj=JSONObject.parseObject(json);
                 List<wx_product> products=new ArrayList<>();
@@ -422,7 +422,7 @@ public class OauthController extends  BaseController{
                     modelAndView.addObject("other", other);
                     handlerOther(other);
                 }
-                String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+                String json= productInterface.findRegexProductByType(util.getBusinessKey(),"0","1");
                 List<wx_product> products=JsonUtils.handlerRegexJson(json);
                 modelAndView.addObject("products",products);
             }
@@ -440,7 +440,7 @@ public class OauthController extends  BaseController{
             List<BusinessNumberRecord>  other=recordRepository.findAllByPrtmsNotAndUserPhoneEqualsAndBusinessIdEqualsAndValidTimeGreaterThanEqualOrderByValidTimeDesc(userInfo.getPhone(),userInfo.getPhone(),util.getBusinessKey(),now);
             modelAndView.addObject("other",other);
             handlerOther(other);
-            String json= productInterface.findRegexProduct(util.getBusinessKey(),"0");
+            String json= productInterface.findRegexProductByType(util.getBusinessKey(),"0","1");
             List<wx_product> products=JsonUtils.handlerRegexJson(json);
             modelAndView.addObject("products",products);
         }
