@@ -162,6 +162,7 @@ public class JsonUtils {
                 product.setProductBusiness(entity.getString("business"));
                 product.setProductInfo(entity.getString("productInfo"));
                 product.setValidDay(entity.getIntValue("days"));
+                product.setValidHour(entity.getIntValue("hours"));
                 product.setProductType(entity.getString("promotion"));
                 product.setProductPrice(entity.getIntValue("price"));
                 product.setInitPrice(entity.getIntValue("oldPrice"));

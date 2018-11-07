@@ -8,6 +8,7 @@ public class wx_product {
     private  Long  id;
     private  String  productName;
     private  Integer validDay;
+    private  Integer validHour;
     private  Integer productPrice;
     private  Integer initPrice;
     private  String  productBusiness;
@@ -21,7 +22,8 @@ public class wx_product {
     public wx_product() {
     }
 
-    public wx_product(String productName, Integer validDay, Integer productPrice, Integer initPrice, String productBusiness, Date createTime, String productInfo) {
+    public wx_product(String productName, Integer validDay, Integer productPrice, Integer initPrice,
+                      String productBusiness, Date createTime, String productInfo, Integer validHour) {
         this.productName = productName;
         this.validDay = validDay;
         this.productPrice = productPrice;
@@ -29,6 +31,7 @@ public class wx_product {
         this.productBusiness = productBusiness;
         this.createTime = createTime;
         this.productInfo = productInfo;
+        this.validHour = validHour;
     }
 
     public Integer getProductLimit() {
@@ -125,5 +128,13 @@ public class wx_product {
 
     public void setProductInfo(String productInfo) {
         this.productInfo = productInfo;
+    }
+
+    public Integer getValidHour() {
+        return validHour;
+    }
+
+    public void setValidHour(Integer validHour) {
+        this.validHour = validHour;
     }
 }

@@ -33,11 +33,13 @@
           <div class="f_dayscontent f_buysafenumber_content">
                   <ul>
                         <li th:class="${p.productType =='1'?'f_tiyan':p.productType =='2'?'f_discount':p.productType =='3'?'f_sales':''}" class="" th:each="p:${ls}" >
-                            <p class="z_requiredays" th:text="${'有效期'+p.validDay+'天'}"></p>
+                            <!--<p class="z_requiredays" th:text="${'有效期'+p.validDay+'天'}"></p>-->
+                            <p class="z_requiredays" th:text="${p.validDay==0?'有效期'+p.validHour+'小时':'有效期'+p.validDay+'天'}"></p>
                             <p th:text="${'￥'+p.productPrice/(100*1.0)}"></p>
                             <p style="display: none;" th:text="${p.validDay}"></p>
                             <p class="z_limits3 z_limits3_active"><del th:text="${'￥'+p.initPrice/(100*1.0)}"></del><span th:text="${p.productLimit==0?'不限次数':'每日限购'+p.productLimit+'次'}">限购3次</span></p>
                             <p class="productId" th:text="${p.id}" style="display: none"></p>
+                            <p style="display: none;" th:text="${p.validHour}"></p>
                         </li>
                   </ul>
           </div>
@@ -55,6 +57,7 @@
             <a class="fastPay" href="#">立即支付（<em>¥1</em>）</a>
               <span id="Area" style="display: none;"></span>
               <span id="validDays" style="display: none;"></span>
+              <span id="validHours" style="display: none;"></span>
               <span id="productId" style="display: none"></span>
           </p>
           <p class="f_bindsuc_sharebj f_fastpay" style="display: none">填充背景色</p>
@@ -88,6 +91,7 @@
                          }
                          var val = $("#Area").text();
                          var days = $("#validDays").text();
+                         var hours = $("#validHours").text();
                          var productId = $("#productId").text();
                          var pay = {};
                          pay.openid = openid;
@@ -95,17 +99,32 @@
                          pay.phone = phone;
                          pay.extend = 0;
                          pay.days = days;
+                         pay.hours = hours;
                          pay.uidNumber = "";
                          pay.productId = productId;
                          console.log("productId:"+productId);
                          var json = payUtil.payOrder(pay);
                          console.log("json:"+json);
-                         if (json.code != 200) {
-                             alert(json.msg);
-                             return;
-                         } else {
+                         if (json.code == 200) {
                              json = json.data;
                              console.log("json is："+json.data)
+                         }else if(json.code == 888){
+                             pay.notifyId =json.msg;
+                             $.ajax({
+                                 url:"/bindNumberNormal",
+                                 type:"POST",
+                                 data:pay,
+                                 dataType:"JSON"
+                             }).done(function(result){
+                                 if(result.code!=200){
+                                     //util.showText(result.msg,$(".z_successtext"));
+                                     alert("购买失败，请联系客服。");
+                                 }
+                             });
+                             form.submit();
+                         }else{
+                             alert(json.msg);
+                             return;
                          }
                          if (typeof WeixinJSBridge == "undefined") {
                              if (document.addEventListener) {

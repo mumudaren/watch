@@ -193,6 +193,7 @@ public class businessController extends  BaseController{
                                       @RequestParam("uidNumber")  String uidNumber,
                                       @RequestParam("extend") String extend,
                                       @RequestParam("days") String days,
+                                      @RequestParam(value = "hours",defaultValue="0") String hours,
                                       @RequestParam("productId") Integer productId, HttpServletRequest request){
         logger.info("create Wechat Order method: "+"\n");
         /** 查看该用户绑定是否超过后台配置的最大绑定次数,超过则不让绑定*/
@@ -258,26 +259,33 @@ public class businessController extends  BaseController{
         totalFee=totalFee.substring(1);
         double  Fee=Double.parseDouble(totalFee)*100;
         Result  pojo=new Result();
-        logger.info("[create Wechat Order method],request totalFee is: "+totalFee+"\n");
-        String  response="";
-        String  noId= UUID.randomUUID().toString().replace("-","");
-        try {
-            response= WechatSignGenerator.sign(openid,new DecimalFormat("#").format(Fee),bill_ip,util.getBusiness(),noId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        logger.info("[createOrder method]:WechatSignGenerator's response is:"+response+"\n");
-        /** 根据生成的订单信息返回wexin支付的对象  */
-        JSONObject obj= WechatSignGenerator.getPayRequest(response);
-        logger.info("[createOrder method] WechatSignGenerator's json response is:"+obj+"\n");
-        if(!(Boolean)obj.get("status")){
-            pojo.setCode(500);
-            pojo.error("支付失败，请重新支付。");
-            logger.info("[createOrder method]:pojo is:"+pojo.toString()+"\n");
+        logger.info("[create Wechat Order method],request Fee is: "+Fee+"\n");
+            String response = "";
+            String noId = UUID.randomUUID().toString().replace("-", "");
+        //调用微信签名接口
+        if(Fee>0) {
+            try {
+                response = WechatSignGenerator.sign(openid, new DecimalFormat("#").format(Fee), bill_ip, util.getBusiness(), noId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            logger.info("[createOrder method]:WechatSignGenerator's response is:" + response + "\n");
             /** 根据生成的订单信息返回wexin支付的对象  */
-            return pojo;
+            JSONObject obj = WechatSignGenerator.getPayRequest(response);
+            logger.info("[createOrder method] WechatSignGenerator's json response is:" + obj + "\n");
+            if (!(Boolean) obj.get("status")) {
+                pojo.setCode(500);
+                pojo.error("支付失败，请重新支付。");
+                logger.info("[createOrder method]:pojo is:" + pojo.toString() + "\n");
+                /** 根据生成的订单信息返回wexin支付的对象  */
+                return pojo;
+            }
+            pojo.setCode(200);
+            pojo.setData(obj);
+        }else{
+            //价格为0时不调用微信签名接口
+            pojo.setCode(888);
         }
-        pojo.setCode(200);
         businessPayNotify  pay=new businessPayNotify();
         pay.setOpenid(openid);
         pay.setPhone(phone);
@@ -288,8 +296,8 @@ public class businessController extends  BaseController{
         pay.setUidNumber(uidNumber);
         pay.setProductId(productId);
         payRepository.save(pay);
-        pojo.setData(obj);
         logger.info("[createOrder method]just payRepository.save(pay),fianlly return pojo Result is:"+pojo.toString()+"\n");
+        pojo.setMsg(pay.getId().toString());
         return   pojo;
     }
     /**
@@ -754,6 +762,71 @@ public class businessController extends  BaseController{
                     record2.setRegexId(Integer.parseInt(StringUtils.equals(regexId,"")?"0":regexId));
                     businessNumberRecordRepository.save(record2);
                 }
+        return  new Result(ResultMsg.OPERATESUCEESS);
+    }
+
+    //0元购买体验普通号，绑定接口。
+    @RequestMapping("/bindNumberNormal")
+    public  Result   bindNumberNormal(String uidNumber,String phone,String days,String hours,String productId,String openid,String notifyId) throws ParseException {
+        logger.info("[bindNumberNormal]receive prams:uidNumber,days,phone:"+","+uidNumber+","+days+","+openid+","+hours+",days:"+days+",productId:"+productId);
+        //根据openid查找用户信息
+        BusinessCustomer user= businessCusRepository.findByOpenidEquals(openid);
+        //绑定数据信息
+        BindVo bindVo = new BindVo();
+        bindVo.setUidnumber(uidNumber);
+        bindVo.setRegphone(phone);
+        //根据小时数设置有效期
+        Date validTime=DateUtils.addHour(new Date(),hours);
+        String validTimePrase=DateUtils.format(validTime);
+        logger.info("[bindNumberNormal]"+validTimePrase);
+        bindVo.setExpiretime(validTimePrase);
+        //绑定海牛助手、删除号码池数据、numberRecord写入数据
+        Result result = null;
+        try {
+            result=numberService.bind(bindVo);
+        } catch (IOException e) {
+            //调用绑定接口失败
+            return  new Result(ResultMsg.OPERATEXCEPTIN);
+        }
+        if(result.getCode()==200){
+            //获取返回结果。
+            JSONObject jobjZhiZun = JSONObject.parseObject(result.getData().toString());
+            JSONObject resZhiZun = jobjZhiZun.getJSONObject("binding_Relation_response");
+            if (null == resZhiZun) {
+                return  new Result(ResultMsg.OPERATEXCEPTIN);
+            }
+            //save模拟微信购买信息记录
+            businessPayNotify  order=payRepository.findByOpenidEqualsAndId(openid,Long.parseLong(notifyId));
+            String  return_code="SUCCESS";
+            order.setOpenid(openid);
+            order.setAppid(Constant.APP_ID);
+            order.setSubscribed("1");
+            order.setCashFee(0);
+            order.setResultCode("SUCCESS");
+            order.setReturnCode("SUCCESS");
+            order.setResultCode(return_code);
+            order.setFeeType("CNY");
+            order.setMchId(Constant.MCH_ID);
+            order.setTime_end(DateUtils.format(new Date()));
+            order.setTotal_fee("0");
+            //order.setTransactionId("");
+            //order.setTrade_type(info.get("trade_type"));
+            order.setBusiness(util.getBusinessKey());
+            payRepository.saveAndFlush(order);
+            //保存绑定记录
+            BusinessNumberRecord  record2=new BusinessNumberRecord();
+            record2.setBusinessId(util.getBusinessKey());
+            record2.setPrtms(resZhiZun.getString("prtms"));
+            record2.setSmbms(resZhiZun.getString("smbms"));
+            record2.setResult(1);
+            record2.setCallrestrict(0+"");
+            record2.setSubts(new Date());
+            record2.setUserPhone(user.getPhone());
+            record2.setValidTime(DateUtils.parse(resZhiZun.getString("validitytime")));
+            record2.setRegexId(0);
+            businessNumberRecordRepository.save(record2);
+
+        }
         return  new Result(ResultMsg.OPERATESUCEESS);
     }
     /**

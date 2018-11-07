@@ -18,10 +18,13 @@ $(function(){
     $(".f_dayscontent ul li:eq(0)").click(function () {
         var oListpay = $(this).find("p:eq(1)").text();
         var days=$(this).find("p:eq(2)").text();
+        //有效期小时数
+        var hours=$(this).find("p:eq(5)").text();
         console.log("days>>>>>"+days);
         $(".f_fastpay a").find("em").text(oListpay);
         $("#Area").text(oListpay);
         $("#validDays").text(days);
+        $("#validHours").text(hours);
         $("#productId").text($(this).find("p:eq(4)").text());
         // $(this).addClass('f_tiyan_active');
         // $(".f_dayscontent ul li:eq(1)").removeClass("f_discount_active");
@@ -38,10 +41,13 @@ $(function(){
     $(".f_dayscontent ul li:eq(1)").click(function () {
         var oListpay = $(this).find("p:eq(1)").text();
         var days=$(this).find("p:eq(2)").text();
-        console.log("days>>>>>"+days);
+        //有效期小时数
+        var hours=$(this).find("p:eq(5)").text();
+        console.log("hours>>>>>"+days);
         $(".f_fastpay a").find("em").text(oListpay);
         $("#Area").text(oListpay);
         $("#validDays").text(days);
+        $("#validHours").text(hours);
         $("#productId").text($(this).find("p:eq(4)").text());
         // $(this).addClass('f_discount_active');
         // $(".f_dayscontent ul li:eq(0)").removeClass("f_tiyan_active");
@@ -58,10 +64,13 @@ $(function(){
     $(".f_dayscontent ul li:eq(2)").click(function () {
         var oListpay = $(this).find("p:eq(1)").text();
         var days=$(this).find("p:eq(2)").text();
-        console.log("days>>>>>"+days);
+        //有效期小时数
+        var hours=$(this).find("p:eq(5)").text();
+        console.log("hours>>>>>"+hours);
         $(".f_fastpay a").find("em").text(oListpay);
         $("#Area").text(oListpay);
         $("#validDays").text(days);
+        $("#validHours").text(hours);
         $("#productId").text($(this).find("p:eq(4)").text());
         // $(this).addClass('f_sales_active');
         // $(".f_dayscontent ul li:eq(0)").removeClass("f_tiyan_active");

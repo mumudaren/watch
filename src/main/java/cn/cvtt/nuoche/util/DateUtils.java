@@ -105,5 +105,23 @@ public class DateUtils {
         }
         return  calendar.getTime();
     }
+    /**
+     *  @author   mingxing
+     *  @info  对当前时间进行增加 返回增加后的时间
+     *  @param  hour date
+     *  @return time
+     * */
+    public  static   Date  addHour(Date  date,String hour){
+        if(date==null){ date=new Date(); }
+        Calendar  calendar=Calendar.getInstance();
+        calendar.setTime(date);
+        try {
+            calendar.add(Calendar.HOUR_OF_DAY,Integer.parseInt(hour));
+        }catch (Exception e){
+            calendar.add(Calendar.HOUR_OF_DAY,0);
+        }
+        return  calendar.getTime();
+    }
+
 
 }
