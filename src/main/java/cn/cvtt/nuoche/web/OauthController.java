@@ -145,6 +145,8 @@ public class OauthController extends  BaseController{
         BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openId);
         if(customer==null||StringUtils.isEmpty(customer.getPhone())){
             modelAndView.setViewName("validate_tel");
+            logger.info("[base]state is:"+state+"\n");
+            modelAndView.addObject("path",state);
             modelAndView.addObject("openid",openId);
             return  modelAndView;
         }else {
@@ -213,6 +215,8 @@ public class OauthController extends  BaseController{
         BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openId);
         if(customer==null||StringUtils.isEmpty(customer.getPhone())){
             modelAndView.setViewName("validate_tel");
+            logger.info("[ouathOther]state is:"+state+"\n");
+            modelAndView.addObject("path",state);
             modelAndView.addObject("openid",openId);
             return  modelAndView;
         }
