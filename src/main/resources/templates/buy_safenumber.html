@@ -107,7 +107,16 @@
                          console.log("json:"+json);
                          if (json.code == 200) {
                              json = json.data;
-                             console.log("json is："+json.data)
+                             if (typeof WeixinJSBridge == "undefined") {
+                                 if (document.addEventListener) {
+                                     document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
+                                 } else if (document.attachEvent) {
+                                     document.attachEvent('WeixinJSBridgeReady', onBridgeReady(json));
+                                     document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
+                                 }
+                             } else {
+                                 onBridgeReady(json)
+                             }
                          }else if(json.code == 888){
                              pay.notifyId =json.msg;
                              $.ajax({
@@ -125,16 +134,6 @@
                          }else{
                              alert(json.msg);
                              return;
-                         }
-                         if (typeof WeixinJSBridge == "undefined") {
-                             if (document.addEventListener) {
-                                 document.addEventListener('WeixinJSBridgeReady', onBridgeReady(json), false);
-                             } else if (document.attachEvent) {
-                                 document.attachEvent('WeixinJSBridgeReady', onBridgeReady(json));
-                                 document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(json));
-                             }
-                         } else {
-                             onBridgeReady(json)
                          }
                      }
                  });
