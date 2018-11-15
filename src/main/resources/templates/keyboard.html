@@ -64,7 +64,7 @@
             inputVal: [],
             callNumber: [1,2,3,4,5,6,7,8,9,'*',0,'#'],
             phone: '',
-            active: 0
+            active: -1
         },
         methods:
             {
@@ -73,6 +73,12 @@
                     let number = this.inputVal.push(numberList);
                     this.phone = this.inputVal.join('');
                     this.active = index;
+                    if(this.active == index){
+                        let that = this;
+                        setTimeout(function(){
+                            that.active = -1;
+                        },300)
+                    }
                 },
                 clear: function(){
                     let str = this.inputVal;
