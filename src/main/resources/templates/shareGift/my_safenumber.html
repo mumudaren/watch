@@ -270,6 +270,13 @@
           <span class="sessionPhone"  style="display: none;"></span>
 
       </div>
+      <script language="javascript">
+          //stop backup
+          history.pushState(null, null, document.URL);
+          window.addEventListener('popstate', function () {
+              history.pushState(null, null, document.URL);
+          });
+      </script>
       <script th:inline="javascript">
           openid=[[${user.openid}]];
           var isValidValue;
