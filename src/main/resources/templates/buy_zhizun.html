@@ -158,7 +158,7 @@
                             var dd = $("<dd></dd>").addClass(item.productType == 1 ? "f_tiyan" : item.productType == 2 ? "f_discount" : "f_sales").css("margin-right", ".23rem");
                             $(dd).append($("<p></p>").addClass("z_requiredays").text("有效期" + item.validDay + "天"));
                             $(dd).append($("<p></p>").text('￥' + item.productPrice / (100 * 1.0)));
-                            $(dd).append($("<p></p>").text(item.validDay).hide());
+                            $(dd).append($("<p></p>").text(item.validDay).());
                             $(dd).append($("<p></p>").addClass("z_limits3").append($("<del></del>").text('￥' + item.initPrice / (100 * 1.0)), $("<span></span>").text(item.productLimit==0?'不限次数':'每日限购'+item.productLimit+'次')));
                             $(dd).append($("<p></p>").css("display","none").attr("title",item.message).text(item.leaveMessage));
                             $(dd).append($("<p></p>").css("display","none").addClass("productId").text(item.id));

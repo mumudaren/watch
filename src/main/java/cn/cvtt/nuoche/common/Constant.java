@@ -15,8 +15,8 @@ public class Constant {
 //    public static final String APP_ID = "wx9151b43f4906eefc";
 //    public static final String APP_SECRET = "a03894d8afb3d19aaef944b436828609";
 //    public  static  final String  userInfoUrl="https://api.weixin.qq.com/cgi-bin/user/info";
-    public static final String APP_ID = "wx3baaf33eec3b639e";
-    public static final String APP_SECRET = "c620ab930c52a142ec6d9e33efe855fe";
+    public static final String APP_ID = "wx7f97a3e9e9cae2d3";
+    public static final String APP_SECRET = "8bb628185dc26ddd460901d94e73bc56";
     public  static  final String  userInfoUrl="https://api.weixin.qq.com/cgi-bin/user/info";
     /**
      *

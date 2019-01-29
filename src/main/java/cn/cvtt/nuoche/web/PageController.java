@@ -1344,4 +1344,9 @@ public class PageController extends  BaseController{
 
         return  "guide/guide";
     }
+    @RequestMapping("/zhi")
+    public  String  zhi(){
+
+        return  "watch/zhi";
+    }
 }

@@ -4,6 +4,8 @@ import cn.cvtt.nuoche.common.Constant;
 import cn.cvtt.nuoche.entity.AccessToken;
 import cn.cvtt.nuoche.entity.JSAPIToken;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
+import cn.cvtt.nuoche.entity.watch.AddrUrl;
+import cn.cvtt.nuoche.reponsitory.IAddrUrlRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
 import cn.cvtt.nuoche.util.*;
 import cn.cvtt.nuoche.util.requestTemplate.TextMessage;
@@ -20,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,6 +43,8 @@ public class WxServer {
      private static final Logger logger = LoggerFactory.getLogger(WxServer.class);
      @Autowired
      private IBusinessCusRepository cusRespository;
+    @Autowired
+    private IAddrUrlRepository iAddrUrlRepository;
     //     @Value("${redis.nuonuo.token}")
     //     private   String ACCESS_TOKEN_KEY;
     // 维护一个本类的静态变量
@@ -79,12 +84,14 @@ public class WxServer {
         try {
             // 调用parseXml方法解析请求消息
             // 发送方帐号
-
+            logger.info("requestMap:"+requestMap);
             String fromUserName = requestMap.get("FromUserName");
             // 开发者微信号
             String toUserName = requestMap.get("ToUserName");
             // 消息类型
             String msgType = requestMap.get("MsgType");
+
+            String receiveContent = requestMap.get("Content");
             logger.info("args:"+fromUserName+","+toUserName+","+msgType);
             // 文本消息
             if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_TEXT)
@@ -100,9 +107,47 @@ public class WxServer {
                 textMessage.setFromUserName(toUserName);
                 textMessage.setCreateTime(new Date().getTime());
                 textMessage.setMsgType(MessageUtils.RESP_MESSAGE_TYPE_TEXT);
-                respContent = "海牛助手关注每一位用户的咨询，您的咨询问题对我们非常重要，已转至专员进行处理，稍后会与您回复，请您耐心等候。";
+                List<AddrUrl> dataSourceData=iAddrUrlRepository.findAllByNameLike("%"+receiveContent+"%");
+                String respContentBefore="";
+                if(dataSourceData.size()>0){
+                    for (AddrUrl aDataSourceData : dataSourceData) {
+                        respContentBefore = respContentBefore + "\uD83D\uDC49" + "<a href=\"" + aDataSourceData.getUrl() + "\">"
+                                + receiveContent + "网盘结果"+aDataSourceData.getId()+"点这里</a>"+"\n";
+                    }
+                }
+                //首发网站查询结果
+                respContentBefore=respContentBefore+"\uD83D\uDC49"+"<a href=\"http://sfys5555.com/?s="+receiveContent+"\">"+receiveContent+"其它查询结果点这里</a>";
+                respContent ="\uD83D\uDC48"
+                        +"\n博主关注每一位粉丝的回复"
+                        +"\n如查询链接不止一个，请挨个尝试"
+                        +"\n如没查到网盘或网盘失效，留言格式：留言XXX没找到"
+                        +"\n或在线观看（特别全）："+"<a href=\"http://www.highmm.fun\">"+"在线追点这里</a>"
+                        +"\n如不会保存，点击下方教程";
+                String respContentAfter= "\n"+"\uD83C\uDFC5"+"<a href=\"http://mp.weixin.qq.com/s/3ZexkkCriBgPiQwnSZ3Wdg\">"+"教程点这里</a>"
+                        +"\n最后，请仔细核对剧名，看到好多小伙伴剧名都搜错了"
+                        ;
+                String responseFinal=respContentBefore+respContent+respContentAfter;
+
+                //找不到
+                if(receiveContent.contains("找不到")){
+                    responseFinal="留言已记录，即将补上资源~\n"+"如着急看，可先在线追\n"+
+                            "<a href=\"http://www.highmm.fun\">"+"在线追点这里</a>";
+                }
+                //留言
+                if(receiveContent.contains("留言")){
+                    responseFinal="留言已记录\n"+
+                            "<a href=\"http://www.highmm.fun\">"+"在线追点这里</a>";
+                }
+                //上传
+                if(receiveContent.contains("木有会")){
+                    AddrUrl upload=new AddrUrl();
+                    upload.setName(StringUtils.substringBeforeLast(receiveContent,","));
+                    upload.setUrl(StringUtils.substringAfterLast(receiveContent,","));
+                    iAddrUrlRepository.saveAndFlush(upload);
+                    responseFinal="已成功上传！";
+                }
                 // 设置文本消息的内容
-                textMessage.setContent(respContent);
+                textMessage.setContent(responseFinal);
                 // 将文本消息对象转换成xml
                 respXml = MessageUtils.messageToXml(textMessage, TextMessage.class);
             }
@@ -141,36 +186,35 @@ public class WxServer {
                     textMessage.setToUserName(fromUserName);
                     textMessage.setFromUserName(toUserName);
                     textMessage.setCreateTime(new Date().getTime());
-                    String content="感谢您关注“海牛助手”官方微信\n" +
-                            "海牛助手是您真实联系方式的忠诚保护伞\n" +
-                            "代替真实号码实现通信功能\n" +
-                            "避免号码泄露防止各种骚扰\n" +
-                           "\uD83D\uDC4D"+ "<a href=\"http://i.95013.com/wechatsite/helpcenter/help\">如何使用海牛助手？</a>\n" +
-                            "\uD83C\uDFDD"+"<a href=\"http://i.95013.com/hainiu.html\">生活中哪些情况需要海牛助手？</a>\n" +
-                           "\uD83C\uDFC5"+ "<a href=\"http://i.95013.com/oauth/regex/buy_zhizun.html\">申请海牛助手号码</a>";
+                    String content="\uD83D\uDC4D"+"感谢您关注“叫我追剧”官方微信\n" +
+                            "欢迎爱追剧的大家一起留言讨论\n" +
+                            "公众号里回复剧名会自动搜索\n"+
+                            "一定仔细核对剧名，不加特殊符号，例如搜知否可以出现该剧集，搜123知否或《知否》一定搜索不到\n"+
+                            "公众号里不定期推送更多的追剧指南\n"+
+                            "淘宝、京东等购物返钱福利后续会进行开发敬请期待\n";
                     textMessage.setContent(content);
                     textMessage.setMsgType(MessageUtils.RESP_MESSAGE_TYPE_TEXT);
                     // 将文本消息对象转换成xml
                     /**  先删除 已经存在的用户 再保存**/
-                    if(cusRespository.findByOpenidEquals(fromUserName)!=null) {
-                        logger.info("user is exits,{}",cusRespository.findByOpenidEquals(fromUserName));
-                        BusinessCustomer businessCustomer = cusRespository.findByOpenidEquals(fromUserName);
-                        cusRespository.delete(businessCustomer);
-                    }
-                    BusinessCustomer  cus=new BusinessCustomer();
-                    cus.setOpenid(fromUserName);
-                    cus.setCreateTime(new Date());
-                    cus.setIsAble(1);
-                    cus.setPassword(ApiSignUtils.getMessageMD5("123456"));
-                    loadUserInfo(cus);
-                    cusRespository.save(cus);
+//                    if(cusRespository.findByOpenidEquals(fromUserName)!=null) {
+//                        logger.info("user is exits,{}",cusRespository.findByOpenidEquals(fromUserName));
+//                        BusinessCustomer businessCustomer = cusRespository.findByOpenidEquals(fromUserName);
+//                        cusRespository.delete(businessCustomer);
+//                    }
+//                    BusinessCustomer  cus=new BusinessCustomer();
+//                    cus.setOpenid(fromUserName);
+//                    cus.setCreateTime(new Date());
+//                    cus.setIsAble(1);
+//                    cus.setPassword(ApiSignUtils.getMessageMD5("123456"));
+//                    loadUserInfo(cus);
+//                    cusRespository.save(cus);
                     respXml = MessageUtils.messageToXml(textMessage);
                 }
                 // 取消关注
                 else if (eventType.equals(MessageUtils.EVENT_TYPE_UNSUBSCRIBE)) {
-                    BusinessCustomer  user=cusRespository.findByOpenidEquals(fromUserName);
-                    user.setSubscribe(0);
-                    cusRespository.saveAndFlush(user);
+//                    BusinessCustomer  user=cusRespository.findByOpenidEquals(fromUserName);
+//                    user.setSubscribe(0);
+//                    cusRespository.saveAndFlush(user);
                     logger.info("my subScript>>>>:{} "+MessageUtils.EVENT_TYPE_UNSUBSCRIBE);
                 }
                 // 扫描带参数二维码
@@ -244,7 +288,7 @@ public class WxServer {
      * 定时器维护access_token
      * 从0秒0分钟开始每半时执行一次
      */
-    @Scheduled(cron = "0/60 0/30 * * *  *")
+//    @Scheduled(cron = "0/60 0/30 * * *  *")
     public static void AccessTokenTask() {
         //获取AccessToken
         AccessToken at = WxUtils.getAccessToken();
@@ -280,7 +324,7 @@ public class WxServer {
      * 定时器维护JSAPI_token
      * 从1秒0分钟开始每半小时执行一次
      */
-    @Scheduled(cron = "1/60 0/30 * * *  *")
+//    @Scheduled(cron = "1/60 0/30 * * *  *")
     public static void JSAPITokenTask()  {
         //函数调用次数
         String  accessToken=getAccessToken();
