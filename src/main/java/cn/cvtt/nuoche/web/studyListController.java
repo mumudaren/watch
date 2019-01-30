@@ -1,5 +1,5 @@
 package cn.cvtt.nuoche.web;
-import org.junit.Test;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -84,7 +84,7 @@ public class studyListController extends  BaseController {
         System.out.println("");
     }
     //集合的遍历，依次获取每一个元素
-    @Test
+
     public  void  testToArray(){
         Collection test=new ArrayList();
         test.add("Hello");
@@ -98,7 +98,7 @@ public class studyListController extends  BaseController {
         }
     }
     //集合的遍历，依次获取每一个元素
-    @Test
+
     public  void  testIterator(){
         Collection test=new ArrayList();
         test.add("Hello");

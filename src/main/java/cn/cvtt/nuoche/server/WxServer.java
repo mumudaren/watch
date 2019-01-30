@@ -111,25 +111,23 @@ public class WxServer {
                 String respContentBefore="";
                 if(dataSourceData.size()>0){
                     for (AddrUrl aDataSourceData : dataSourceData) {
-                        respContentBefore = respContentBefore + "\uD83D\uDC49" + "<a href=\"" + aDataSourceData.getUrl() + "\">"
-                                + receiveContent + "网盘结果"+aDataSourceData.getId()+"点这里</a>"+"\n";
+                        respContentBefore = respContentBefore  +"\uD83D\uDC49"+ "<a href=\"" + aDataSourceData.getUrl() + "\">"
+                                + receiveContent + "网盘链接"+aDataSourceData.getId()+"点这里</a>"+"\n";
                     }
                 }
                 //首发网站查询结果
-                respContentBefore=respContentBefore+"\uD83D\uDC49"+"<a href=\"http://sfys5555.com/?s="+receiveContent+"\">"+receiveContent+"其它查询结果点这里</a>";
-                respContent ="\uD83D\uDC48"
-                        +"\n博主关注每一位粉丝的回复"
-                        +"\n如查询链接不止一个，请挨个尝试"
-                        +"\n如没查到网盘或网盘失效，留言格式：留言XXX没找到"
-                        +"\n或在线观看（特别全）："+"<a href=\"http://www.highmm.fun\">"+"在线追点这里</a>"
-                        +"\n如不会保存，点击下方教程";
-                String respContentAfter= "\n"+"\uD83C\uDFC5"+"<a href=\"http://mp.weixin.qq.com/s/3ZexkkCriBgPiQwnSZ3Wdg\">"+"教程点这里</a>"
+                respContentBefore=respContentBefore+"\uD83D\uDC49"+"<a href=\"http://sfys5555.com/?s="+receiveContent+"\">"+receiveContent+"网盘结果点这里</a>";
+                respContentBefore=respContentBefore+"\n"+"\uD83D\uDC49"+"<a href=\"https://m.kankanwu.com/vod-search-wd-"+receiveContent+".html\">"+"非网盘手机在线结果1</a>";
+                respContentBefore=respContentBefore+"\n"+"\uD83D\uDC49"+"<a href=\"http://www.highmm.fun/index.php/vod/search.html?wd="+receiveContent+"\">"+"非网盘手机在线结果2</a>";
+                respContent =
+                         "\n"+ "\u26a0\u26a0"+"有事就留言"+"\u26a0\u26a0"
+                        +"\n格式：留言XXX没找到";
+                String respContentAfter= "\n"+"\uD83C\uDFC5"+"<a href=\"http://mp.weixin.qq.com/s/3ZexkkCriBgPiQwnSZ3Wdg\">"+"不会保存?教程点这里</a>"
                         +"\n最后，请仔细核对剧名，看到好多小伙伴剧名都搜错了"
                         ;
                 String responseFinal=respContentBefore+respContent+respContentAfter;
-
                 //找不到
-                if(receiveContent.contains("找不到")){
+                if(receiveContent.contains("找不到")||receiveContent.contains("没找到")){
                     responseFinal="留言已记录，即将补上资源~\n"+"如着急看，可先在线追\n"+
                             "<a href=\"http://www.highmm.fun\">"+"在线追点这里</a>";
                 }
