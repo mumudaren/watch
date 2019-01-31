@@ -1,5 +1,6 @@
 package cn.cvtt.nuoche.web;
 
+import org.junit.Test;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -98,7 +99,7 @@ public class studyListController extends  BaseController {
         }
     }
     //集合的遍历，依次获取每一个元素
-
+@Test
     public  void  testIterator(){
         Collection test=new ArrayList();
         test.add("Hello");
@@ -110,15 +111,22 @@ public class studyListController extends  BaseController {
             //System.out.println("objs[x] length:"+objs[x].length());是错误的，因为objs类型是object不是string，没有length方法
             System.out.println("objs[x] length is :"+objs[x].toString().length());
         }
-        Iterator it=test.iterator();//实际返回的肯定是子类对象，这里是多态
+        //Iterator it=test.iterator();//实际返回的肯定是子类对象，这里是多态
 //        System.out.println(it.next());//获取元素，并且移动到下一个元素
 //        System.out.println(it.next());
         //System.out.println(it.next());此时会报错，no such element
         //因此应该有一个判断，有就获取
-        while(it.hasNext()){
-            String s = (String)it.next();
-            System.out.println(s);
-        }
+//        while(it.hasNext()){
+//            String s = (String)it.next();
+//            System.out.println(s);
+//        }
+        test.forEach(item->{
+            System.out.println("item is"+(String)item);
+        });
+        //遍历list的三种方法
+        //（1）while
+        // (2)for
+        // (3)for
 
     }
 
