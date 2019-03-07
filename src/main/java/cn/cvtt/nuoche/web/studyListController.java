@@ -1,19 +1,17 @@
 package cn.cvtt.nuoche.web;
 
-import org.junit.Test;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 
-@Controller
+@RestController
 public class studyListController extends  BaseController {
-    @RequestMapping("/testCollection")
-    @ResponseBody
 //    数据和集合的区别：
 //            （1）数组长度固定，集合长度不变。
 //            （2）内容不同，数组存储的是同一种类型的。
@@ -47,7 +45,7 @@ public class studyListController extends  BaseController {
 //            (6)交集功能
 //              retainAll
 //            (7)把集合转换成数组，toArray()
-
+    @RequestMapping("/add")
     public  void  testCollection(){
         //测试不带all的方法
         //创建集合对象，JDK不提供此接口的任何直接实现：它提供了更具体的子接口的实现，如Set和List 。
@@ -99,7 +97,7 @@ public class studyListController extends  BaseController {
         }
     }
     //集合的遍历，依次获取每一个元素
-@Test
+    @RequestMapping("/iterator")
     public  void  testIterator(){
         Collection test=new ArrayList();
         test.add("Hello");
@@ -111,7 +109,7 @@ public class studyListController extends  BaseController {
             //System.out.println("objs[x] length:"+objs[x].length());是错误的，因为objs类型是object不是string，没有length方法
             System.out.println("objs[x] length is :"+objs[x].toString().length());
         }
-        //Iterator it=test.iterator();//实际返回的肯定是子类对象，这里是多态
+        Iterator it=test.iterator();//实际返回的肯定是子类对象，这里是多态
 //        System.out.println(it.next());//获取元素，并且移动到下一个元素
 //        System.out.println(it.next());
         //System.out.println(it.next());此时会报错，no such element
@@ -128,6 +126,10 @@ public class studyListController extends  BaseController {
         // (2)for
         // (3)for
 
+
     }
+    //测试string
+    String a="hello"+"world";
+
 
 }
