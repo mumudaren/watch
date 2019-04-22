@@ -151,27 +151,27 @@ public class WxServer {
             }
 //            // 图片消息
 //            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_IMAGE)) {
-//                //respContent = "您发送的是图片消息！";
+//                respContent = "您发送的是图片消息！";
 //            }
 //            // 语音消息
 //            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VOICE)) {
-//                //respContent = "您发送的是语音消息！";
+//                respContent = "您发送的是语音消息！";
 //            }
 //            // 视频消息
 //            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VIDEO)) {
-//                //respContent = "您发送的是视频消息！";
+//                respContent = "您发送的是视频消息！";
 //            }
 //            // 视频消息
 //            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_SHORTVIDEO)) {
-//                //respContent = "您发送的是小视频消息！";
+//                respContent = "您发送的是小视频消息！";
 //            }
 //            // 地理位置消息
 //            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LOCATION)) {
-//                //respContent = "您发送的是地理位置消息！";
+//                respContent = "您发送的是地理位置消息！";
 //            }
 //            // 链接消息
 //            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LINK)) {
-//                //respContent = "您发送的是链接消息！";
+//                respContent = "您发送的是链接消息！";
 //            }
             // 事件推送
             else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_EVENT)) {
@@ -192,27 +192,10 @@ public class WxServer {
                             "淘宝、京东等购物返钱福利后续会进行开发敬请期待\n";
                     textMessage.setContent(content);
                     textMessage.setMsgType(MessageUtils.RESP_MESSAGE_TYPE_TEXT);
-                    // 将文本消息对象转换成xml
-                    /**  先删除 已经存在的用户 再保存**/
-//                    if(cusRespository.findByOpenidEquals(fromUserName)!=null) {
-//                        logger.info("user is exits,{}",cusRespository.findByOpenidEquals(fromUserName));
-//                        BusinessCustomer businessCustomer = cusRespository.findByOpenidEquals(fromUserName);
-//                        cusRespository.delete(businessCustomer);
-//                    }
-//                    BusinessCustomer  cus=new BusinessCustomer();
-//                    cus.setOpenid(fromUserName);
-//                    cus.setCreateTime(new Date());
-//                    cus.setIsAble(1);
-//                    cus.setPassword(ApiSignUtils.getMessageMD5("123456"));
-//                    loadUserInfo(cus);
-//                    cusRespository.save(cus);
                     respXml = MessageUtils.messageToXml(textMessage);
                 }
                 // 取消关注
                 else if (eventType.equals(MessageUtils.EVENT_TYPE_UNSUBSCRIBE)) {
-//                    BusinessCustomer  user=cusRespository.findByOpenidEquals(fromUserName);
-//                    user.setSubscribe(0);
-//                    cusRespository.saveAndFlush(user);
                     logger.info("my subScript>>>>:{} "+MessageUtils.EVENT_TYPE_UNSUBSCRIBE);
                 }
                 // 扫描带参数二维码
