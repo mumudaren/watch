@@ -5,6 +5,7 @@ public class Result {
     protected   Integer  code;
     protected  String   msg;
     protected  Object   data;
+    protected  Object   count;
 
     public  Result(){
 
@@ -76,6 +77,13 @@ public class Result {
         this.data = data;
     }
 
+    public Object getCount() {
+        return count;
+    }
+
+    public void setCount(Object count) {
+        this.count = count;
+    }
 
     @Override
     public String toString() {

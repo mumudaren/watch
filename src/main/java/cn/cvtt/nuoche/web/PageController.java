@@ -2,6 +2,7 @@ package cn.cvtt.nuoche.web;
 
 import cn.cvtt.nuoche.common.Constant;
 import cn.cvtt.nuoche.common.result.Result;
+import cn.cvtt.nuoche.common.result.ResultMsg;
 import cn.cvtt.nuoche.entity.business.BindVo;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
@@ -17,6 +18,7 @@ import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
 import cn.cvtt.nuoche.entity.gift.GiftNumberQRcode;
 import cn.cvtt.nuoche.entity.gift.GiftPoint;
 import cn.cvtt.nuoche.entity.gift.GiftPointRecord;
+import cn.cvtt.nuoche.entity.watch.NameCount;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
@@ -34,6 +36,7 @@ import cn.cvtt.nuoche.reponsitory.IGiftCouponRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftNumberQRcodeRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftPointRecordRepository;
 import cn.cvtt.nuoche.reponsitory.IGiftPointRepository;
+import cn.cvtt.nuoche.reponsitory.INamaCountRepository;
 import cn.cvtt.nuoche.server.impl.NumberServiceImpl;
 import cn.cvtt.nuoche.service.QrcodeService;
 import cn.cvtt.nuoche.util.ConfigUtil;
@@ -86,6 +89,8 @@ public class PageController extends  BaseController{
     @Autowired IRegexInterface regexInterface;
     @Autowired INumberInterface numberInterface;
     @Autowired IGiftCouponQrcodeRepository giftCouponQrcodeRepository;
+    @Autowired
+    private INamaCountRepository iNamaCountRepository;
     private static final Logger logger = LoggerFactory.getLogger(PageController.class);
      @SuppressWarnings("all")
      @RequestMapping("/getNumber")
@@ -341,8 +346,25 @@ public class PageController extends  BaseController{
     }
 
      @RequestMapping("/index")
-    public  String  index(){
-         return "index";
+    public  ModelAndView  index(){
+         ModelAndView modelAndView=new ModelAndView();
+         modelAndView.setViewName("index");
+         Result  result = new Result(ResultMsg.OPERATESUCEESS);;
+         List<NameCount> nameCounts=iNamaCountRepository.findAll();
+//         System.out.println("result:"+nameCounts);
+//         JSONArray json = new JSONArray();
+//         for(NameCount a : nameCounts){
+//             JSONObject jo = new JSONObject();
+//             jo.put("id", a.getId());
+//             jo.put("name", a.getName());
+//             jo.put("openid", a.getOpenid());
+//             jo.put("createTime", a.getCreateTime());
+//             json.add(jo);
+//         }
+//         System.out.println("result jsonArray:"+json);
+         result.setData(nameCounts);
+         modelAndView.addObject("data",nameCounts);
+         return modelAndView;
      }
 
 

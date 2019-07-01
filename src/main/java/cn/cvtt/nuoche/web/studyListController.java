@@ -12,39 +12,6 @@ import java.util.Iterator;
 
 @RestController
 public class studyListController extends  BaseController {
-//    数据和集合的区别：
-//            （1）数组长度固定，集合长度不变。
-//            （2）内容不同，数组存储的是同一种类型的。
-//            （3）元素的数据类型，数组，引用和基本。集合只能存储引用型，集合存对象，长度可变。
-//    集合：
-//    存储多个元素的：
-//            （1）多个元素中不能有相同类型的元素
-//（2）按照某种规则排序一下
-//（3）针对不同的需求，java提供了不同的集合类，数据结构都不同
-//    数据结构：数据的存储方式，需要能存储东西。
-//    提取共性的东西，得到一个集合的继承体系结构
-//
-//    List                                    set
-//1、arraylist
-//2、vector
-//
-//
-//    collection：
-//            (1)添加功能 add,addAll
-//            (2)移除功能
-//              clear,移除所有，不建议使用
-//              remove<>
-//              removeAll<>移除一个元素
-//            (3)判断，
-//              集合中是否包含指定元素，contains<Object c>
-//              集合中是否包含指定集合元素,containsAll<Collection c>
-//              isEmpty(),
-//            (4)获取功能
-//              Iterator<E>，
-//            (5)长度功能，size()
-//            (6)交集功能
-//              retainAll
-//            (7)把集合转换成数组，toArray()
     @RequestMapping("/add")
     public  void  testCollection(){
         //测试不带all的方法
@@ -125,11 +92,89 @@ public class studyListController extends  BaseController {
         //（1）while
         // (2)for
         // (3)for
-
-
     }
     //测试string
     String a="hello"+"world";
+
+//day15 work
+//        1:集合的由来?
+//        2:集合和数组的区别?
+//        3:Collection集合的功能概述?
+//        4:Collection集合存储字符串并遍历?(迭代器)
+//        5:Collection集合存储自定义对象并遍历?(迭代器)
+//        6:List集合的特有功能?
+//        7:List集合存储字符串并遍历?(迭代器和普通for)
+//        8:List集合存储自定义对象并遍历?(迭代器和普通for)
+//        9:并发修改异常出现的原因?解决方案?
+//        10:常见的数据结构的特点?
+//        栈：
+//        队列：
+//        数组：
+//        链表：
+//        11:List集合的子类特点
+//        ArrayList:
+//        Vector:
+//        LinkedList:
+//        12:List的三个儿子你准备使用谁?请说明理由。
+    //集合的遍历，依次获取每一个元素
+@RequestMapping("/coll")
+    public  void  testColl(){
+        Collection test=new ArrayList();
+        test.add("Hi");
+        //集合转数组
+        Object[] objs =test.toArray();
+        for(int x=0;x<objs.length;x++){
+            System.out.println("objs[x]:"+objs[x]);
+            //System.out.println("objs[x] length:"+objs[x].length());是错误的，因为objs类型是object不是string，没有length方法
+            System.out.println("objs[x] length is :"+objs[x].toString().length());
+        }
+    }
+
+
+//day16work
+//1:List的子类特点
+//2:ArrayList练习
+//	A:ArrayList存储字符串并遍历
+//	B:ArrayList存储自定义对象并遍历
+//3:LinkedList练习
+//	A:LinkedList存储字符串并遍历
+//	B:LinkedList存储自定义对象并遍历
+//4:泛型是什么?格式是?好处是?
+//5:增强for的格式是?好处是?弊端是?
+//6:静态导入的格式是?注意事项是?
+//7:可变参数的作用是?格式是?注意事项是?
+//8:用下列集合完成代码
+//	Collection
+//	List
+//	ArrayList
+//	Vector
+//	LinkedList
+//
+//	存储字符串并遍历
+//	存储自定义对象并遍历
+//
+//	要求加入泛型，并有增强for遍历。
+//	代码我会检查的。
+
+
+
+
+//day18 homework
+// 1:集合(自己补齐)
+//	Collection
+//		List
+//		Set
+//	Map
+//
+//2:到底使用那种集合(自己补齐)
+//
+//3:ArrayList,LinkedList,HashSet,HashMap(掌握)
+//	存储字符串和自定义对象数据并遍历
+//
+//4:集合的嵌套遍历(理解)
+
+
+
 
 
 }

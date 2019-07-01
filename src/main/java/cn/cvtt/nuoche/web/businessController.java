@@ -7,6 +7,7 @@ import cn.cvtt.nuoche.common.result.ResultMsg;
 import cn.cvtt.nuoche.entity.AccessToken;
 import cn.cvtt.nuoche.entity.business.*;
 import cn.cvtt.nuoche.entity.gift.*;
+import cn.cvtt.nuoche.entity.watch.NameCount;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
@@ -83,10 +84,34 @@ public class businessController extends  BaseController{
     @Autowired IGiftAwardsRecordRepository giftAwardsRecordRepository;
     @Autowired
     IGiftAwardsRepository giftAwardsRepository;
+    @Autowired
+    private INamaCountRepository iNamaCountRepository;
     @Resource
     private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(businessController.class);
 
+    @RequestMapping("/table/user/")
+    @ResponseBody
+    public  Result  tableUser(){
+
+        Result  result = new Result();
+        List<NameCount> nameCounts=iNamaCountRepository.findAll();
+        System.out.println("result:"+nameCounts);
+        JSONArray json = new JSONArray();
+        for(NameCount a : nameCounts){
+            JSONObject jo = new JSONObject();
+            jo.put("id", a.getId());
+            jo.put("name", a.getName());
+            jo.put("openid", a.getOpenid());
+            jo.put("createTime", a.getCreateTime());
+            json.add(jo);
+        }
+        System.out.println("result jsonArray:"+json);
+        result.setData(nameCounts);
+        result.setCount(nameCounts.size());
+        result.setCode(0);
+        return result;
+    }
 
     @RequestMapping("/sendCode")
     @ResponseBody

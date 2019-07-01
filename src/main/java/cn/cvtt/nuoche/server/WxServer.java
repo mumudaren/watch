@@ -5,8 +5,10 @@ import cn.cvtt.nuoche.entity.AccessToken;
 import cn.cvtt.nuoche.entity.JSAPIToken;
 import cn.cvtt.nuoche.entity.business.BusinessCustomer;
 import cn.cvtt.nuoche.entity.watch.AddrUrl;
+import cn.cvtt.nuoche.entity.watch.NameCount;
 import cn.cvtt.nuoche.reponsitory.IAddrUrlRepository;
 import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
+import cn.cvtt.nuoche.reponsitory.INamaCountRepository;
 import cn.cvtt.nuoche.util.*;
 import cn.cvtt.nuoche.util.requestTemplate.TextMessage;
 import com.alibaba.fastjson.JSONObject;
@@ -45,6 +47,8 @@ public class WxServer {
      private IBusinessCusRepository cusRespository;
     @Autowired
     private IAddrUrlRepository iAddrUrlRepository;
+    @Autowired
+    private INamaCountRepository iNamaCountRepository;
     //     @Value("${redis.nuonuo.token}")
     //     private   String ACCESS_TOKEN_KEY;
     // 维护一个本类的静态变量
@@ -94,41 +98,45 @@ public class WxServer {
             String receiveContent = requestMap.get("Content");
             logger.info("args:"+fromUserName+","+toUserName+","+msgType);
             // 文本消息
-            if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_TEXT)
-                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_IMAGE)
-                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VOICE)
-                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VIDEO)
-                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_SHORTVIDEO)
-                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LOCATION)
-                    ||msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LINK)) {
+            if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_TEXT)) {
+                //将文本消息保存到数据库中
+                NameCount nameCount=new NameCount();
+                nameCount.setName(receiveContent);
+                nameCount.setCreateTime(new Date());
+                nameCount.setOpenid(fromUserName);
+                iNamaCountRepository.saveAndFlush(nameCount);
                 // 回复文本消息
                 TextMessage textMessage = new TextMessage();
                 textMessage.setToUserName(fromUserName);
                 textMessage.setFromUserName(toUserName);
                 textMessage.setCreateTime(new Date().getTime());
                 textMessage.setMsgType(MessageUtils.RESP_MESSAGE_TYPE_TEXT);
+                //mysql结果
                 List<AddrUrl> dataSourceData=iAddrUrlRepository.findAllByNameLike("%"+receiveContent+"%");
-                String respContentBefore="";
+                String respContentBefore=receiveContent+"搜索结果如下\n";
                 if(dataSourceData.size()>0){
                     for (AddrUrl aDataSourceData : dataSourceData) {
                         respContentBefore = respContentBefore  +"\uD83D\uDC49"+ "<a href=\"" + aDataSourceData.getUrl() + "\">"
-                                + receiveContent + "网盘链接"+aDataSourceData.getId()+"点这里</a>"+"\n";
+                                 + "网盘点这里</a>"+"\n";
                     }
                 }
                 //首发网站查询结果
-                respContentBefore=respContentBefore+"\uD83D\uDC49"+"<a href=\"http://sfys5555.com/?s="+receiveContent+"\">"+receiveContent+"网盘结果点这里</a>";
-                respContentBefore=respContentBefore+"\n"+"\uD83D\uDC49"+"<a href=\"https://m.kankanwu.com/vod-search-wd-"+receiveContent+".html\">"+"非网盘手机在线结果1</a>";
-                respContentBefore=respContentBefore+"\n"+"\uD83D\uDC49"+"<a href=\"http://www.highmm.fun/index.php/vod/search.html?wd="+receiveContent+"\">"+"非网盘手机在线结果2</a>";
-                respContent =
-                         "\n"+ "\u26a0\u26a0"+"有事就留言"+"\u26a0\u26a0"
-                        +"\n格式：留言XXX没找到";
+                respContentBefore=respContentBefore +"\uD83D\uDC49"+"<a href=\"http://sfys5555.com/?s="+receiveContent+"\">"+"网盘(首发分享)点这里</a>";
+                respContentBefore=respContentBefore+"\n"+ "\uD83D\uDC49"+"<a href=\"http://m.soshy.cn/?s="+receiveContent+"\">"+"网盘(小酱分享)点这里</a>";
+                respContentBefore=respContentBefore+"\n"+ "\uD83D\uDC49"+"<a href=\"https://mv.nengkuai.me/search/"+receiveContent+"?from=singlemessage\">"+"网盘(小轩分享)点这里</a>";
+                respContentBefore=respContentBefore+"\n"+ "\uD83D\uDC49"+"<a href=\"http://www.koushaoyy.com/?s="+receiveContent+"\">"+"网盘(口哨分享)点这里</a>";
+                respContentBefore=respContentBefore+"\n"+ "\uD83D\uDC49"+"<a href=\"http://www.aisnowmaple.fun/?search-"+receiveContent+".htm\">"+"网盘(小枫分享)点这里</a>";
+                respContentBefore=respContentBefore+"\n"+"\uD83D\uDC49"+"<a href=\"https://m.kankanwu.com/vod-search-wd-"+receiveContent+".html\">"+"非网盘在线看地址1</a>";
+                respContentBefore=respContentBefore+"\n"+"\uD83D\uDC49"+"<a href=\"http://www.highmm.fun/index.php/vod/search.html?wd="+receiveContent+"\">"+"非网盘在线看地址2</a>";
+                respContent ="\n"+ "\u26a0\u26a0"+"挨个试"+"\u26a0\u26a0";
                 String respContentAfter= "\n"+"\uD83C\uDFC5"+"<a href=\"http://mp.weixin.qq.com/s/3ZexkkCriBgPiQwnSZ3Wdg\">"+"不会保存?教程点这里</a>"
-                        +"\n最后，请仔细核对剧名，看到好多小伙伴剧名都搜错了"
+                        +"\n没找到百分之九十五可能性是名字写错了！"
+                        +"\n小酱分享很全，页面打开有点慢，小轩更新快，首发老片较全"
                         ;
                 String responseFinal=respContentBefore+respContent+respContentAfter;
                 //找不到
                 if(receiveContent.contains("找不到")||receiveContent.contains("没找到")){
-                    responseFinal="留言已记录，即将补上资源~\n"+"如着急看，可先在线追\n"+
+                    responseFinal="留言已记录，着急可加mumumu161212~\n"+"可先在线追\n"+
                             "<a href=\"http://www.highmm.fun\">"+"在线追点这里</a>";
                 }
                 //留言
@@ -185,9 +193,6 @@ public class WxServer {
                     textMessage.setFromUserName(toUserName);
                     textMessage.setCreateTime(new Date().getTime());
                     String content="\uD83D\uDC4D"+"感谢您关注“叫我追剧”官方微信\n" +
-                            "欢迎爱追剧的大家一起留言讨论\n" +
-                            "公众号里回复剧名会自动搜索\n"+
-                            "一定仔细核对剧名，不加特殊符号，例如搜知否可以出现该剧集，搜123知否或《知否》一定搜索不到\n"+
                             "公众号里不定期推送更多的追剧指南\n"+
                             "淘宝、京东等购物返钱福利后续会进行开发敬请期待\n";
                     textMessage.setContent(content);

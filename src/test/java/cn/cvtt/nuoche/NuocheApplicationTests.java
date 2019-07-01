@@ -14,17 +14,41 @@ import javax.xml.bind.SchemaOutputResolver;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes=Application.class)
-public class NuocheApplicationTests {
+public  class NuocheApplicationTests {
+    @Test
+public   void testMain(){
+    int num=10;
+    System.out.println(test(num));
+}
 
+
+public static int test(int b){
+    try
+    {
+        b=b+10;
+        return b;
+    }catch(RuntimeException e){
+
+    }
+    finally {
+        b+=10;
+        return b;
+    }
+}
 	@Autowired
 	IBusinessCallRecordInterface callRecordInterface;
 
-	@Test
-	public void contextLoads() {
-	  /*  String str=	productInterface.findRegexProduct("nuoche","8");
-		System.out.println(str);*/
+//	@Test
+//	public void contextLoads() {
+//	  /*  String str=	productInterface.findRegexProduct("nuoche","8");
+//		System.out.println(str);*/
+//
+//		System.out.println(callRecordInterface.findHeard("nuoche","9501344444444"));
+//	}
+		@Test
+	public void testDataOut() {
 
-		System.out.println(callRecordInterface.findHeard("nuoche","9501344444444"));
+
 	}
 
 }
