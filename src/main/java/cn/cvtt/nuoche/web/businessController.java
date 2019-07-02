@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -90,7 +91,7 @@ public class businessController extends  BaseController{
     private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(businessController.class);
 
-    @RequestMapping("/table/user/")
+    @RequestMapping("/table/user2/")
     @ResponseBody
     public  Result  tableUser(){
 
@@ -110,6 +111,44 @@ public class businessController extends  BaseController{
         result.setData(nameCounts);
         result.setCount(nameCounts.size());
         result.setCode(0);
+        return result;
+    }
+    @RequestMapping("/table/user/{days}/")
+    @ResponseBody
+    public  Result  nameCount(@PathVariable String days){
+        Result  result = new Result();
+        List<NameCount> nameCounts = new ArrayList<>();
+        List _list;
+        if(StringUtils.equals("all",days)){
+            _list=iNamaCountRepository.findGroupByName();
+        }else {
+            Date endDate=DateUtils.addDay(new Date(),"-"+days);
+            _list=iNamaCountRepository.findGroupByNameAndTime(endDate);
+        }
+
+        for(Object row:_list){
+            Object[] cells = (Object[]) row;
+            NameCount orderGoods = new NameCount();
+            orderGoods.setNum(cells[0].toString() );
+            orderGoods.setName((String) cells[1]);
+            nameCounts.add(orderGoods);
+        }
+
+        JSONArray json = new JSONArray();
+        for(NameCount a : nameCounts){
+            JSONObject jo = new JSONObject();
+            jo.put("name", a.getName());
+            jo.put("number", a.getNum());
+            json.add(jo);
+        }
+        System.out.println("result jsonArray:"+json);
+        result.setData(nameCounts);
+        result.setCount(nameCounts.size());
+        result.setCode(0);
+
+
+
+
         return result;
     }
 

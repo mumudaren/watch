@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
@@ -29,14 +30,18 @@ public class NameCount {
     @Column(name="createTime")
     private Date createTime;
 
+    @Transient
+    private String num;
+
     public NameCount() {
     }
 
-    public NameCount(Long id, String name, String openid,  Date createTime) {
+    public NameCount(Long id, String name, String openid,  Date createTime,String num) {
         this.id = id;
         this.name = name;
         this.openid = openid;
         this.createTime = createTime;
+        this.num = num;
     }
 
     public Long getId() {
@@ -70,7 +75,16 @@ public class NameCount {
     public void setOpenid(String openid) {
         this.openid = openid;
     }
-        @Override
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    @Override
     public String toString() {
         return String.format("NameCount [id=%d, name=%s, openid=%s, createTime=%s]", id, name, openid, createTime);
     }
