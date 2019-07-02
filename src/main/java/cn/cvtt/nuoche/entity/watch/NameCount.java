@@ -21,9 +21,13 @@ public class NameCount {
     @Column(name="name")
     private  String  name ;
 
-    //次数
+
     @Column(name="openid")
     private  String  openid;
+
+    //次数
+    @Column(name="client")
+    private  String  client;
 
 
     //order
@@ -36,12 +40,13 @@ public class NameCount {
     public NameCount() {
     }
 
-    public NameCount(Long id, String name, String openid,  Date createTime,String num) {
+    public NameCount(Long id, String name, String openid,  Date createTime,String num,String client) {
         this.id = id;
         this.name = name;
         this.openid = openid;
         this.createTime = createTime;
         this.num = num;
+        this.client = client;
     }
 
     public Long getId() {
@@ -82,6 +87,14 @@ public class NameCount {
 
     public void setNum(String num) {
         this.num = num;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
     }
 
     @Override

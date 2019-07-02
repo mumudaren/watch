@@ -95,7 +95,7 @@ public class WxServer {
             // 消息类型
             String msgType = requestMap.get("MsgType");
 
-            String receiveContent = requestMap.get("Content");
+            String receiveContent = StringUtils.deleteWhitespace(requestMap.get("Content"));
             logger.info("args:"+fromUserName+","+toUserName+","+msgType);
             // 文本消息
             if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_TEXT)) {
@@ -104,6 +104,7 @@ public class WxServer {
                 nameCount.setName(receiveContent);
                 nameCount.setCreateTime(new Date());
                 nameCount.setOpenid(fromUserName);
+                nameCount.setClient(toUserName);
                 iNamaCountRepository.saveAndFlush(nameCount);
                 // 回复文本消息
                 TextMessage textMessage = new TextMessage();
