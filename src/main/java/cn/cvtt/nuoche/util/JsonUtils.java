@@ -108,7 +108,11 @@ public class JsonUtils {
         }
         return args;
     }
-
+    /** 解析服务数据 返回map组*/
+    public  static JSONObject handlerStringToJson(String json){
+        JSONObject  obj=JSONObject.parseObject(json);
+        return obj;
+    }
     /** 解析Regex正则表达式JSON**/
     public  static  List<Map<String,String>>  handlerNormalJson(String  json,String key,String valueKey){
         JSONObject  obj=JSONObject.parseObject(json);

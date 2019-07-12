@@ -2,6 +2,7 @@ package cn.cvtt.nuoche.util;
 
 import cn.cvtt.nuoche.util.requestTemplate.ImageMessage;
 import cn.cvtt.nuoche.util.requestTemplate.TextMessage;
+import cn.cvtt.nuoche.util.requestTemplate.ImgMessage;
 import cn.cvtt.nuoche.util.responseTemplate.LinkMessage;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
@@ -154,6 +155,17 @@ public class MessageUtils {
      * @return xml
      */
     public static String messageToXml(TextMessage textMessage) {
+        xstream.alias("xml", textMessage.getClass());
+        return xstream.toXML(textMessage);
+    }
+
+    /**
+     * 文本消息对象转换成xml
+     *
+     * @param textMessage 文本消息对象
+     * @return xml
+     */
+    public static String messageToXml(ImgMessage textMessage) {
         xstream.alias("xml", textMessage.getClass());
         return xstream.toXML(textMessage);
     }
