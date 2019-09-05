@@ -7,79 +7,61 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="layui/css/layui.css"  media="all">
+
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 
-
+<script type="text/javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
 <script src="layui/layui.js" charset="utf-8"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 
 <script th:inline="javascript">
-    layui.use('table', function(){
-        var table = layui.table;
-        table.render({
-            elem: '#test'
-            ,url:'/table/user/all/'
-            ,parseData: function(res){ //res 即为原始返回的数据
-                console.log("res:"+JSON.stringify(res) );
-                return {
-                    "code": res.code, //解析接口状态
-                    "msg": res.msg, //解析提示文本
-                    "data": res.data, //解析数据列表
-                    "count": res.count //解析数据列表
-                };
+    $(function() {
+        $("#button").click(function () {
+                var phone=$("#phone").val();
+                console.log("phone："+phone);
+                var result = {};
+                $.ajax({
+                    url: "/table/testSendCode",
+                    type: "POST",
+                    dataType: "JSON",
+                    data:{phone:phone},
+                    async: false
+                }).done(function (json) {
+                    result = json;
+                });
+                return result;
             }
-            ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            ,cols: [[
-                {field:'name', title: '名称'},
-                {field:'num', title: '搜索次数', sort: true}
-                //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增}
-            ]]
-        });
-        table.render({
-            elem: '#test7'
-            ,url:'/table/user/7/'
-            ,parseData: function(res){ //res 即为原始返回的数据
-                console.log("res:"+JSON.stringify(res) );
-                return {
-                    "code": res.code, //解析接口状态
-                    "msg": res.msg, //解析提示文本
-                    "data": res.data, //解析数据列表
-                    "count": res.count //解析数据列表
-                };
+        );
+        $("#buttonCheck").click(function () {
+                var phone=$("#phone").val();
+                var code=$("#code").val();
+                console.log("code："+code);
+                var result = {};
+                $.ajax({
+                    url: "/table/verifyCode",
+                    type: "POST",
+                    dataType: "JSON",
+                    data:{phone:phone,code:code},
+                    async: false
+                }).done(function (json) {
+                    result = json;
+                });
+                return result;
             }
-            ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            ,cols: [[
-                {field:'name', title: '名称'},
-                {field:'num', title: '搜索次数', sort: true}
-                //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增}
-            ]]
-        });
-        table.render({
-            elem: '#test30'
-            ,url:'/table/user/30/'
-            ,parseData: function(res){ //res 即为原始返回的数据
-                console.log("res:"+JSON.stringify(res) );
-                return {
-                    "code": res.code, //解析接口状态
-                    "msg": res.msg, //解析提示文本
-                    "data": res.data, //解析数据列表
-                    "count": res.count //解析数据列表
-                };
-            }
-            ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            ,cols: [[
-                {field:'name', title: '名称'},
-                {field:'num', title: '搜索次数', sort: true}
-                //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增}
-            ]]
-        });
+        )
     });
 </script>
 <body>
 
-     <table class="layui-hide" id="test">所有</table>
-     <table class="layui-hide" id="test7">七天</table>
-     <table class="layui-hide" id="test30">一个月</table>
+    <input type="text" id="phone" name="phone" placeholder="输入短信内容发送">
+    <button id="button" name="button">发送</button>
+
+    <input type="text" id="code" name="code" placeholder="输入验证码内容发送">
+    <button id="buttonCheck" name="button">登录</button>
+
+<!--<table class="layui-hide" id="test">所有</table>-->
+     <!--<table class="layui-hide" id="test7">七天</table>-->
+     <!--<table class="layui-hide" id="test30">一个月</table>-->
 </body>
 </html>

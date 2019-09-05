@@ -185,9 +185,10 @@ public class WxGCServer {
 //                requestData.append("\uD83D\uDC49");
 //                requestData.append(itemName+"\uD83D\uDC48");
                 requestData.append(itemName);
+                requestData.append(",厨余垃圾=湿垃圾，其它垃圾=干垃圾");
                 requestData.append("\n"+"\uD83D\uDDD1");
                 requestData.append(itemType);
-                requestData.append("\uD83D\uDDD1"+"\n");
+                requestData.append("\uD83D\uDDD1"+"\n\n");
             }
             returnResult=requestData.toString();
         }catch (Exception e){

@@ -5,18 +5,52 @@ import cn.cvtt.nuoche.common.aop.LogManager;
 import cn.cvtt.nuoche.common.result.Result;
 import cn.cvtt.nuoche.common.result.ResultMsg;
 import cn.cvtt.nuoche.entity.AccessToken;
-import cn.cvtt.nuoche.entity.business.*;
-import cn.cvtt.nuoche.entity.gift.*;
+import cn.cvtt.nuoche.entity.business.BindVo;
+import cn.cvtt.nuoche.entity.business.BusinessCustomer;
+import cn.cvtt.nuoche.entity.business.BusinessNumberRecord;
+import cn.cvtt.nuoche.entity.business.CallReleaseVo;
+import cn.cvtt.nuoche.entity.business.SystemFeedBack;
+import cn.cvtt.nuoche.entity.business.businessPayNotify;
+import cn.cvtt.nuoche.entity.business.wx_product;
+import cn.cvtt.nuoche.entity.gift.GiftAwards;
+import cn.cvtt.nuoche.entity.gift.GiftAwardsRecords;
+import cn.cvtt.nuoche.entity.gift.GiftAwardsRules;
+import cn.cvtt.nuoche.entity.gift.GiftCoupon;
+import cn.cvtt.nuoche.entity.gift.GiftCouponRecord;
+import cn.cvtt.nuoche.entity.gift.GiftPoint;
+import cn.cvtt.nuoche.entity.gift.GiftPointRecord;
 import cn.cvtt.nuoche.entity.watch.NameCount;
 import cn.cvtt.nuoche.facade.IBusinessCallRecordInterface;
 import cn.cvtt.nuoche.facade.INumberInterface;
 import cn.cvtt.nuoche.facade.IProductInterface;
 import cn.cvtt.nuoche.facade.ISystemParamInterface;
-import cn.cvtt.nuoche.reponsitory.*;
+import cn.cvtt.nuoche.reponsitory.IBusinessCusRepository;
+import cn.cvtt.nuoche.reponsitory.IBusinessNumberRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IBusinessPayRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftAwardsRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftAwardsRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftAwardsRulesRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCardRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCardRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponQrcodeRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftCouponRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftPointRecordRepository;
+import cn.cvtt.nuoche.reponsitory.IGiftPointRepository;
+import cn.cvtt.nuoche.reponsitory.INamaCountRepository;
+import cn.cvtt.nuoche.reponsitory.ISystemFeedBack;
 import cn.cvtt.nuoche.server.impl.NumberServiceImpl;
 import cn.cvtt.nuoche.service.QrcodeService;
-import cn.cvtt.nuoche.util.*;
-import com.alibaba.fastjson.JSON;
+import cn.cvtt.nuoche.util.ApiSignUtils;
+import cn.cvtt.nuoche.util.ConfigUtil;
+import cn.cvtt.nuoche.util.DateUtils;
+import cn.cvtt.nuoche.util.HttpClientUtil;
+import cn.cvtt.nuoche.util.JedisUtils;
+import cn.cvtt.nuoche.util.JsonUtils;
+import cn.cvtt.nuoche.util.LotteryUtil;
+import cn.cvtt.nuoche.util.SmsValidateUtils;
+import cn.cvtt.nuoche.util.WechatSignGenerator;
+import cn.cvtt.nuoche.util.WxUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import feign.FeignException;
@@ -36,9 +70,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static cn.cvtt.nuoche.server.WxServer.getAccessToken;
+import static cn.cvtt.nuoche.util.SendPhone.MobileMessageCheck.checkMsg;
+import static cn.cvtt.nuoche.util.SendPhone.SendMessage.send;
 import static cn.cvtt.nuoche.util.WechatSignGenerator.jsapiSign;
 
 @RestController
@@ -90,6 +132,60 @@ public class businessController extends  BaseController{
     @Resource
     private QrcodeService qrcodeService;
     private static final Logger logger = LoggerFactory.getLogger(businessController.class);
+
+    @RequestMapping("/table/testSendCode")
+    @ResponseBody
+    public  Result  testSendCode(@RequestParam("phone") String phone) throws Exception {
+        System.out.println("接收到的手机号码为："+phone);
+        Result  result = new Result();
+        String resultMsg=send(phone);
+        System.out.println("result:"+resultMsg);
+        JSONObject object=JSONObject.parseObject(resultMsg);
+        String code=object.getString("code");
+        if (StringUtils.equals(code,"200")) {
+            result.setMsg("验证码已发到" + phone + "号码中，请查收");
+            result.setCode(200);
+            return result;
+        } else if(StringUtils.equals(code,"315")) {
+            result.setMsg("您绑定的手机号" + phone + "IP限制;");
+        } else if (StringUtils.equals(code,"301")) {
+            result.setMsg("您绑定的手机号" + phone + "被封禁!");
+        } else if (StringUtils.equals(code,"403")) {
+            result.setMsg("您绑定的手机号" + phone + "非法操作或没有权限!");
+        } else if (StringUtils.equals(code,"404")) {
+            result.setMsg("您绑定的手机号" + phone + "对象不存在!");
+        } else if (StringUtils.equals(code,"414")) {
+            result.setMsg("手机号码有误，请输入正确的手机号码!");
+        } else if (StringUtils.equals(code,"500")) {
+            result.setMsg("您绑定的手机号" + phone + "服务器内部错误!");
+        } else if (StringUtils.equals(code,"408")) {
+            result.setMsg("您绑定的手机号" + phone + "客户端请求超时!");
+        } else if (StringUtils.equals(code,"419")) {
+            result.setMsg("您绑定的手机号" + phone + "数量超过上限!");
+        }else{
+            result.setMsg("未知错误");
+        }
+
+        System.out.println("resultFinal:"+resultMsg);
+        result.setData(phone);
+        result.setCode(0);
+        return result;
+    }
+
+    @RequestMapping("/table/verifyCode")
+    @ResponseBody
+    public  Result  verifyCode(@RequestParam("phone") String phone,@RequestParam("code") String code) throws Exception {
+        System.out.println("接收到的手机号码为："+phone+","+code);
+        Result  result = new Result();
+        String resultMsg=checkMsg(phone,code);
+        System.out.println("resultMsg:"+resultMsg);
+        result.setData(phone);
+        result.setCode(0);
+        result.setMsg(resultMsg);
+        return result;
+    }
+
+
 
     @RequestMapping("/table/user2/")
     @ResponseBody

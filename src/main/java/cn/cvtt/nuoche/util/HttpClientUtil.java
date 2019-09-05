@@ -1,6 +1,7 @@
 package cn.cvtt.nuoche.util;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -27,6 +28,11 @@ import java.util.Map;
  * @date 2017-6-6 15:25:44
  */
 public class HttpClientUtil {
+	//连接主机超时（30s）
+    public static final int HTTP_CONNECT_TIMEOUT_30S = 30 * 1000;
+
+    // 从主机读取数据超时（3min）
+    public static final int HTTP_READ_TIMEOUT_3MIN = 180 * 1000;
 
 	/**
 	 * 发送get请求
@@ -39,8 +45,10 @@ public class HttpClientUtil {
 		// 创建Httpclient对象
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
-		String resultString;
+		String resultString = "";
 		CloseableHttpResponse response = null;
+		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(HTTP_READ_TIMEOUT_3MIN).setConnectionRequestTimeout(1000)
+               .setConnectTimeout(HTTP_CONNECT_TIMEOUT_30S).build();
 		try {
 			// 创建uri
 			URIBuilder builder = new URIBuilder(url);
@@ -53,6 +61,7 @@ public class HttpClientUtil {
 
 			// 创建http GET请求
 			HttpGet httpGet = new HttpGet(uri);
+			httpGet.setConfig(requestConfig);
 
 			// 执行请求
 			response = httpclient.execute(httpGet);
@@ -62,7 +71,6 @@ public class HttpClientUtil {
 			} else {
 				resultString = "504";
 			}
-			System.out.println("getResult:"+resultString);
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultString = "504";
@@ -173,7 +181,6 @@ public class HttpClientUtil {
 
 		return resultString;
 	}
-
 	/**
 	 * URL编码
 	 * @param source
@@ -188,7 +195,5 @@ public class HttpClientUtil {
 		}
 		return result;
 	}
-
-
 
 }
