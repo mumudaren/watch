@@ -17,7 +17,7 @@
       <div class="wrap f_addtelwrap">         
           <div class="f_messagelist">
             <img src="images/message_03.png"/>
-            <span class="z_messagenumber" th:text="${smbms}">950135901234785</span>
+            <span class="z_messagenumber" th:text="${smbms}">778895901234785</span>
             <span class="z_telmessage">呼入呼出的通话记录</span>
           </div>
           <div class="f_telmessagelist">
@@ -25,7 +25,7 @@
               <li  th:each="record:${records}">
                  <dl>
                      <dd>
-                         <a   th:href="'tel:'+${isEmpty==1?'0':'95013'+record.childNumberRecordNotHide}"><img src="images/call_02.png"/></a>
+                         <a   th:href="'tel:'+${isEmpty==1?'0':'77889'+record.childNumberRecordNotHide}"><img src="images/call_02.png"/></a>
                      </dd>
                      <dd>
                          <!--隐藏4位-->

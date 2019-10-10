@@ -48,8 +48,8 @@
                             <img src="../images/zoom.png" id="search" style="width:.6rem;position:absolute;right:.2rem;top:.45rem" />
                             <!--<input type="button" value="搜索" id="search" name="search" class="z_searchnumber_btn" style="border:none;color:#4c4c4c;font-size:.5rem;background:transparent;margin-left:.2rem">-->
                         </p>
-                        <dl class="f_95013listnum" style="overflow:hidden;">
-                            <dd th:each="n:${numbers}" th:text="${n.number}">9501378110</dd>
+                        <dl class="f_77889listnum" style="overflow:hidden;">
+                            <dd th:each="n:${numbers}" th:text="${n.number}">7788978110</dd>
                         </dl>
                         <p id="showMore" style="color:#4c4c4c;font-size:.45rem;text-align: center;">加载更多</p>
                     </div>
@@ -149,10 +149,10 @@
                         var arr = response.data;
                         var numberModule = arr[0];
                         var productModule = arr[1];
-                        $(".f_95013listnum").text("");
+                        $(".f_77889listnum").text("");
                         $("#tab1").text("");
                         $.each(numberModule, function (index, item) {
-                            $(".f_95013listnum").append($("<dd></dd>").text(item.number));
+                            $(".f_77889listnum").append($("<dd></dd>").text(item.number));
                         });
                         $.each(productModule, function (index, item) {
                             var dd = $("<dd></dd>").addClass(item.productType == 1 ? "f_tiyan" : item.productType == 2 ? "f_discount" : "f_sales").css("margin-right", ".23rem");
@@ -194,9 +194,9 @@
                         if (response.code == 200) {
                             var arr = response.data;
                             var numberModule = arr[0];
-                            $(".f_95013listnum").text("");
+                            $(".f_77889listnum").text("");
                             $.each(numberModule, function (index, item) {
-                                $(".f_95013listnum").append($("<dd></dd>").text(item.number));
+                                $(".f_77889listnum").append($("<dd></dd>").text(item.number));
                             });
                             initClick();
                         }
@@ -223,7 +223,7 @@
                         var arr = response.data;
                         var numberModule = arr[0];
                         $.each(numberModule, function (index, item) {
-                            $(".f_95013listnum").append($("<dd></dd>").text(item.number));
+                            $(".f_77889listnum").append($("<dd></dd>").text(item.number));
                         });
                        // initClick();
                     }
@@ -236,7 +236,7 @@
                 var days = $("#tab1 dd").eq(ddIndex).find("p").eq(2).text();
                 var productId = $("#tab1 dd").eq(ddIndex).find("p").eq(5).text();
                 var phone = $("input[name='myNumber']").val();
-                var uidNumber = $(".f_95013listnum").find(".z_current").text();
+                var uidNumber = $(".f_77889listnum").find(".z_current").text();
                 pay.openid = openid;
                 pay.totalFee = 0;
                 pay.phone = phone;
@@ -267,7 +267,7 @@
                     clicktag = 0
                 }, 4000);
                 var phone = $("input[name='myNumber']").val();
-                var uidNumber = $(".f_95013listnum").find(".z_current").text();
+                var uidNumber = $(".f_77889listnum").find(".z_current").text();
                 if (!util.validPhone(phone)) {
                     //util.showText("不是有效的手机号码!",$(".z_successtext"));
                     alert("不是有效的手机号码!");
@@ -340,7 +340,7 @@
         }
 
         function initClick(){
-            $(".f_95013listnum dd:eq(0)").addClass("z_current");
+            $(".f_77889listnum dd:eq(0)").addClass("z_current");
             //$("#tab1 dd:eq(0)").addClass('f_tiyan f_tiyan_active ');
             //console.log("class   is:"+$("#tab1 dd:eq(0)").attr("class"));
             var classNew=$("#tab1 dd:eq(0)").attr("class");
@@ -398,9 +398,9 @@
                     $("#tab1 dd:eq(2)").removeClass("f_tiyan_active").removeClass("f_discount_active").removeClass("f_sales_active");
                 }
             });
-            // $(".f_95013listnum dd").click(function(){
-            $(".f_95013listnum").on('click', '.f_95013listnum dd', function() {
-                $(".f_95013listnum dd").removeClass("z_current");
+            // $(".f_77889listnum dd").click(function(){
+            $(".f_77889listnum").on('click', '.f_77889listnum dd', function() {
+                $(".f_77889listnum dd").removeClass("z_current");
                 $(this).addClass("z_current");
             });
         }

@@ -63,7 +63,7 @@
                                   <span th:class="${record.isValid == 1?'z_imgkey z_imgkey_gray':'z_imgkey'}">
                                     <img th:src="@{/images/key.png}" />
                                   </span>
-                                  <span th:class="${record.isValid == 1?'z_mynumber95013 z_mynumber95013_gray':'z_mynumber95013'}" th:text="${record.smbms}">950135901234785</span>
+                                  <span th:class="${record.isValid == 1?'z_mynumber77889 z_mynumber77889_gray':'z_mynumber77889'}" th:text="${record.smbms}">778895901234785</span>
                                 </p>
                                 <p class="f_myimg_tel">
                                   <span  th:class="${record.isValid == 1?'z_imgkey z_imgtel z_imgtel_gray':'z_imgkey z_imgtel'}"   >
@@ -123,7 +123,7 @@
                                   <span th:class="${record.isValid == 1?'z_imgkey  z_imgkey_gray':' z_imgkey'}">
                                     <img th:src="@{/images/key.png}" />
                                   </span>
-                                  <span th:class="${record.isValid == 1?'z_mynumber95013 z_mynumber95013_gray':'z_mynumber95013'}" th:text="${record.smbms}">950135901234785</span>
+                                  <span th:class="${record.isValid == 1?'z_mynumber77889 z_mynumber77889_gray':'z_mynumber77889'}" th:text="${record.smbms}">778895901234785</span>
                               </p>
                               <p class="f_myimg_tel">
                                   <span  th:class="${record.isValid == 1?'z_imgkey z_imgtel z_imgtel_gray':'z_imgkey z_imgtel'}"   >
@@ -209,7 +209,7 @@
                   <span class="z_imgkey">
                     <img src="../images/key.png" />
                   </span>
-                  <span class="z_mynumber95013"  id="uidnumber">950135901234785</span>
+                  <span class="z_mynumber77889"  id="uidnumber">778895901234785</span>
                 </p>
                 <p class="f_myimg_tel">
                   <span class="z_imgkey z_imgtel">
@@ -339,7 +339,7 @@
 
             function delayFun(obj){
                  var  resourceObj= $(obj).parent().parent().prev();
-                 var  uidnumber= $(resourceObj).find(".z_mynumber95013").text();
+                 var  uidnumber= $(resourceObj).find(".z_mynumber77889").text();
                  var  phone =$(resourceObj).find(".z_mynumber_telphone").text();
                  var  validTime=$(resourceObj).find(".z_todatetime").text();
                 $("#uidnumber").text(uidnumber);

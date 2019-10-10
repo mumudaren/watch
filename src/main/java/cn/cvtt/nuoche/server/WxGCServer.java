@@ -111,22 +111,7 @@ public class WxGCServer {
                 // 将文本消息对象转换成xml
                 respXml = MessageUtils.messageToXml(textMessage, TextMessage.class);
             }
-//            // 视频消息
-//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_VIDEO)) {
-//                respContent = "您发送的是视频消息！";
-//            }
-//            // 视频消息
-//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_SHORTVIDEO)) {
-//                respContent = "您发送的是小视频消息！";
-//            }
-//            // 地理位置消息
-//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LOCATION)) {
-//                respContent = "您发送的是地理位置消息！";
-//            }
-//            // 链接消息
-//            else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_LINK)) {
-//                respContent = "您发送的是链接消息！";
-//            }
+
             // 事件推送
             else if (msgType.equals(MessageUtils.REQ_MESSAGE_TYPE_EVENT)) {
                 // 事件类型
@@ -169,7 +154,7 @@ public class WxGCServer {
     }
 
     public String getTypeGC(String searchWords){
-        String returnResult="";
+        String returnResult="搜剧请关注公众号《叫我追剧哈》\n厨余垃圾=湿垃圾\n其它垃圾=干垃圾\n";
         Map<String, String> map=new HashedMap();
         map.put("key",searchWords);
         try {
@@ -185,14 +170,13 @@ public class WxGCServer {
 //                requestData.append("\uD83D\uDC49");
 //                requestData.append(itemName+"\uD83D\uDC48");
                 requestData.append(itemName);
-                requestData.append(",厨余垃圾=湿垃圾，其它垃圾=干垃圾");
                 requestData.append("\n"+"\uD83D\uDDD1");
                 requestData.append(itemType);
                 requestData.append("\uD83D\uDDD1"+"\n\n");
             }
-            returnResult=requestData.toString();
+            returnResult=returnResult+requestData.toString();
         }catch (Exception e){
-            returnResult="未查找到"+searchWords+"。";
+            returnResult="未查找到"+searchWords+"。"+returnResult;
             logger.info("网络连接失败。");
         }
         logger.info("返回的文字为："+returnResult);

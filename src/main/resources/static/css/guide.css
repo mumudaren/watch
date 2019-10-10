@@ -92,10 +92,10 @@ a:focus img{box-shadow:5px 5px 5px rgba(0,0,0,.1);}
 .f_onlinetel{background:url(../images/scene/guide_08.png) no-repeat center center;text-align:center;width:10rem;background-size:10rem .05rem;margin-top:1rem;font-size:.45rem;}
 .z_telbj{background:#a2acb7;border-radius:3rem;color:#fff;padding:.2rem .6rem;font-weight:bold;}
 
-.f_call95013,.f_bohaonumber{margin-top:1rem;display:table;}
+.f_call77889,.f_bohaonumber{margin-top:1rem;display:table;}
 .f_callleft,.f_bohaoleft{display:table-cell;font-size:.45rem;color:#a2acb7;padding-left:.5rem;padding-top:1.5rem;line-height:.6rem;}
-.f_call95013 img{width:4.5rem;padding-right:.5rem;}
-.z_950132{color:#03bcf2;}
+.f_call77889 img{width:4.5rem;padding-right:.5rem;}
+.z_778892{color:#03bcf2;}
 .f_bohaoleft{padding-top:.5rem;}
 .f_first{color:#333;font-size:.5rem;display:block;font-weight:bold;}
 .f_first:before{display:inline-block;content:'';background:#03bcf2;width:.11rem;height:.6rem;vertical-align:-.1rem;margin-right:.1rem;}
@@ -107,7 +107,7 @@ a:focus img{box-shadow:5px 5px 5px rgba(0,0,0,.1);}
 .f_wxtip{font-size:.45rem;color:#a2acb7;margin:1rem auto;line-height:.75rem;padding:0 .5rem;width:9rem;}
 .z_03bcf2{color:#03bcf2;}
 
-.f_95013number{font-size:.6rem;text-align:center;color:#000;line-height:1rem;width:9rem;margin:0 auto;margin-top:.2rem}
+.f_77889number{font-size:.6rem;text-align:center;color:#000;line-height:1rem;width:9rem;margin:0 auto;margin-top:.2rem}
 
 .z_line{margin:0 auto;}
 

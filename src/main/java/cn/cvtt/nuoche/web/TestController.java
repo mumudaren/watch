@@ -105,7 +105,7 @@ public class TestController extends  BaseController {
     @RequestMapping("/getHeard")
     @ResponseBody
     public  String    getHeard(){
-        String  string=callRecordInterface.findHeard("nuoche","95013340000297");
+        String  string=callRecordInterface.findHeard("nuoche","77889340000297");
         return string;
     }
 
@@ -120,7 +120,7 @@ public class TestController extends  BaseController {
     @ResponseBody
     public  String  testInterface(){
         //String str= productInterface.findProduct("nuoche");
-        String str=callRecordInterface.findHeard("nuoche","95013340000297");
+        String str=callRecordInterface.findHeard("nuoche","77889340000297");
         return  str;
     }
 
@@ -619,7 +619,7 @@ public class TestController extends  BaseController {
         //加载当前活动奖品图片。
         logger.info("activeNow index:"+activeNow.getId());
         List<GiftAwards> awards=giftAwardsRepository.findByRulesIdOrderByIndexOrder(activeNow.getId());
-        logger.info("GiftAwards :"+awards.toString());
+        logger.info("Cat :"+awards.toString());
         modelAndView.addObject("awards",awards);
         //当前活动所需要消耗的积分
         int usePoints=activeNow.getPoints();

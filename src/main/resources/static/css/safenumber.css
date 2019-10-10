@@ -160,7 +160,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .z_imgkey{width: .5rem;height: .5rem;background: #007eda;border-radius: 50%;margin-right: .3rem;display: inline-block;vertical-align: middle;}
 .z_imgkey img{width: .25rem;padding-left: .12rem;padding-top: .06rem;}
 .z_imgtel{background: #f31e66;}
-.z_mynumber95013{color: #007eda;}
+.z_mynumber77889{color: #007eda;}
 .z_mynumber_telphone{color: #f31e66;}
 .z_imgtel img{width: .25rem;padding-left: .132rem;padding-top: .06rem;}
 .z_todatetime{float: right;color: #ff9033;font-size: .4rem;margin-top: .05rem;}
@@ -170,7 +170,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .f_delay_detail span a{color: #6a7388;font-size: .45rem;text-align: center;}
 .f_delay_detail span.z_number_dalay{border-right: 1px solid #d8dae0;}
 .z_imgkey_gray,.z_imgtel_gray{background: #b5b8c3;}
-.z_mynumber95013_gray,.z_mynumber_telphone_gray{color: #6a7388;}
+.z_mynumber77889_gray,.z_mynumber_telphone_gray{color: #6a7388;}
 .z_todatetime_gray{color: #6c7287;}
 
 /*不延期弹窗*/
@@ -276,7 +276,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .f_sharesucessimg img{width: 5rem;padding-top: .8rem;}
 .f_shareclose{color: #999;font-size: .55rem;font-weight:bold;position: absolute;right: .3rem;top:.2rem;}
 .f_sharesuc_text{margin-top: .5rem;font-size: .6rem;}
-.f_sharesuc_95013{margin-top: .5rem;color: #666;font-size: .4rem;}
+.f_sharesuc_77889{margin-top: .5rem;color: #666;font-size: .4rem;}
 .f_sharesuc_btn{margin: 0 auto;text-align: center;}
 .f_sharesuc_btn a{background: #2f89ef;display: block;width: 4rem;padding: .25rem 0;text-align: center;color: #fff;margin: .5rem auto;border-radius: .5rem;}
 
@@ -334,9 +334,9 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 .f_zhizuntablist .f_zhizuninput{padding-left: 0;padding-top: 0;}
 .f_zhizuntablist .f_zhizuninput input{width: 8.72rem;}
-.f_95013listnum dd{border: 1px solid #4d4d4d;width: 4.05rem;height:.5rem;padding: .2rem 0 .27rem;float: left;margin-bottom: .5rem;text-align: center;margin-right: .52rem;font-size: .45rem;color: #4c4c4c;background-color: #fff;}
-.f_95013listnum dd:nth-child(even){margin-right: 0;}
-.f_95013listnum .z_current{background-color: #2f89ef;color: #fff;}
+.f_77889listnum dd{border: 1px solid #4d4d4d;width: 4.05rem;height:.5rem;padding: .2rem 0 .27rem;float: left;margin-bottom: .5rem;text-align: center;margin-right: .52rem;font-size: .45rem;color: #4c4c4c;background-color: #fff;}
+.f_77889listnum dd:nth-child(even){margin-right: 0;}
+.f_77889listnum .z_current{background-color: #2f89ef;color: #fff;}
 .f_messagewrap{background-color: #fff;margin-top: .5rem;padding: .4rem;overflow: hidden;}
 .z_messagenum{float: left;}
 .z_messageimg{float: right;}

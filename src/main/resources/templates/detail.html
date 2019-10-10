@@ -22,7 +22,7 @@
           <div class="f_safenumdetail">
               <ul>
                   <li>
-                        <p class="z_safenumber"><img src="images/detail_03.png"/>海牛助手: <span class="uidNumber" th:text="${user.smbms}" >950135901234785</span></p>
+                        <p class="z_safenumber"><img src="images/detail_03.png"/>海牛助手: <span class="uidNumber" th:text="${user.smbms}" >778895901234785</span></p>
                         <p class="z_safenumber z_bindtel"><img src="images/detail_06.png"/>绑定手机号: <span class="userPhone" th:text="${user.number}">13466787750</span></p>
                         <p class="z_safetip">该海牛助手由<span th:text="${user.userPhone}"></span>在<span th:text="${user.numberSub}"></span>为您提供！</p>
                   </li>
@@ -46,7 +46,7 @@
               <p class="z_calltitle">
                   通话记录
                   <span class="isEmpty" style="display: none" th:text="${isEmpty=='1'?'0':record.nox}"></span>
-                  <!--<span class="isEmpty" style="display: none" th:text="${isEmpty=='1'?'0':'95013'+record.recordNumberNotHide}"></span>-->
+                  <!--<span class="isEmpty" style="display: none" th:text="${isEmpty=='1'?'0':'77889'+record.recordNumberNotHide}"></span>-->
                   <a href="#" class="record recordmore">更多</a>
               </p>
           </div>
@@ -62,7 +62,7 @@
                               </div>
                             <div class="z_telmessageright f_callimg">
                                 <span>
-                                    <a   th:href="'tel:'+${isEmpty==1?0:'95013'+record.recordNumberNotHide}"><img src="images/message_09.png" /><br />拨打</a>
+                                    <a   th:href="'tel:'+${isEmpty==1?0:'77889'+record.recordNumberNotHide}"><img src="images/message_09.png" /><br />拨打</a>
                                 </span>
                             </div>
                         </li>
@@ -90,7 +90,7 @@
                                         </audio>
                                         <br />收听</span>
                                     <!--<span>-->
-                                        <!--<a   th:href="'tel:'+${isEmptyVoice==1?0:'95013'+voice.voiceNox}"><img src="images/message_09.png" /><br />拨打</a>-->
+                                        <!--<a   th:href="'tel:'+${isEmptyVoice==1?0:'77889'+voice.voiceNox}"><img src="images/message_09.png" /><br />拨打</a>-->
                                     <!--</span>-->
                               </div>
                         </li>

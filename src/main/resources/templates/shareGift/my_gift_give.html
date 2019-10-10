@@ -31,7 +31,7 @@
                                   <li   th:if="${myGiftNumberCardRecordList}" th:each="numberCard:${myGiftNumberCardRecordList}">
                                       <div class="z_tablist">
                                           <p class="z_tablist_title"  >
-                                              <strong th:text="${numberCard.cardName}">95013&nbsp;68985&nbsp;</strong>
+                                              <strong th:text="${numberCard.cardName}">77889&nbsp;68985&nbsp;</strong>
                                               <span class="z_tabsmalltitle" th:text="${numberCard.cardMessage}">祝福语：大吉大利，今晚有靓号</span>
                                           </p>
                                           <p class="z_tablist_price" >
@@ -71,7 +71,7 @@
                                           <li  th:if="${cardHave}" th:each="cardItem:${cardHave}">
                                               <div class="z_tablist">
                                                   <p class="z_tablist_title">
-                                                      <strong th:text="${cardItem.cardName}">95013&nbsp;68985&nbsp;</strong>
+                                                      <strong th:text="${cardItem.cardName}">77889&nbsp;68985&nbsp;</strong>
                                                       <span class="z_tabsmalltitle" th:text="${'祝福语：'+cardItem.cardMessage}">祝福语：大吉大利，今晚有靓号</span>
                                                   </p>
                                                   <p class="z_tablist_price"><strong th:text="${cardItem.price/10+'元/年'}">399元／年</strong>
@@ -85,7 +85,7 @@
                                           <!--<li>-->
                                               <!--<div class="z_tablist">-->
                                                   <!--<p class="z_tablist_title">-->
-                                                      <!--95013&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>-->
+                                                      <!--77889&nbsp;68985&nbsp;<span class="z_tabsmalltitle">祝福语：大吉大利，今晚有靓号</span>-->
                                                   <!--</p>-->
                                                   <!--<p class="z_tablist_price">399元／年<span class="z_tabsmalltitle z_tabdatetime">2018年08月23日购买的</span></p>-->
                                                   <!--<p class="z_tablist_content">-->
@@ -101,14 +101,14 @@
                                   <li   th:if="${cardReceive}" th:each="receive:${cardReceive}">
                                       <div class="z_tablist">
                                           <p class="z_tablist_title">
-                                              <strong th:text="${receive.cardName}">95013&nbsp;68985&nbsp;</strong>
+                                              <strong th:text="${receive.cardName}">77889&nbsp;68985&nbsp;</strong>
                                               <span class="z_tabsmalltitle"  th:text="${'祝福语：'+receive.cardMessage}">祝福语：大吉大利，今晚有靓号</span>
                                           </p>                        
                                           <p class="z_tablist_content">
                                               <img th:src="${receive.receiverImg}">
                                               <span class="z_tablist_text"><strong  th:text="${receive.receiverNickname}">大喇叭</strong>
                                                   <br><strong th:text="${receive.getTime}">2018年09月23日 16:25:08</strong> 送给我的</span>
-                                              <span class="z_tablist_selectnumber" th:if="${receive.cardNumber}">已选号码：<em th:text="${receive.cardNumber}">95013780000</em></span>
+                                              <span class="z_tablist_selectnumber" th:if="${receive.cardNumber}">已选号码：<em th:text="${receive.cardNumber}">77889780000</em></span>
                                               <span class="hiddenId" style="display:none;" th:text="${receive.id}"></span>
                                           </p>
                                       </div>

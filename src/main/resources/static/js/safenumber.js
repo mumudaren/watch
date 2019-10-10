@@ -99,7 +99,7 @@ $(function(){
 		//获取套餐的电话号码等。
         var resourceObj=$(this).parent().parent().prev();
         console.log("resourceObj   is:"+resourceObj.attr("class"));
-        var phone=$(resourceObj).find(".z_mynumber95013").text();
+        var phone=$(resourceObj).find(".z_mynumber77889").text();
         sendPhone=$(resourceObj).find(".z_mynumber_telphone").text();
         console.log("95phone   is:"+phone+"send phone is :"+sendPhone);
         $(".sessionPhone").text(phone);

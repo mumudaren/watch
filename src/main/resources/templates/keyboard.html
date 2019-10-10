@@ -30,7 +30,7 @@
             background: linear-gradient(to right, #2f89ef , #54bafb); /* 标准的语法 */}
         .f_call a img{width: .8rem;margin-top: -.1rem;margin-right: .3rem;}
         .f_call a:hover{text-decoration: none;}
-        .f_number95013{position: absolute;left:.3rem;font-size: .5rem;line-height: 1.2rem;font-family: sans-serif;}
+        .f_number77889{position: absolute;left:.3rem;font-size: .5rem;line-height: 1.2rem;font-family: sans-serif;}
     </style>
     <script type="text/javascript" src="js/flexible.js"></script>
     <script type="text/javascript" src="js/flexible_css.js"></script>
@@ -40,17 +40,17 @@
 <div id="keyboard" class="wrap" style="background-color: #f2f7fc;height:100%; ">
     <div class="f_keyboardcontent">
         <p class="f_keyboard">
-            <span class="f_number95013">95013</span>
+            <span class="f_number77889">77889</span>
             <input type="tel" id="" name="" v-model="phone" disabled >
             <img src="images/close_03.png" @click="clear"/>
         </p>
-        <p style="margin-top:.5rem;font-size:.5rem;color:#808080;">请直接输入对方手机号码、固话号(如：134********、010********)或海牛助手号(如：95013******)</p>
+        <p style="margin-top:.5rem;font-size:.5rem;color:#808080;">请直接输入对方手机号码、固话号(如：134********、010********)或海牛助手号(如：77889******)</p>
         <div class="f_keyboard_call">
             <ul>
                 <li v-for="(item,index) in callNumber" v-on:click="valClick(index)" :class="{'active': index == active}" v-cloak>{{item}}</li>
             </ul>
             <p class="f_call" v-on:click="call">
-                <a :href="'tel:'+ '95013' + phone">
+                <a :href="'tel:'+ '77889' + phone">
                     <img src="images/tel_03.png" />拨号
                 </a>
             </p>
@@ -88,7 +88,7 @@
                 call: function(){
                     let str = this.phone;
                     let strIndex = str.substr(0,5);
-                    if(strIndex == '95013'){
+                    if(strIndex == '77889'){
                         this.phone = str.substr(5);
                     }else{
                         return this.phone;
