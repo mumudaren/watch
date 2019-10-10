@@ -32,7 +32,7 @@
                <img src="images/giftImage/qrcodeimg.jpg">
            </div>
            <div class="z_giverfriend_content">
-               <span class="z_gumi"  th:text="${nickName+'的海牛助手'}">36k纯帅的海牛助手</span>
+               <span class="z_gumi"  th:text="${nickName+'的咕咕'}">36k纯帅的咕咕</span>
                <span class="z_choice_goodnumber">号码已过期</span>   
                <span class="z_sharenumber">无法拨打</span>                                         
            </div>
@@ -40,14 +40,14 @@
                 <img src="images/giftImage/give_05.png">
            </div> 
            <div class="longpic f_usednumber">
-               <span>我也要用海牛助手</span>
+               <span>我也要用咕咕</span>
             </div>        
       </div>     
     </body>
     <script th:inline="javascript">
         //点击二维码
         $(".f_usednumber").click(function() {
-            //点击我也要用海牛助手
+            //点击我也要用咕咕
             window.location.href="/oauth/regex/buy_zhizun.html";
         });
     </script>

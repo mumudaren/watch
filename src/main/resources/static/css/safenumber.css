@@ -212,7 +212,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .f_sales_active p.z_requiredays_active{color: #fff;}
 .f_sales_active p.z_limits3_active{color: #fff;}
 
-/*暂无海牛助手*/
+/*暂无咕咕*/
 .f_notnumber{margin: 0 auto;text-align: center;background: #f2f7fc;padding-bottom: 1rem;}
 .z_notnumimg{padding-top: 2rem;}
 .z_notnumimg img{width: 6rem;}
@@ -298,7 +298,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .t_dialog{
     margin-bottom: 3rem;
 }
-/*2018/7/9日新增海牛助手页面样式*/
+/*2018/7/9日新增咕咕页面样式*/
 .f_zhizuninput{padding-left: .4rem;padding-top: .5rem;color: #a6a6a6; }
 .f_zhizuninput input{width: 9.2rem;height:.5rem;padding: .5rem .2rem;background-color: #fff;border: none;box-shadow: 10px 10px 30px #dbe9f7;margin-bottom: .3rem;font-size: .5rem;}
 /* .f_tabwrap{padding:.2rem .4rem;} */

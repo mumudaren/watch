@@ -89,7 +89,7 @@ public class QrcodeServiceImpl implements QrcodeService {
                 // 存入数据库
                 save(qrcode);
             }else if(StringUtils.equals(type,"call")){
-                //识别二维码呼叫海牛助手类型
+                //识别二维码呼叫咕咕类型
                 GiftNumberQRcode qrcode=giftNumberQRcodeRepository.findByIdEquals(cardId);
                 qrcodeId=QRCodeUtil.encode(UUID.randomUUID().toString(), type, Constant.APP_SECRET,
                         destPath, WX_QRCODE_URL, LOGO_PATH, "");

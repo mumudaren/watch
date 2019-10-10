@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <meta name="Description" content="购买海牛助手" />
-    <title>购买海牛助手</title>
+    <meta name="Description" content="购买咕咕" />
+    <title>购买咕咕</title>
     <meta content="yes" name="apple-mobile-web-app-capable"/>
     <meta content="yes" name="apple-touch-fullscreen"/>
     <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"/>
@@ -23,14 +23,14 @@
 <div class="wrap f_404wrap">
     <form id="sendPhone" th:action="@{/findStatus.html}"  th:method="post">
     <p class="f_zhizuninput">
-        <!--<input type="tel" placeholder="请输入需要海牛助手的手机号码"   name="myNumber" style="width:92%"/>-->
+        <!--<input type="tel" placeholder="请输入需要咕咕的手机号码"   name="myNumber" style="width:92%"/>-->
 
-        <input type="tel"  th:value="${phone}" placeholder="请输入需要海牛助手的手机号码" style="width:92%" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
+        <input type="tel"  th:value="${phone}" placeholder="请输入需要咕咕的手机号码" style="width:92%" name="myNumber" th:onfocus="'javascript:toNull('+${phone}+')' " th:onblur="'javascript:toValue('+${phone}+')' " />
         <input style="display:none" id="phoneType" name="phoneType" value="ZhiZun" />
         <input style="display:none" id="couponRecordId" name="couponRecordId" />
         <input style="display:none"  id="refreshed" value="no">
         <br/>
-        海牛助手将与输入的手机号进行绑定，呼叫海牛助手手机号将接听来电
+        咕咕将与输入的手机号进行绑定，呼叫咕咕手机号将接听来电
     </p>
     </form>
     <div class="f_tabwrap">
@@ -44,7 +44,7 @@
                 <li>
                     <div class="f_zhizuntablist">
                         <p class="f_zhizuninput"  style="position:relative;">
-                            <input type="tel" placeholder="请输入需要查找的海牛助手号" style="width:97%"  class="searchNumber" name=""/>
+                            <input type="tel" placeholder="请输入需要查找的咕咕号" style="width:97%"  class="searchNumber" name=""/>
                             <img src="../images/zoom.png" id="search" style="width:.6rem;position:absolute;right:.2rem;top:.45rem" />
                             <!--<input type="button" value="搜索" id="search" name="search" class="z_searchnumber_btn" style="border:none;color:#4c4c4c;font-size:.5rem;background:transparent;margin-left:.2rem">-->
                         </p>
@@ -182,7 +182,7 @@
                 console.log("number:"+data.number);
                 var  searchValue=$(".searchNumber").val();
                 if(searchValue==''){
-                    alert("请输入想要查找的海牛助手号。");
+                    alert("请输入想要查找的咕咕号。");
                 }else{
                     $("#showMore").hide();
                     $.ajax({

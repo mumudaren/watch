@@ -44,7 +44,7 @@
             <input type="tel" id="" name="" v-model="phone" disabled >
             <img src="images/close_03.png" @click="clear"/>
         </p>
-        <p style="margin-top:.5rem;font-size:.5rem;color:#808080;">请直接输入对方手机号码、固话号(如：134********、010********)或海牛助手号(如：77889******)</p>
+        <p style="margin-top:.5rem;font-size:.5rem;color:#808080;">请直接输入对方手机号码、固话号(如：134********、010********)或咕咕号(如：77889******)</p>
         <div class="f_keyboard_call">
             <ul>
                 <li v-for="(item,index) in callNumber" v-on:click="valClick(index)" :class="{'active': index == active}" v-cloak>{{item}}</li>

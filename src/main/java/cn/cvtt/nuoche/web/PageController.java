@@ -795,7 +795,7 @@ public class PageController extends  BaseController{
         BusinessNumberRecord  record2=new BusinessNumberRecord();
         record2.setBusinessId(util.getBusinessKey());
         record2.setPrtms("010123456");
-        //临时海牛助手
+        //临时咕咕
         record2.setSmbms(uidNumber);
         record2.setResult(1);
         record2.setCallrestrict(0+"");
@@ -935,7 +935,7 @@ public class PageController extends  BaseController{
                 String realTime=record.getValidTime().toString();
                 logger.info("[receiveCardSuccess]bind realTime is:"+realTime);
                 bindVo.setExpiretime(realTime);
-                //使用真实的海牛助手调用绑定接口
+                //使用真实的咕咕调用绑定接口
                 try {
                     Result result = numberService.bindZhiZun(bindVo);
                     logger.info("[receiveCardSuccess]bind result======" + result.getMsg());
@@ -970,12 +970,12 @@ public class PageController extends  BaseController{
                 logger.info("save record operation.");
                 record.setPrtms(userInfo.getPhone());
                 record.setUserPhone(userInfo.getPhone());
-                //BusinessNumberRecord 更新真实的海牛助手
+                //BusinessNumberRecord 更新真实的咕咕
                 record.setSmbms(number);
                 recordRepository.saveAndFlush(record);
                 logger.info("save record operation over.");
             }
-            //giftCard 更新真实的海牛助手
+            //giftCard 更新真实的咕咕
             giftCard.setNumber(number);
             giftCardRepository.saveAndFlush(giftCard);
         }else{
@@ -1016,7 +1016,7 @@ public class PageController extends  BaseController{
             logger.info("save number record operation.");
             record.setPrtms(userInfo.getPhone());
             record.setUserPhone(userInfo.getPhone());
-            //BusinessNumberRecord 更新真实的海牛助手
+            //BusinessNumberRecord 更新真实的咕咕
             //record.setSmbms(number);
             recordRepository.saveAndFlush(record);
         }
@@ -1316,7 +1316,7 @@ public class PageController extends  BaseController{
         ModelAndView  model=new ModelAndView();
         //根据qrcodeId查找相应的信息(GiftNumberQRcode表)。
         GiftNumberQRcode qrcodeMsg=giftNumberQRcodeRepository.findByQrcodeEquals(qrcode);
-        //根据讯息查找海牛助手是否过期，如果过期则跳转到无法拨打页面。没过期跳转到拨打海牛助手页面。
+        //根据讯息查找咕咕是否过期，如果过期则跳转到无法拨打页面。没过期跳转到拨打咕咕页面。
         String number=qrcodeMsg.getNumber95();
         BusinessNumberRecord  record=recordRepository.findBySmbmsEqualsAndBusinessIdEquals(number,util.getBusinessKey());
         if(record.getValidTime().getTime()<System.currentTimeMillis()){
@@ -1346,7 +1346,7 @@ public class PageController extends  BaseController{
             Long cardRecordId=giftCardRecord.getId();
             return  "redirect:"+"/oauth/gift/qrcodeAfter/"+cardRecordId;
         }else if(StringUtils.equals(type,"call")){
-            //识别二维码显示海牛助手页面
+            //识别二维码显示咕咕页面
             return  "redirect:"+"/showNumber95?qrcode="+realId;
         } else if(StringUtils.equals(type,"coupon")){
             //优惠券

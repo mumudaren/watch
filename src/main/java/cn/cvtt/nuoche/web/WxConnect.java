@@ -108,7 +108,7 @@ public class WxConnect {
     @RequestMapping(value="/paySuccess",method = RequestMethod.POST)
     public void paySuccess(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // 设置编码
-        /** 绑定 海牛助手
+        /** 绑定 咕咕
          *  TODO
          *   这个地方根据查库中订单信息找到 绑定的数据是否存在 号码的，有就复制到business_cusmer中
          * **/
@@ -125,7 +125,7 @@ public class WxConnect {
             String  openId=requestMap.get("openid");
             /** tips: 这里取的是 订单参数attach中的业务business  这个business是在配置文件中
              *        根据业务ID{nuoche} 和价格 取wx_priduct 中的天数进行延期
-             *   attach:米亚 海牛助手支付-nuoche   */
+             *   attach:米亚 咕咕支付-nuoche   */
             BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openId);
             String  attach=requestMap.get("attach");
             String  business=null;
@@ -305,7 +305,7 @@ public class WxConnect {
                     BusinessNumberRecord  record2=new BusinessNumberRecord();
                     record2.setBusinessId(util.getBusinessKey());
                     record2.setPrtms("010123456");
-                    //临时海牛助手
+                    //临时咕咕
                     record2.setSmbms(flag.get("uidnumber"));
                     record2.setResult(1);
                     record2.setCallrestrict(0+"");

@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>        
         <meta charset="utf-8">
-        <meta name="Description" content="我的海牛助手" />
-        <title>我的海牛助手</title>
+        <meta name="Description" content="我的咕咕" />
+        <title>我的咕咕</title>
         <meta content="yes" name="apple-mobile-web-app-capable">
         <meta content="yes" name="apple-touch-fullscreen">
         <meta name="App-Config" content="fullscreen=yes,userHistoryState,transition=yes"> 
@@ -33,7 +33,7 @@
                   <ul>
                     <li>
                         <span class="z_number" th:text="${sum}">10</span>
-                      <span>海牛助手</span>
+                      <span>咕咕</span>
                     </li>
                     <li>
                         <span class="z_number" th:text="${will}">1</span>
@@ -53,13 +53,13 @@
               <li>
                 <div class="f_mynumber_gift" th:onclick="'javascript:wechatGift()'" >
                     <img  th:src="@{/images/giftImage/myicon_03.png}"><br>微信送礼<br>
-                    <em>海牛助手送朋友</em>
+                    <em>咕咕送朋友</em>
                 </div>                 
               </li>
               <li>
                 <div class="f_mynumber_gift f_mynumber_gifttwo" th:onclick="'javascript:giftToFriend()'" >
                     <img  th:src="@{/images/giftImage/myicon_08.png}"><br>分享有礼<br>
-                    <em>让朋友也用上海牛助手</em>
+                    <em>让朋友也用上咕咕</em>
                 </div>                 
               </li>
               <li>
@@ -117,18 +117,18 @@
 
                   <!-- <p class="f_mynumber_time">显示在有效期内及已过期&nbsp;<span>60</span>&nbsp;天内的记录</p> -->
                   <p class="f_bindsuc_share f_mynumberbtn"  th:if="${ls}">
-                      <a href="/oauth/base/getNumber.html">购买海牛助手</a>
+                      <a href="/oauth/base/getNumber.html">购买咕咕</a>
                   </p>
                   <p class="f_bindsuc_sharebj"  th:if="${ls}">&nbsp;</p>
                 </div>
-                <!--暂无海牛助手-->
+                <!--暂无咕咕-->
                 <div class="f_notnumber"  th:unless="${ls}">
                     <p class="z_notnumimg">
                         <img th:src="@{/images/notnumber_03.png}" />
                     </p>
-                    <p class="z_notnum_text">暂无海牛助手，赶快保护自己的隐私吧。</p>
+                    <p class="z_notnum_text">暂无咕咕，赶快保护自己的隐私吧。</p>
                     <p class="f_bindsuc_share">
-                        <a href="/oauth/base/getNumber.html">购买海牛助手</a>
+                        <a href="/oauth/base/getNumber.html">购买咕咕</a>
                     </p>
                     <p class="f_bindsuc_sharebj">&nbsp;</p>
                 </div>
@@ -141,10 +141,10 @@
                         <img th:src="@{/images/otherbuy_03.png}" />
                     </p>
                     <p class="z_notnum_text">
-                      保护别人隐私也很重要，赶紧为ta提供海牛助手。
+                      保护别人隐私也很重要，赶紧为ta提供咕咕。
                     </p>
                     <p class="f_bindsuc_share">
-                      <a href="javascript:void(0);">购买海牛助手</a>
+                      <a href="javascript:void(0);">购买咕咕</a>
                     </p>
                     <p class="f_bindsuc_sharebj">&nbsp;</p>
                 </div>
@@ -186,7 +186,7 @@
   
                     <!-- <p class="f_mynumber_time">显示在有效期内及已过期&nbsp;<span>60</span>&nbsp;天内的记录</p> -->
                     <p class="f_bindsuc_share f_mynumberbtn" th:if="${other}">
-                        <a href="/oauth/base/getNumber.html">购买海牛助手</a>
+                        <a href="/oauth/base/getNumber.html">购买咕咕</a>
                     </p>
                     <p class="f_bindsuc_sharebj" style="display: none"  th:if="${other}">填充背景色</p>
                   </div>
@@ -202,7 +202,7 @@
           <!--不能延期弹窗-->
           <div class="not_delay" style="display: none">
               <div class="light"></div>
-              <span class="z_notdelay_text">该手机号同时拥有海牛助手10个，此海牛助手不能延期！</span>
+              <span class="z_notdelay_text">该手机号同时拥有咕咕10个，此咕咕不能延期！</span>
           </div>
 
           <!--选择天数弹窗-->
@@ -254,7 +254,7 @@
                   </span>
                           <span class="z_mynumber_telphone" id="phone">13466787750</span>
                       </p>
-                      <p class="z_numdetail_tip">该海牛助手由<span id="textPhone">134****7750</span>为您提供！</p>
+                      <p class="z_numdetail_tip">该咕咕由<span id="textPhone">134****7750</span>为您提供！</p>
                   </div>
 
                   <p class="z_numdetail_line"></p>

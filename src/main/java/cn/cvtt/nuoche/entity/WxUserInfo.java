@@ -39,7 +39,7 @@ public class WxUserInfo implements Serializable {
      */
     // 用户真实号码
     private String regphone;
-    // 用户海牛助手
+    // 用户咕咕
     private String uidnumber;
     // 注册时间
     private Date regtime;
