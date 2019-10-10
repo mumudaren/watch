@@ -125,7 +125,7 @@ public class WxConnect {
             String  openId=requestMap.get("openid");
             /** tips: 这里取的是 订单参数attach中的业务business  这个business是在配置文件中
              *        根据业务ID{nuoche} 和价格 取wx_priduct 中的天数进行延期
-             *   attach:天舟通信海牛助手支付-nuoche   */
+             *   attach:米亚 海牛助手支付-nuoche   */
             BusinessCustomer  customer=businessCusRepository.findByOpenidEquals(openId);
             String  attach=requestMap.get("attach");
             String  business=null;
